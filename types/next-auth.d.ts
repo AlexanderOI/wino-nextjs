@@ -10,11 +10,11 @@ declare module "next-auth" {
 type UserInterface = {
   id: number
   name: string
-  username: string
+  userName: string
   email: string
   profile: string
   lang: string
-  role_type: string
+  roleType: string
   permission: string[]
 }
 

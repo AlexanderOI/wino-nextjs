@@ -1,19 +1,16 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { headers } from "next/headers"
-import { NextResponse } from "next/server"
-import { json } from "stream/consumers"
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "username", type: "text" },
+        userName: { label: "userName", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (!credentials || !credentials.username || !credentials.password) {
+        if (!credentials || !credentials.userName || !credentials.password) {
           return null
         }
 
@@ -22,7 +19,7 @@ export const authOptions = {
           {
             method: "POST",
             body: JSON.stringify({
-              username: credentials.username,
+              userName: credentials.userName,
               password: credentials.password,
             }),
             headers: { "Content-Type": "application/json" },

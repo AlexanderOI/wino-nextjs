@@ -1,13 +1,12 @@
 import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
 import "./globals.css"
-import { HeaderNav } from "@/components/HeaderNav"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "./api/auth/[...nextauth]/route"
 import SessionAuthProvider from "@/context/SessionAuthProvider"
-import { AsideResposive } from "@/components/Aside"
 import { AsideProvider } from "@/context/AsideResponsiveProvider"
 import { ThemeProvider } from "@/providers/theme-provider"
+import { Main } from "./main"
 
 // const inter = Inter({ subsets: ["latin"] })
 const firaCode = Montserrat({ subsets: ["latin"] })
@@ -33,19 +32,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             disableTransitionOnChange
           >
             <AsideProvider>
-              <div className="flex h-screen">
-                <AsideResposive />
-                <div className="flex-1">
-                  <HeaderNav />
-                  <main
-                    className={`overflow-auto p-5 w-full ${
-                      session ? "h-screen-80" : "h-screen"
-                    }`}
-                  >
-                    {children}
-                  </main>
-                </div>
-              </div>
+              <Main>{children}</Main>
             </AsideProvider>
           </ThemeProvider>
         </SessionAuthProvider>

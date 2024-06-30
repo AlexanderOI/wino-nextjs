@@ -2,8 +2,9 @@
 import { useAsideContext } from "@/context/AsideResponsiveProvider"
 import { Aside } from "./common/Aside"
 import { MenuSection } from "./common/MenuSection"
-import { NavLink } from "./common/NavLink"
-import { Badge } from "lucide-react"
+import { MenuDropdown } from "./common/MenuDropdown"
+import { Badge, BedSingle, Plus, PlusCircle, Settings } from "lucide-react"
+import { MenuItem } from "./common/MenuItem"
 
 export function AsideResposive() {
   const { asideResposive, setAsideResposive } = useAsideContext()
@@ -28,30 +29,33 @@ export function AsideResposive() {
         } max-h-[calc(100vh-106px)] pr-3`}
       >
         <MenuSection title="Personal">
-          <NavLink href="/" Icon={<Badge />}>
-            Proyects
-          </NavLink>
-          <NavLink href="/" Icon={<Badge />}>
-            Tasks
-          </NavLink>
-        </MenuSection>
+          <MenuDropdown title="Projects" Icon={<BedSingle />}>
+            <MenuItem href="/" Icon={<Badge />}>
+              Projects
+            </MenuItem>
+            <MenuItem href="/" Icon={<Badge />}>
+              Tasks
+            </MenuItem>
+            <MenuItem href="/projects" Icon={<Settings />}>
+              Manage Projects
+            </MenuItem>
+          </MenuDropdown>
 
-        <MenuSection title="Team">
-          <NavLink href="/" Icon={<Badge />}>
-            Proyects
-          </NavLink>
-          <NavLink href="/" Icon={<Badge />}>
+          <MenuItem href="/" Icon={<Badge />}>
+            Projects
+          </MenuItem>
+          <MenuItem href="/" Icon={<Badge />}>
             Tasks
-          </NavLink>
+          </MenuItem>
         </MenuSection>
 
         <MenuSection title="Company">
-          <NavLink href="/" Icon={<Badge />}>
-            Proyects
-          </NavLink>
-          <NavLink href="/" Icon={<Badge />}>
+          <MenuItem href="/" Icon={<Badge />}>
+            Projects
+          </MenuItem>
+          <MenuItem href="/" Icon={<Badge />}>
             Tasks
-          </NavLink>
+          </MenuItem>
         </MenuSection>
       </div>
     </Aside>

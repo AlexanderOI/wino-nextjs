@@ -2,7 +2,7 @@ import { ErrorMessage } from "@hookform/error-message"
 import { useForm } from "react-hook-form"
 
 interface FormInputs {
-  username: string
+  userName: string
   email: string
   password: string
   confirmPassword: string

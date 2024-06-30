@@ -8,7 +8,8 @@ export default function Home() {
 
   if (session) {
     router.replace("/dashboard")
-    return null
   }
+  router.replace("auth/login")
+
   return <main className="">Loading</main>
 }

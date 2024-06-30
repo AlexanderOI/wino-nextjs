@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react"
 import { signIn, useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 export default function Login() {
@@ -20,25 +20,21 @@ export default function Login() {
     formState: { errors },
   } = useForm()
 
-  if (session) {
-    router.replace("/dashboard")
-    return null
-  }
+  useEffect(() => {
+    if (session) {
+      router.replace("/dashboard")
+    }
+  }, [session])
 
   const onSubmitRegister = handleSubmit(async (data) => {
-    console.log(data)
     const response = await signIn("credentials", {
-      username: data.username,
+      userName: data.userName,
       password: data.password,
       redirect: false,
     })
-    console.log(response)
 
     if (response?.error) {
       setPasswordError("No matching credentials")
-    } else {
-      router.push("/dashboard")
-      router.refresh()
     }
   })
 
@@ -61,10 +57,9 @@ export default function Login() {
             <Label className=" py-8">
               Username
               <Input
-                {...register("username", { required: true })}
-                className="w-full"
-                name="username"
-                type="username"
+                {...register("userName", { required: true })}
+                name="userName"
+                type="userName"
               />
             </Label>
 
@@ -72,7 +67,6 @@ export default function Login() {
               Password
               <Input
                 {...register("password", { required: true })}
-                className="w-full"
                 name="password"
                 type="password"
               />
@@ -87,13 +81,16 @@ export default function Login() {
             </div>
           </form>
         </div>
-      </div>
 
-      <div className="absolute bottom-3 right-0 left-0 flex justify-center items-center">
-        <p className="mr-5">Don't have an account?</p>
-        <Link href="/auth/register" className={buttonVariants()}>
-          Register <ArrowRight className="w-5" />
-        </Link>
+        <div className="flex text-center mt-2">
+          <p>Don't have an account?</p>
+          <Link
+            href="/auth/register"
+            className={`px-3 text-sky-400 hover:underline`}
+          >
+            Register
+          </Link>
+        </div>
       </div>
     </div>
   )

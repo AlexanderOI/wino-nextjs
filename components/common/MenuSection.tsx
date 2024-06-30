@@ -12,7 +12,7 @@ export const MenuSection = ({ title, children }: PropsMenuSection) => {
     <>
       {asideResposive.temp ? (
         <div className="relative">
-          <div className="text-sky-600 uppercase font-semibold text-sm py-2 px-5">
+          <div className="text-sky-600 uppercase font-semibold text-sm pt-1 px-3">
             <p className="">{title}</p>
           </div>
           <ul className="p-2">{children}</ul>

@@ -80,3 +80,42 @@
     @apply bg-background text-foreground;
   }
 }
+
+.per-outline-none {
+  outline: none;
+}
+
+
+input:focus {
+  @apply outline-none;
+}
+
+.btn {
+  @apply bg-rose-500 text-white py-2 px-6 mt-4 rounded-full shadow-lg shadow-rose-200;
+}
+
+.card {
+  @apply shadow-md rounded-md;
+}
+
+::-webkit-scrollbar {
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsla(0, 0%, 100%, .1);
+}
+
+::-webkit-scrollbar-thumb {
+  --tw-border-opacity: 1;
+  background-color: rgba(217, 217, 227, .8);
+  border-color: rgba(255, 255, 255);
+  border-radius: 9999px;
+  border-width: 1px;
+}
+
+.icon-small svg {
+  width: 20px;
+  height: 20px;
+}

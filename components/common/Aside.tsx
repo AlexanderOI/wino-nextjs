@@ -29,8 +29,8 @@ export function Aside({
     <aside
       id="aside-resposive"
       className={`${
-        asideResposive.temp ? "w-72" : "w-[74px]"
-      } dark:bg-dark-800 border-r sticky h-full p-3 shadow-lg overflow-hidden transition-[width] duration-500 ease-in-out hover:w-72`}
+        asideResposive.temp ? "w-64" : "w-[74px]"
+      } dark:bg-dark-800 border-r sticky h-full p-3 shadow-lg overflow-hidden transition-[width] duration-500 ease-in-out hover:w-64`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

@@ -23,6 +23,7 @@ export function HeaderNav() {
 
   const { data: session } = useSession()
   if (!session) return null
+  console.log(session)
 
   return (
     <header className=" h-20 p-4 dark:bg-dark-800">
@@ -47,8 +48,8 @@ export function HeaderNav() {
                     alt=""
                   />
                   <div className="flex flex-col">
-                    <span>Su Endren</span>
-                    <span>Role</span>
+                    <span>{session.user.name}</span>
+                    <span>{session.user.userName}</span>
                   </div>
                 </div>
               </DropdownMenuTrigger>

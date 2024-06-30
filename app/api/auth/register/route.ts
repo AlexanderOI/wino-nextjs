@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 
 interface FormInputs {
-  username: string
+  userName: string
   email: string
   password: string
   confirmPassword: string
@@ -15,8 +15,8 @@ export async function POST(request: NextRequest) {
       {
         method: "POST",
         body: JSON.stringify({
-          name: data.username,
-          username: data.username,
+          name: data.userName,
+          userName: data.userName,
           email: data.email,
           password: data.password,
         }),
@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
     const datas = await res.json()
 
     const parsedErrors = parseValidationErrors(datas.message)
-    console.log(parsedErrors)
     return NextResponse.json(parsedErrors, { status: 400 })
   } catch (error) {
     return NextResponse.json(false, { status: 400 })

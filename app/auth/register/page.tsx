@@ -11,7 +11,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface FormErrors {
-  username: string[]
+  userName: string[]
   email: string[]
   password: string[]
   confirmPassword: string[]
@@ -21,7 +21,7 @@ export default function Register() {
   const router = useRouter()
   const { data: session } = useSession()
   const [formErrors, setFormErrors] = useState<FormErrors>({
-    username: [],
+    userName: [],
     email: [],
     password: [],
     confirmPassword: [],
@@ -35,7 +35,6 @@ export default function Register() {
 
   if (session) {
     router.replace("/dashboard")
-    return null
   }
 
   const onSubmitRegister = handleSubmit(async (data) => {
@@ -49,7 +48,6 @@ export default function Register() {
       router.push("/auth/login")
     } else {
       const responseErrors: FormErrors = await response.json()
-      console.log(responseErrors)
       setFormErrors(responseErrors)
     }
   })
@@ -76,12 +74,11 @@ export default function Register() {
               <Label>
                 Username
                 <Input
-                  {...register("username", { required: true })}
-                  className="w-full"
-                  name="username"
-                  type="username"
+                  {...register("userName", { required: true })}
+                  name="userName"
+                  type="userName"
                 />
-                <FormError errors={formErrors.username} />
+                <FormError errors={formErrors.userName} />
               </Label>
             </div>
 
@@ -90,7 +87,6 @@ export default function Register() {
                 Email
                 <Input
                   {...register("email", { required: true })}
-                  className="w-full"
                   name="email"
                   type="email"
                 />
@@ -103,7 +99,6 @@ export default function Register() {
                 Password
                 <Input
                   {...register("password", { required: true })}
-                  className="w-full"
                   name="password"
                   type="password"
                 />
@@ -116,7 +111,6 @@ export default function Register() {
                 Confirm Password
                 <Input
                   {...register("confirmPassword", { required: true })}
-                  className="w-full"
                   name="confirmPassword"
                   type="password"
                 />
@@ -125,17 +119,20 @@ export default function Register() {
             </div>
 
             <div>
-              <Button className="w-full mt-4">Register</Button>
+              <Button className="w-full">Register</Button>
             </div>
           </form>
         </div>
-      </div>
 
-      <div className="absolute bottom-3 right-0 left-0 flex justify-center items-center">
-        <p className="mr-5">Already registered?</p>
-        <Link href="/auth/login" className={buttonVariants()}>
-          Sign in <ArrowRight className="w-5" />
-        </Link>
+        <div className="flex text-center mt-2">
+          <p>Already registered?</p>
+          <Link
+            href="/auth/login"
+            className={`px-3 text-sky-400 hover:underline`}
+          >
+            Sign in
+          </Link>
+        </div>
       </div>
     </div>
   )
