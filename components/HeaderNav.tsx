@@ -23,7 +23,6 @@ export function HeaderNav() {
 
   const { data: session } = useSession()
   if (!session) return null
-  console.log(session)
 
   return (
     <header className=" h-20 p-4 dark:bg-dark-800">

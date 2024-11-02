@@ -109,7 +109,7 @@ export const MultiSelect = ({
 
   return (
     <div
-      className={`bg-background border rounded-md relative text-xs mb-5 hover:border-zinc-200 ${
+      className={`bg-background border rounded-md relative text-xs mb-5 hover:border-zinc-200 mt-1 ${
         menuOpen && "border-zinc-200"
       }`}
     >

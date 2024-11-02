@@ -16,6 +16,7 @@ type UserInterface = {
   lang: string
   roleType: string
   permission: string[]
+  companyPersonalId: number
 }
 
 interface TokenInterface {

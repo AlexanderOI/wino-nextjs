@@ -16,7 +16,7 @@ export const MenuItem = ({ href, Icon, children }: PropsMenuItem) => {
       {asideResposive.temp ? (
         <Link
           href={href}
-          className="hover:text-blue-300 text-sm flex items-center gap-x-3 "
+          className="hover:text-blue-300 text-sm flex items-center gap-x-3 mt-2"
         >
           <div className="icon-small">{Icon}</div>
           {children}
