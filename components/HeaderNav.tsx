@@ -1,10 +1,8 @@
 "use client"
 import { signOut, useSession } from "next-auth/react"
-import { Profile } from "./common/Profile"
 import { SelectLang } from "./common/SelectLang"
 import { useAsideContext } from "@/context/AsideResponsiveProvider"
 import { Menu } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,28 +11,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
+import Link from "next/link"
+import { SidebarTrigger } from "./ui/sidebar"
 
 export function HeaderNav() {
-  const { asideResposive, setAsideResposive } = useAsideContext()
-
   const handleClickAsideResposive = () => {
-    setAsideResposive((prev) => ({ temp: !prev.temp, perm: !prev.perm }))
+    console.log("hola")
   }
 
   const { data: session } = useSession()
   if (!session) return null
 
   return (
-    <header className=" h-20 p-4 dark:bg-dark-800">
+    <header className="h-16 p-4 dark:bg-dark-800">
       <nav className="flex justify-between items-center w-full h-full">
         <div className="flex items-center justify-center h-full gap-5">
-          <button
-            className="h-8 w-8 rounded-full p-1"
-            onClick={handleClickAsideResposive}
-          >
-            <Menu />
-          </button>
-          <SelectLang />
+          <SidebarTrigger />
+          {/* <SelectLang /> */}
         </div>
         <div className="flex items-center pr-2">
           <div className="relative ml-3">
@@ -55,8 +48,9 @@ export function HeaderNav() {
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Your Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href={"/profile"}>Profile</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => signOut()}>
                   Sign out
                 </DropdownMenuItem>

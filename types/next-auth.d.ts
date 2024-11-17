@@ -1,25 +1,45 @@
-import "next-auth"
+import NextAuth from "next-auth"
 
 declare module "next-auth" {
   interface Session {
-    user: UserInterface
-    token: TokenInterface
+    user: {
+      id: number
+      name: string
+      userName: string
+      email: string
+      profile: string
+      lang: string
+      roleType: string
+      permission: string[]
+      companyId: number
+    }
+    backendTokens: {
+      accessToken: string
+      refreshToken: string
+      expiresIn: number
+    }
   }
 }
 
-type UserInterface = {
-  id: number
-  name: string
-  userName: string
-  email: string
-  profile: string
-  lang: string
-  roleType: string
-  permission: string[]
-  companyPersonalId: number
-}
+import { JWT } from "next-auth/jwt"
 
-interface TokenInterface {
-  user: UserInterface
-  token: string
+declare module "next-auth/jwt" {
+  interface JWT {
+    user: {
+      id: number
+      name: string
+      userName: string
+      email: string
+      profile: string
+      lang: string
+      roleType: string
+      permission: string[]
+      companyId: number
+    }
+    backendTokens: {
+      accessToken: string
+      refreshToken: string
+      expiresIn: number
+    }
+  }
 }

@@ -59,7 +59,7 @@ export function AsideResposive() {
         </MenuSection>
 
         <MenuSection title="User Management">
-          <MenuItem href="/" Icon={<Users />}>
+          <MenuItem href="/users" Icon={<Users />}>
             Users
           </MenuItem>
           <MenuItem href="/roles" Icon={<UserCog />}>
