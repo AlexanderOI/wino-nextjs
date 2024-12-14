@@ -3,7 +3,7 @@ export interface LayoutProp {
 }
 
 export interface Permissions {
-  id: number
+  _id: string
   name: string
   description: string
 }
@@ -11,11 +11,11 @@ export interface Permissions {
 export interface Role {
   name: string
   description: string
-  permissions: number[]
+  permissions: string[]
 }
 
 type Roles = {
-  id: number
+  _id: string
   name: string
   description: string
   createdBy: string

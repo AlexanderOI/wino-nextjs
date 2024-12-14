@@ -6,13 +6,13 @@ import { Button } from "./button"
 interface MultiSelectProps {
   placeholder: string
   name?: string
-  onChange: (value: number[]) => void
+  onChange: (value: string[]) => void
   children: ReactNode
-  defaultValue: number[]
+  defaultValue: string[]
 }
 
 export type objectSelect = {
-  key: number
+  key: string
   value: string
 }
 
@@ -34,6 +34,7 @@ export const MultiSelect = ({
 
   const filteredOptions = options.filter(
     (item) =>
+      typeof item.value === "string" &&
       item.value
         .toLocaleLowerCase()
         .includes(query.toLocaleLowerCase().trim()) &&
@@ -90,20 +91,24 @@ export const MultiSelect = ({
   }
 
   useEffect(() => {
-    const select = optionRef.current
+    if (children) {
+      const initialOptions = React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          const value = child.props.value
+          const texto = child.props.children ?? ""
+          return { key: String(value ?? ""), value: String(texto) }
+        }
+        return null
+      })?.filter(Boolean)
 
-    if (select) {
-      const initialOptions = Array.from(select.children).map((option) => {
-        const value = Number(option.getAttribute("value"))
-        const texto = option.textContent ?? ""
-        return { key: value, value: texto }
-      })
-      setOptions(initialOptions)
+      if (initialOptions) {
+        setOptions(initialOptions)
 
-      const defaultValues = initialOptions.filter((value) => {
-        return defaultValue.includes(value.key)
-      })
-      setSelected(defaultValues)
+        const defaultValues = initialOptions.filter((value) =>
+          defaultValue.includes(value.key)
+        )
+        setSelected(defaultValues)
+      }
     }
   }, [])
 

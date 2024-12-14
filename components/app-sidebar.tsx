@@ -12,6 +12,7 @@ import {
   PlusCircle,
   UserCog,
   Users,
+  Building,
 } from "lucide-react"
 
 import {
@@ -28,13 +29,18 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
+import { usePathname, useRouter } from "next/navigation"
 
-// Menu items.
 const itemsProjects = [
   {
     title: "Dashboard",
     url: "/",
     icon: Home,
+  },
+  {
+    title: "Manage Projects",
+    url: "/manage-projects",
+    icon: Settings,
   },
   {
     title: "Projects",
@@ -46,10 +52,13 @@ const itemsProjects = [
     url: "/tasks",
     icon: BedSingle,
   },
+]
+
+const itemsCompany = [
   {
-    title: "Manage Projects",
-    url: "/manage-projects",
-    icon: Settings,
+    title: "Company",
+    url: "/company",
+    icon: Building,
   },
 ]
 
@@ -70,7 +79,7 @@ export function AppSidebar() {
   const { open } = useSidebar()
   const { data: session } = useSession()
 
-  if (!session) return null
+  const pathname = usePathname()
 
   return (
     <Sidebar collapsible="icon">
@@ -80,20 +89,44 @@ export function AppSidebar() {
             className={`flex justify-center items-center border-b-2 h-14
             ${open ? "text-4xl" : " text-sm"}`}
           >
-            <span className=" text-sky-700">{"<"}</span>
+            <span className=" text-purple-light">{"<"}</span>
             WINO
-            <span className=" text-sky-700">{"/>"}</span>
+            <span className=" text-purple-light">{"/>"}</span>
           </div>
         </SidebarHeader>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Workspace: Personal</SidebarGroupLabel>
+          <SidebarGroupLabel>Workspace: {session?.user.companyName}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {itemsProjects.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                    <Link
+                      href={item.url}
+                      className={pathname === item.url ? "bg-purple-deep" : ""}
+                    >
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Company Management</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {itemsCompany.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      href={item.url}
+                      className={pathname === item.url ? "bg-purple-deep" : ""}
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
@@ -111,7 +144,10 @@ export function AppSidebar() {
               {itemsRoles.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                    <Link
+                      href={item.url}
+                      className={pathname === item.url ? "bg-purple-deep" : ""}
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
