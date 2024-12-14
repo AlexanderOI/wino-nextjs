@@ -98,11 +98,13 @@
     --sidebar-border: 240 3.7% 15.9%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --purple-light: 263, 33%, 34%;
   }
 }
 
 .bg-a {
-  background-color: #09132f
+  background-color: #09132f;
 }
 
 @layer base {
@@ -118,7 +120,6 @@
 .per-outline-none {
   outline: none;
 }
-
 
 input:focus {
   @apply outline-none;
@@ -138,12 +139,12 @@ input:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: hsla(0, 0%, 100%, .1);
+  background-color: hsla(0, 0%, 100%, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
   --tw-border-opacity: 1;
-  background-color: rgba(217, 217, 227, .8);
+  background-color: rgba(217, 217, 227, 0.8);
   border-color: rgba(255, 255, 255);
   border-radius: 9999px;
   border-width: 1px;

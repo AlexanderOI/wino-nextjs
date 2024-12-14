@@ -101,6 +101,7 @@ export default function Register() {
                   {...register("password", { required: true })}
                   name="password"
                   type="password"
+                  autoComplete="off"
                 />
                 <FormError errors={formErrors.password} />
               </Label>
@@ -113,6 +114,7 @@ export default function Register() {
                   {...register("confirmPassword", { required: true })}
                   name="confirmPassword"
                   type="password"
+                  autoComplete="off"
                 />
                 <FormError errors={formErrors.confirmPassword} />
               </Label>
@@ -126,10 +128,7 @@ export default function Register() {
 
         <div className="flex text-center mt-2">
           <p>Already registered?</p>
-          <Link
-            href="/auth/login"
-            className={`px-3 text-sky-400 hover:underline`}
-          >
+          <Link href="/auth/login" className={`px-3 text-sky-400 hover:underline`}>
             Sign in
           </Link>
         </div>

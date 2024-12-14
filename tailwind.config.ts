@@ -6,7 +6,7 @@ const config = {
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
+    "./features/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -26,6 +26,8 @@ const config = {
         "dark-800": "#13161F",
         "dark-900": "#0B0A0F",
         "input-500": "#09132f",
+        "purple-deep": "hsl(var(--sidebar-accent))",
+        "purple-light": "hsl(var(--purple-light))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -1,8 +1,7 @@
 "use client"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ArrowRight } from "lucide-react"
 import { signIn, useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -23,6 +22,7 @@ export default function Login() {
   useEffect(() => {
     if (session) {
       router.replace("/dashboard")
+      router.refresh()
     }
   }, [session])
 
@@ -47,9 +47,7 @@ export default function Login() {
             WINO
             <span className=" text-sky-700">/{">"}</span>
           </div>
-          <h2 className="text-center text-2xl leading-9 tracking-tight">
-            Login
-          </h2>
+          <h2 className="text-center text-2xl leading-9 tracking-tight">Login</h2>
         </div>
 
         <div className="mt-5 w-full max-w-96">
@@ -69,12 +67,11 @@ export default function Login() {
                 {...register("password", { required: true })}
                 name="password"
                 type="password"
+                autoComplete="off"
               />
             </Label>
 
-            {passwordError && (
-              <span className="text-red-500">{passwordError}</span>
-            )}
+            {passwordError && <span className="text-red-500">{passwordError}</span>}
 
             <div>
               <Button className="w-full mt-4">Login</Button>
@@ -84,10 +81,7 @@ export default function Login() {
 
         <div className="flex text-center mt-2">
           <p>Don't have an account?</p>
-          <Link
-            href="/auth/register"
-            className={`px-3 text-sky-400 hover:underline`}
-          >
+          <Link href="/auth/register" className={`px-3 text-sky-400 hover:underline`}>
             Register
           </Link>
         </div>
