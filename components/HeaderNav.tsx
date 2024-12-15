@@ -1,8 +1,10 @@
 "use client"
+
+import Link from "next/link"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
-import { SelectLang } from "./common/SelectLang"
-import { useAsideContext } from "@/context/AsideResponsiveProvider"
-import { Menu } from "lucide-react"
+import apiClient from "@/utils/api-client"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,38 +12,90 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
-import Link from "next/link"
+} from "@/components/ui/dropdown-menu"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+} from "@/components/ui/select"
 import { SidebarTrigger } from "./ui/sidebar"
+import { Company, useCompanyStore } from "@/stores/company.store"
+import { Button } from "./ui/button"
+import { BACKEND_URL } from "@/constants/routes"
+import { refreshToken } from "@/features/auth/actions/auth-actions"
 
-export function HeaderNav() {
-  const handleClickAsideResposive = () => {
-    console.log("hola")
+export function HeaderNav({ companiesData }: { companiesData: Company[] }) {
+  const { data: session, update } = useSession()
+  const router = useRouter()
+
+  const companies = useCompanyStore((state) => state.companies)
+  const setCompanies = useCompanyStore((state) => state.setCompanies)
+
+  useEffect(() => {
+    companiesData.forEach((company) => {
+      setCompanies(company)
+    })
+  }, [companiesData, setCompanies])
+
+  const handleCompanyChange = async (value: string) => {
+    const selectedCompany = companies[value]
+
+    const response = await apiClient.get(
+      `user/change-current-company/${selectedCompany._id}`
+    )
+
+    if (response.status === 200) {
+      const newAccessToken = await refreshToken()
+
+      await update({
+        user: {
+          ...session?.user,
+          companyId: selectedCompany._id,
+          companyName: selectedCompany.name,
+          companyAddress: selectedCompany.address,
+        },
+        backendTokens: newAccessToken,
+      })
+
+      router.refresh()
+    }
   }
-
-  const { data: session } = useSession()
-  if (!session) return null
 
   return (
     <header className="h-16 p-4 dark:bg-dark-800">
       <nav className="flex justify-between items-center w-full h-full">
         <div className="flex items-center justify-center h-full gap-5">
           <SidebarTrigger />
-          {/* <SelectLang /> */}
+          <Select onValueChange={handleCompanyChange} value={session?.user.companyId}>
+            <SelectTrigger className="bg-purple-deep border-none">
+              <SelectValue placeholder="Select Company" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Companies</SelectLabel>
+                {Object.values(companies).map((comp) => (
+                  <SelectItem key={comp._id} value={comp._id}>
+                    {comp.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
+
         <div className="flex items-center pr-2">
           <div className="relative ml-3">
             <DropdownMenu>
               <DropdownMenuTrigger className="text-left">
                 <div className="flex items-center text-sm cursor-pointer">
-                  <img
-                    className="h-8 mx-2 w-8 rounded-full"
-                    src="/avatar.png"
-                    alt=""
-                  />
+                  <img className="h-8 mx-2 w-8 rounded-full" src="/avatar.png" alt="" />
                   <div className="flex flex-col">
-                    <span>{session.user.name}</span>
-                    <span>{session.user.userName}</span>
+                    <span>{session?.user.name}</span>
+                    <span>{session?.user.userName}</span>
                   </div>
                 </div>
               </DropdownMenuTrigger>
@@ -51,9 +105,7 @@ export function HeaderNav() {
                 <DropdownMenuItem>
                   <Link href={"/profile"}>Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => signOut()}>
-                  Sign out
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut()}>Sign out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
