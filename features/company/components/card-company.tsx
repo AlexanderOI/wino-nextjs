@@ -37,15 +37,15 @@ export async function CardCompany({ companies, title }: Props) {
               </div>
 
               <div className="flex gap-2 flex-col">
-                {!company.isMain && (
-                  <DialogCompany id={company._id}>
-                    <ButtonEdit />
-                  </DialogCompany>
-                )}
+                <DialogCompany id={company._id}>
+                  <ButtonEdit />
+                </DialogCompany>
 
-                <DialogDelete id={company._id} url={`/company`}>
-                  <ButtonDelete />
-                </DialogDelete>
+                {!company.isMain && (
+                  <DialogDelete id={company._id} url={`/company`}>
+                    <ButtonDelete />
+                  </DialogDelete>
+                )}
               </div>
             </CardContent>
           </Card>

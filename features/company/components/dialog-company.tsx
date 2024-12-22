@@ -45,7 +45,7 @@ export function DialogCompany({ children, id }: Props) {
                     Name
                     <Input
                       name="name"
-                      value={company.name}
+                      value={company.name || ""}
                       onChange={handleInputChange}
                     />
                   </Label>
@@ -54,7 +54,7 @@ export function DialogCompany({ children, id }: Props) {
                     Address
                     <Input
                       name="address"
-                      value={company.address}
+                      value={company.address || ""}
                       onChange={handleInputChange}
                     />
                   </Label>

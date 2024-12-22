@@ -39,11 +39,10 @@ export function useCompanyDialog(id?: string) {
       let newData
       if (id) {
         newData = await apiClient.patch<Company>(`${COMPANY_URL}/${id}`, company)
-        console.log("newData", newData.data)
       } else {
         newData = await apiClient.post<Company>(COMPANY_URL, company)
       }
-      setCompanies([newData.data])
+      setCompanies(newData.data)
       setCompany({ name: "", address: "" })
       onClose()
 

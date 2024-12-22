@@ -51,7 +51,6 @@ export function useRoleDialog(id?: string) {
     try {
       if (id) {
         await apiClient.patch(`${ROLES_URL}/${id}`, role)
-        console.log("role", role, id)
       } else {
         await apiClient.post(ROLES_URL, role)
       }

@@ -14,11 +14,13 @@ export default async function CompanyPage() {
   const companies = response.data
 
   const companiesOwner = companies.filter(
-    (company) => company.owner._id === session?.user.id
+    (company) => company.owner._id === session?.user._id
   )
 
-  const companiesEmployee = companies.filter((company) =>
-    company.users.includes(session?.user.id || "")
+  const companiesEmployee = companies.filter(
+    (company) =>
+      company.users.includes(session?.user._id || "") &&
+      company.owner._id !== session?.user._id
   )
 
   return (

@@ -25,7 +25,7 @@ declare module "next-auth/jwt" {
 }
 
 interface User {
-  id: string
+  _id: string
   name: string
   userName: string
   email: string
