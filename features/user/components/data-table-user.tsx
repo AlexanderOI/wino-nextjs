@@ -17,9 +17,8 @@ const Columns = (
   const columns: ColumnDef<User>[] = [
     createColumn("id"),
     createColumn("name"),
-    createColumn("description"),
-    createColumn("createdBy", "Created By"),
-    createColumn("updatedBy", "Updated By"),
+    createColumn("userName", "Username"),
+    createColumn("email"),
     {
       accessorKey: "actions",
       header: () => <div>Action</div>,

@@ -13,13 +13,15 @@ export async function Main({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen w-full">
-      <div className="flex-1">
+    <div className="flex h-screen flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden">
         <PermissionServer>
           <HeaderNav companiesData={companiesData || []} />
         </PermissionServer>
         <main
-          className={`overflow-auto p-5 w-full ${session ? "h-screen-80" : "h-screen"}`}
+          className={`flex-1 p-5 overflow-hidden ${
+            session ? "h-[calc(100vh-5rem)]" : "h-screen"
+          }`}
         >
           {children}
         </main>

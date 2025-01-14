@@ -17,7 +17,7 @@ export default async function UsersPage() {
         <h2>User Management</h2>
 
         <DialogUser>
-          <Button className="bg-blue-400">Create User</Button>
+          <Button className="bg-purple-light text-white">Create User</Button>
         </DialogUser>
       </CardHeaderPage>
 

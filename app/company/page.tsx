@@ -29,7 +29,7 @@ export default async function CompanyPage() {
         <h2>Company Management</h2>
 
         <DialogCompany>
-          <Button className="bg-blue-400">Create Company</Button>
+          <Button className="bg-purple-light text-white">Create Company</Button>
         </DialogCompany>
       </CardHeaderPage>
 
