@@ -24,8 +24,6 @@ import {
 } from "@/components/ui/select"
 import { SidebarTrigger } from "./ui/sidebar"
 import { Company, useCompanyStore } from "@/stores/company.store"
-import { Button } from "./ui/button"
-import { BACKEND_URL } from "@/constants/routes"
 import { refreshToken } from "@/features/auth/actions/auth-actions"
 
 export function HeaderNav({ companiesData }: { companiesData: Company[] }) {

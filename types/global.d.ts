@@ -18,6 +18,17 @@ type Roles = {
   _id: string
   name: string
   description: string
-  createdBy: string
-  updatedBy: string
+  permissions: string[]
+}
+
+export type Projects = {
+  _id: string
+  name: string
+  description: string
+  status: string
+  startDate: Date
+  endDate: Date
+  owner: string
+  client: string
+  usersTeam: string[]
 }

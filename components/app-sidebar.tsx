@@ -13,12 +13,17 @@ import {
   UserCog,
   Users,
   Building,
+  LucideBoxSelect,
+  FolderKanban,
+  FolderOpenDot,
+  FolderRoot,
 } from "lucide-react"
 
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -31,7 +36,7 @@ import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { usePathname, useRouter } from "next/navigation"
 
-const itemsProjects = [
+const itemsWorkspace = [
   {
     title: "Dashboard",
     url: "/",
@@ -41,16 +46,6 @@ const itemsProjects = [
     title: "Manage Projects",
     url: "/manage-projects",
     icon: Settings,
-  },
-  {
-    title: "Projects",
-    url: "/projects",
-    icon: Badge,
-  },
-  {
-    title: "Tasks",
-    url: "/tasks",
-    icon: BedSingle,
   },
 ]
 
@@ -72,6 +67,19 @@ const itemsRoles = [
     title: "Users",
     url: "/users",
     icon: Users,
+  },
+]
+
+const itemsProjects = [
+  {
+    title: "Projects",
+    url: "/projects",
+    icon: FolderOpenDot,
+  },
+  {
+    title: "Tasks",
+    url: "/tasks",
+    icon: FolderKanban,
   },
 ]
 
@@ -97,6 +105,31 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel>Workspace: {session?.user.companyName}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {itemsWorkspace.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      href={item.url}
+                      className={pathname === item.url ? "bg-purple-deep" : ""}
+                    >
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Projects</SidebarGroupLabel>
+          <SidebarGroupAction title="Select Project">
+            <FolderRoot /> <span className="sr-only">Select Project</span>
+          </SidebarGroupAction>
+
           <SidebarGroupContent>
             <SidebarMenu>
               {itemsProjects.map((item) => (
