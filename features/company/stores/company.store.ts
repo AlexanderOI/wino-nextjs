@@ -1,19 +1,5 @@
 import { create } from "zustand"
-
-export interface UserCompany {
-  _id: string
-  name: string
-}
-
-export interface Company {
-  _id: string
-  name: string
-  address: string
-  owner: UserCompany
-  users: string[]
-  roles: string[]
-  isMain: boolean
-}
+import { Company } from "../interfaces/company.inteface"
 
 interface CompanyStore {
   companies: { [key: string]: Company }
