@@ -23,7 +23,7 @@ import {
   SelectGroup,
 } from "@/components/ui/select"
 import { SidebarTrigger } from "./ui/sidebar"
-import { Company, useCompanyStore } from "@/stores/company.store"
+import { Company, useCompanyStore } from "@/features/company/stores/company.store"
 import { refreshToken } from "@/features/auth/actions/auth-actions"
 
 export function HeaderNav({ companiesData }: { companiesData: Company[] }) {
