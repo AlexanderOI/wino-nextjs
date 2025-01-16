@@ -35,6 +35,9 @@ import {
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { usePathname, useRouter } from "next/navigation"
+import { SelectProjectDialog } from "@/features/project/components/select-project-dialog"
+import { useProjectStore } from "@/features/project/store/project.store"
+import { cn } from "@/lib/utils"
 
 const itemsWorkspace = [
   {
@@ -73,7 +76,7 @@ const itemsRoles = [
 const itemsProjects = [
   {
     title: "Projects",
-    url: "/projects",
+    url: "/project",
     icon: FolderOpenDot,
   },
   {
@@ -86,6 +89,7 @@ const itemsProjects = [
 export function AppSidebar() {
   const { open } = useSidebar()
   const { data: session } = useSession()
+  const project = useProjectStore((state) => state.project)
 
   const pathname = usePathname()
 
@@ -125,23 +129,35 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Projects</SidebarGroupLabel>
+          <SidebarGroupLabel className="truncate w-10/12">
+            Projects: {project?.name}
+          </SidebarGroupLabel>
           <SidebarGroupAction title="Select Project">
-            <FolderRoot /> <span className="sr-only">Select Project</span>
+            <SelectProjectDialog>
+              <FolderRoot width={16} />
+            </SelectProjectDialog>
           </SidebarGroupAction>
 
           <SidebarGroupContent>
             <SidebarMenu>
               {itemsProjects.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={item.url}
-                      className={pathname === item.url ? "bg-purple-deep" : ""}
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
+                  <SidebarMenuButton
+                    className={cn(project ? "" : "hover:bg-slate-600")}
+                    disabled={!project?._id}
+                    asChild
+                  >
+                    {project?._id ? (
+                      <Link
+                        href={`${item.url}/${project?._id}`}
+                        className={pathname === item.url ? "bg-purple-deep" : ""}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    ) : (
+                      <span className="text-gray-500">{item.title}</span>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

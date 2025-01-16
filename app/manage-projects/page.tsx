@@ -6,6 +6,7 @@ import DataTableProjects from "@/features/manage-projects/components/data-table-
 import apiClientServer from "@/utils/api-client-server"
 import { Projects } from "@/types/global"
 import { DialogProject } from "@/features/manage-projects/components/dialog-project"
+import { TypographyH1 } from "@/components/ui/typography"
 
 export default async function ManageProjectsPage() {
   const response = await apiClientServer.get<Projects[]>(PROJECTS_URL)
@@ -14,7 +15,7 @@ export default async function ManageProjectsPage() {
   return (
     <div className="h-full">
       <CardHeaderPage>
-        <h2>Manage Projects</h2>
+        <TypographyH1>Manage Projects</TypographyH1>
 
         <DialogProject>
           <Button className="bg-purple-light text-white">Create Project</Button>

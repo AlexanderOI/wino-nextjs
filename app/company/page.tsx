@@ -6,6 +6,7 @@ import { getSession } from "@/utils/get-session"
 import apiClientServer from "@/utils/api-client-server"
 import { DialogCompany } from "@/features/company/components/dialog-company"
 import { Button } from "@/components/ui/button"
+import { TypographyH1 } from "@/components/ui/typography"
 
 export default async function CompanyPage() {
   const session = await getSession()
@@ -26,7 +27,7 @@ export default async function CompanyPage() {
   return (
     <div className="h-full">
       <CardHeaderPage>
-        <h2>Company Management</h2>
+        <TypographyH1>Company Management</TypographyH1>
 
         <DialogCompany>
           <Button className="bg-purple-light text-white">Create Company</Button>
