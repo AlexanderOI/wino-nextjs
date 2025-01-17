@@ -6,6 +6,7 @@ import { CardHeaderPage } from "@/components/common/card-header-page"
 import DataTableRoles from "@/features/roles/components/data-table-roles"
 import apiClientServer from "@/utils/api-client-server"
 import { DialogRole } from "@/features/roles/components/dialog-role"
+import { TypographyH1 } from "@/components/ui/typography"
 
 export default async function RolesPage() {
   const response = await apiClientServer.get<Roles[]>(ROLES_URL)
@@ -16,7 +17,7 @@ export default async function RolesPage() {
   return (
     <div className="h-full">
       <CardHeaderPage>
-        <h2>Roles and Permissions Management</h2>
+        <TypographyH1>Roles and Permissions Management</TypographyH1>
 
         <DialogRole>
           <Button className="bg-purple-light text-white">Create Role</Button>
