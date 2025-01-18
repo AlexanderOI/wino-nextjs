@@ -6,16 +6,18 @@ import { CSS } from "@dnd-kit/utilities"
 import { Input } from "@/components/ui/input"
 import { Task } from "@/app/tasks/[projectId]/page"
 import { cn } from "@/lib/utils"
+import { Trash2 } from "lucide-react"
 
 interface TaskItemProps {
   task: Task
   updateTask: (newContent: string) => void
+  deleteTask: (taskId: string) => void
 }
 
-export default function TaskItem({ task, updateTask }: TaskItemProps) {
+export default function TaskItem({ task, updateTask, deleteTask }: TaskItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState(task.name)
-
+  const [isHovering, setIsHovering] = useState(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({
       id: task._id,
@@ -44,6 +46,8 @@ export default function TaskItem({ task, updateTask }: TaskItemProps) {
         "bg-purple-deep p-3 rounded shadow transition-all cursor-move",
         isDragging && "opacity-30"
       )}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
     >
       {isEditing ? (
         <form
@@ -69,15 +73,16 @@ export default function TaskItem({ task, updateTask }: TaskItemProps) {
         </form>
       ) : (
         <div
-          className="h-auto overflow-hidden content-"
-          style={{
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-          }}
+          className="h-auto overflow-hidden flex justify-between items-center"
           onClick={() => setIsEditing(true)}
         >
           <p className="p-0 m-0">{task.name}</p>
+
+          {isHovering && (
+            <button onClick={() => deleteTask(task._id)}>
+              <Trash2 size={20} />
+            </button>
+          )}
         </div>
       )}
     </div>

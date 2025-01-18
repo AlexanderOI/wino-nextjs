@@ -12,6 +12,7 @@ interface TaskStore {
   deleteColumn: (columnId: string) => Promise<void>
   addTask: (columnId: string, name: string) => Promise<void>
   updateTask: (columnId: string, taskId: string, newName: string) => Promise<void>
+  deleteTask: (taskId: string) => Promise<void>
   reorderTasks: (columnId: string, tasks: Task[]) => Promise<void>
   moveTask: (
     activeTaskId: string,
@@ -122,6 +123,18 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         col.id === columnId ? { ...col, tasks: newTasks } : col
       ),
     }))
+  },
+
+  deleteTask: async (taskId: string) => {
+    const response = await apiClient.delete<Task>(`/tasks/${taskId}`)
+    if (response.status === 200) {
+      set((state) => ({
+        columns: state.columns.map((col) => ({
+          ...col,
+          tasks: col.tasks.filter((task) => task._id !== taskId),
+        })),
+      }))
+    }
   },
 
   moveTask: async (

@@ -15,7 +15,7 @@ interface TaskColumnProps {
 }
 
 export default function TaskColumn({ column }: TaskColumnProps) {
-  const { updateColumnTitle, addTask, updateTask } = useTaskStore()
+  const { updateColumnTitle, addTask, updateTask, deleteTask } = useTaskStore()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [titleInput, setTitleInput] = useState(column.name)
@@ -47,18 +47,6 @@ export default function TaskColumn({ column }: TaskColumnProps) {
     }
   }, [isAddingTask])
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleInput(e.target.value)
-  }
-
-  const handleTitleBlur = () => {
-    setIsEditingTitle(false)
-  }
-
-  const handleTitleClick = () => {
-    setIsEditingTitle(true)
-  }
-
   return (
     <div
       className={cn(
@@ -73,13 +61,16 @@ export default function TaskColumn({ column }: TaskColumnProps) {
             className="ml-5 w-10/12 relative top-[-12px]"
             type="text"
             value={titleInput}
-            onChange={handleTitleChange}
-            onBlur={handleTitleBlur}
+            onChange={(e) => setTitleInput(e.target.value)}
+            onBlur={() => setIsEditingTitle(false)}
             autoFocus
           />
         </form>
       ) : (
-        <h2 className="font-semibold pl-5 mb-4 cursor-text" onClick={handleTitleClick}>
+        <h2
+          className="font-semibold pl-5 mb-4 cursor-text"
+          onClick={() => setIsEditingTitle(true)}
+        >
           {column.name}
         </h2>
       )}
@@ -93,6 +84,7 @@ export default function TaskColumn({ column }: TaskColumnProps) {
               key={task._id}
               task={task}
               updateTask={(newContent) => updateTask(column.id, task._id, newContent)}
+              deleteTask={deleteTask}
             />
           ))}
         </SortableContext>

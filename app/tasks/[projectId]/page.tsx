@@ -105,12 +105,15 @@ export default function TasksPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const formData = new FormData(event.target as HTMLFormElement)
+    const form = event.target as HTMLFormElement
+    const formData = new FormData(form)
     const title = formData.get("title") as string
 
     if (!title) return
 
     addColumn(title)
+
+    form.reset()
   }
 
   return (
