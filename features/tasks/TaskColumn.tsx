@@ -8,20 +8,15 @@ import { Input } from "@/components/ui/input"
 import { Plus } from "lucide-react"
 import { ColumnData } from "@/app/tasks/[projectId]/page"
 import { cn } from "@/lib/utils"
+import { useTaskStore } from "./store/useTaskStore"
 
 interface TaskColumnProps {
   column: ColumnData
-  updateTask: (columnId: string, taskId: string, newContent: string) => void
-  updateColumnTitle: (columnId: string, newTitle: string) => void
-  addTaskToColumn: (columnId: string, content: string) => void
 }
 
-export default function TaskColumn({
-  column,
-  updateTask,
-  updateColumnTitle,
-  addTaskToColumn,
-}: TaskColumnProps) {
+export default function TaskColumn({ column }: TaskColumnProps) {
+  const { updateColumnTitle, addTask, updateTask } = useTaskStore()
+
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [titleInput, setTitleInput] = useState(column.name)
   const [isAddingTask, setIsAddingTask] = useState(false)
@@ -40,7 +35,7 @@ export default function TaskColumn({
 
   const handleAddTask = () => {
     if (newTaskContent.trim()) {
-      addTaskToColumn(column.id, newTaskContent.trim())
+      addTask(column.id, newTaskContent.trim())
       setNewTaskContent("")
     }
     setIsAddingTask(false)
@@ -93,7 +88,7 @@ export default function TaskColumn({
           items={column.tasks.map((task) => task._id)}
           strategy={verticalListSortingStrategy}
         >
-          {column.tasks.map((task, index) => (
+          {column.tasks.map((task) => (
             <TaskItem
               key={task._id}
               task={task}

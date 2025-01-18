@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
   DndContext,
   DragOverlay,
@@ -11,13 +11,13 @@ import {
   closestCorners,
 } from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
-import { v4 as uuidv4 } from "uuid"
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable"
 import { ColumnItem } from "@/features/tasks/ColumnItem"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import apiClient from "@/utils/api-client"
 import { useParams } from "next/navigation"
+import { useTaskStore } from "@/features/tasks/store/useTaskStore"
 
 export interface Task {
   _id: string
@@ -39,20 +39,20 @@ export interface ColumnData {
 }
 
 export default function TasksPage() {
+  const columns = useTaskStore((state) => state.columns)
+  const fetchColumns = useTaskStore((state) => state.fetchColumns)
+  const addColumn = useTaskStore((state) => state.addColumn)
+  const moveTask = useTaskStore((state) => state.moveTask)
+  const reorderTasks = useTaskStore((state) => state.reorderTasks)
+  const reorderColumns = useTaskStore((state) => state.reorderColumns)
+
   const { projectId } = useParams<{ projectId: string }>()
-  const [columns, setColumns] = useState<ColumnData[]>([])
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!projectId) return
-    const getColumns = async () => {
-      const columns = await apiClient.get(`/columns/project/${projectId}`)
-      console.log(columns.data)
-      setColumns(columns.data)
-    }
-
-    getColumns()
+    fetchColumns(projectId)
   }, [projectId])
 
   const sensors = useSensors(
@@ -74,10 +74,7 @@ export default function TasksPage() {
       const oldIndex = columns.findIndex((col) => col.id === activeId)
       const newIndex = columns.findIndex((col) => col.id === overId)
       const newColumns = arrayMove(columns, oldIndex, newIndex)
-      const newOrder = newColumns.map((col, index) => ({ id: col.id, order: index }))
-      apiClient.put(`/columns/project/${projectId}/reorder`, newOrder)
-
-      setColumns(newColumns)
+      reorderColumns(newColumns)
       return
     }
 
@@ -98,124 +95,12 @@ export default function TasksPage() {
       const newIndex = activeColumn.tasks.findIndex((task) => task._id === overId)
 
       const newTasks = arrayMove(activeColumn.tasks, oldIndex, newIndex)
-      const newOrder = newTasks.map((task, index) => ({
-        id: task._id,
-        order: index,
-      }))
-      apiClient.put(`/tasks/reorder`, newOrder)
-
-      setColumns(
-        columns.map((col) => {
-          if (col.id === activeColumn.id) {
-            return {
-              ...col,
-              tasks: newTasks,
-            }
-          }
-          return col
-        })
-      )
+      reorderTasks(activeColumn.id, newTasks)
       return
     }
 
-    setColumns(
-      columns.map((col) => {
-        if (col.id === activeColumn.id) {
-          return {
-            ...col,
-            tasks: col.tasks.filter((task) => task._id !== activeId),
-          }
-        }
-        if (col.id === overColumn.id) {
-          const overTaskIndex = col.tasks.findIndex((task) => task._id === overId)
-          const newTasks = [...col.tasks]
-
-          apiClient.patch(`/tasks/${activeTask._id}`, {
-            columnId: overColumn.id,
-          })
-
-          if (overTaskIndex === -1) {
-            newTasks.push(activeTask)
-          } else {
-            newTasks.splice(overTaskIndex, 0, activeTask)
-          }
-
-          const newOrder = newTasks.map((task, index) => ({
-            id: task._id,
-            order: index,
-          }))
-
-          apiClient.put(`/tasks/reorder`, newOrder)
-
-          return {
-            ...col,
-            tasks: newTasks,
-          }
-        }
-        return col
-      })
-    )
-
+    moveTask(activeId, overId, activeColumn.id, overColumn.id, activeTask)
     setActiveTaskId(null)
-  }
-
-  const addTaskToColumn = async (columnId: string, name: string) => {
-    const order = columns.find((col) => col.id === columnId)?.tasks.length ?? 0
-    const newTask = await apiClient.post<Task>(`/tasks`, {
-      name,
-      order,
-      columnId,
-      projectId,
-    })
-
-    if (newTask.status === 201) {
-      setColumns(
-        columns.map((col) =>
-          col.id === columnId ? { ...col, tasks: [...col.tasks, newTask.data] } : col
-        )
-      )
-    }
-  }
-
-  const updateTask = async (columnId: string, taskId: string, newName: string) => {
-    const newTask = await apiClient.patch<Task>(`/tasks/${taskId}`, {
-      name: newName,
-      columnId,
-    })
-
-    if (newTask.status === 200) {
-      setColumns(
-        columns.map((col) =>
-          col.id === columnId
-            ? {
-                ...col,
-                tasks: col.tasks.map((task) =>
-                  task._id === taskId ? { ...task, name: newName } : task
-                ),
-              }
-            : col
-        )
-      )
-    }
-  }
-
-  const updateColumnTitle = async (columnId: string, newTitle: string) => {
-    const newColumn = await apiClient.patch<ColumnData>(`/columns/${columnId}`, {
-      name: newTitle,
-    })
-
-    if (newColumn.status === 200) {
-      setColumns(
-        columns.map((col) => (col.id === columnId ? { ...col, name: newTitle } : col))
-      )
-    }
-  }
-
-  const handleDeleteColumn = async (columnId: string) => {
-    const deletedColumn = await apiClient.delete<ColumnData>(`/columns/${columnId}`)
-    if (deletedColumn.status === 200) {
-      setColumns(columns.filter((col) => col.id !== columnId))
-    }
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -225,13 +110,7 @@ export default function TasksPage() {
 
     if (!title) return
 
-    const newColumn = await apiClient.post<ColumnData>(`/columns/project/${projectId}`, {
-      name: title,
-    })
-
-    if (newColumn.status === 201) {
-      setColumns([...columns, { ...newColumn.data, id: newColumn.data.id, tasks: [] }])
-    }
+    addColumn(title)
   }
 
   return (
@@ -266,14 +145,7 @@ export default function TasksPage() {
             strategy={horizontalListSortingStrategy}
           >
             {columns.map((column) => (
-              <ColumnItem
-                key={column.id}
-                column={column}
-                updateTask={updateTask}
-                updateColumnTitle={updateColumnTitle}
-                addTaskToColumn={addTaskToColumn}
-                onDelete={handleDeleteColumn}
-              />
+              <ColumnItem key={column.id} column={column} />
             ))}
           </SortableContext>
         </div>
