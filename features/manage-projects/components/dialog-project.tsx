@@ -146,16 +146,18 @@ export function DialogProject({
                 <Label className="flex flex-col">
                   Start Date
                   <DatePicker
+                    name="startDate"
                     selected={project.startDate}
-                    onSelect={(date) => handleSelectDate(date, "startDate")}
+                    onSelect={handleSelectDate}
                   />
                 </Label>
 
                 <Label className="flex flex-col">
                   End Date
                   <DatePicker
+                    name="endDate"
                     selected={project.endDate}
-                    onSelect={(date) => handleSelectDate(date, "endDate")}
+                    onSelect={handleSelectDate}
                   />
                 </Label>
               </div>

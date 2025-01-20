@@ -21,7 +21,6 @@ export function useTeamProjectSheet(id?: string) {
 
       if (id) {
         const responseProjectTeam = await apiClient.get<Projects>(`${PROJECTS_URL}/${id}`)
-        console.log("users", responseProjectTeam.data.usersTeam)
         setUsersProjectTeam(responseProjectTeam.data.usersTeam)
       }
     } catch (error) {

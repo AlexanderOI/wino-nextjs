@@ -75,7 +75,7 @@ const itemsRoles = [
 
 const itemsProjects = [
   {
-    title: "Projects",
+    title: "Project",
     url: "/project",
     icon: FolderOpenDot,
   },
@@ -130,7 +130,7 @@ export function AppSidebar() {
 
         <SidebarGroup>
           <SidebarGroupLabel className="truncate w-10/12">
-            Projects: {project?.name}
+            Project: {project?.name}
           </SidebarGroupLabel>
           <SidebarGroupAction title="Select Project">
             <SelectProjectDialog>

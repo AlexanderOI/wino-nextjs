@@ -22,6 +22,12 @@ export function TypographyH6({ children }: { children: React.ReactNode }) {
   return <h6 className="text-xs font-bold">{children}</h6>
 }
 
-export function TypographyP({ children }: { children: React.ReactNode }) {
-  return <p className="text-base">{children}</p>
+export function TypographyP({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return <p className={`text-base ${className}`}>{children}</p>
 }

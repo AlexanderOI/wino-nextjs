@@ -12,39 +12,53 @@ import {
 } from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable"
-import { ColumnItem } from "@/features/tasks/ColumnItem"
+import { ColumnItem } from "@/features/tasks/components/board/column-item"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import apiClient from "@/utils/api-client"
 import { useParams } from "next/navigation"
-import { useTaskStore } from "@/features/tasks/store/useTaskStore"
+import { useColumnStore } from "@/features/tasks/store/column.store"
+import { User } from "@/features/user/intefaces/user.interface"
+import { useTaskStore } from "@/features/tasks/store/task.store"
+import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
 
 export interface Task {
   _id: string
   name: string
   description: string
-  columnId: string
-  assignedTo: string
+  columnId: ColumnTask
+  assignedTo?: User
   order: number
   projectId: string
+  startDate: Date
+  endDate: Date
+  createdAt: Date
+  updatedAt: Date
+  __v: number
 }
 
-export interface ColumnData {
-  id: string
+export interface ColumnTask {
+  _id: string
   name: string
-  order: number
-  projectId: string
-  isActive: boolean
+  order?: number
+  projectId?: string
+  isActive?: boolean
+}
+
+export interface ColumnData extends ColumnTask {
   tasks: Task[]
 }
 
 export default function TasksPage() {
-  const columns = useTaskStore((state) => state.columns)
-  const fetchColumns = useTaskStore((state) => state.fetchColumns)
-  const addColumn = useTaskStore((state) => state.addColumn)
-  const moveTask = useTaskStore((state) => state.moveTask)
-  const reorderTasks = useTaskStore((state) => state.reorderTasks)
-  const reorderColumns = useTaskStore((state) => state.reorderColumns)
+  const columns = useColumnStore((state) => state.columns)
+  const fetchColumns = useColumnStore((state) => state.fetchColumns)
+  const addColumn = useColumnStore((state) => state.addColumn)
+  const moveTask = useColumnStore((state) => state.moveTask)
+  const reorderTasks = useColumnStore((state) => state.reorderTasks)
+  const reorderColumns = useColumnStore((state) => state.reorderColumns)
+
+  const task = useTaskStore((state) => state.task)
+  const isDialogOpen = useTaskStore((state) => state.isDialogOpen)
+  const setIsDialogOpen = useTaskStore((state) => state.setIsDialogOpen)
 
   const { projectId } = useParams<{ projectId: string }>()
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
@@ -71,8 +85,8 @@ export default function TasksPage() {
     const overId = over.id as string
 
     if (active.data.current?.type === "column") {
-      const oldIndex = columns.findIndex((col) => col.id === activeId)
-      const newIndex = columns.findIndex((col) => col.id === overId)
+      const oldIndex = columns.findIndex((col) => col._id === activeId)
+      const newIndex = columns.findIndex((col) => col._id === overId)
       const newColumns = arrayMove(columns, oldIndex, newIndex)
       reorderColumns(newColumns)
       return
@@ -82,7 +96,7 @@ export default function TasksPage() {
       col.tasks.some((task) => task._id === activeId)
     )
     const overColumn = columns.find(
-      (col) => col.tasks.some((task) => task._id === overId) || col.id === overId
+      (col) => col.tasks.some((task) => task._id === overId) || col._id === overId
     )
 
     if (!activeColumn || !overColumn) return
@@ -90,16 +104,16 @@ export default function TasksPage() {
     const activeTask = activeColumn.tasks.find((task) => task._id === activeId)
     if (!activeTask) return
 
-    if (activeColumn.id === overColumn.id) {
+    if (activeColumn._id === overColumn._id) {
       const oldIndex = activeColumn.tasks.findIndex((task) => task._id === activeId)
       const newIndex = activeColumn.tasks.findIndex((task) => task._id === overId)
 
       const newTasks = arrayMove(activeColumn.tasks, oldIndex, newIndex)
-      reorderTasks(activeColumn.id, newTasks)
+      reorderTasks(activeColumn._id, newTasks)
       return
     }
 
-    moveTask(activeId, overId, activeColumn.id, overColumn.id, activeTask)
+    moveTask(activeId, overId, activeColumn._id, overColumn._id, activeTask)
     setActiveTaskId(null)
   }
 
@@ -144,11 +158,15 @@ export default function TasksPage() {
       >
         <div className="flex space-x-4 overflow-x-auto px-4 pb-4">
           <SortableContext
-            items={columns.map((col) => col.id)}
+            items={columns.map((col) => col._id)}
             strategy={horizontalListSortingStrategy}
           >
             {columns.map((column) => (
-              <ColumnItem key={column.id} column={column} />
+              <ColumnItem
+                key={column._id}
+                column={column}
+                setActiveTaskId={setActiveTaskId}
+              />
             ))}
           </SortableContext>
         </div>
@@ -165,6 +183,8 @@ export default function TasksPage() {
           </DragOverlay>
         )}
       </DndContext>
+
+      <TaskDialog isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} id={task?._id} />
     </div>
   )
 }

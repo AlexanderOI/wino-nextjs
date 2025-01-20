@@ -1,6 +1,6 @@
 import { HeaderNav } from "@/components/HeaderNav"
+import { Company } from "@/features/company/interfaces/company.inteface"
 import { PermissionServer } from "@/features/permission/permission-server"
-import { Company } from "@/stores/company.store"
 import apiClientServer from "@/utils/api-client-server"
 import { getSession } from "@/utils/get-session"
 
@@ -19,7 +19,7 @@ export async function Main({ children }: { children: React.ReactNode }) {
           <HeaderNav companiesData={companiesData || []} />
         </PermissionServer>
         <main
-          className={`flex-1 p-5 overflow-hidden ${
+          className={`flex-1 p-5 overflow-hidden overflow-y-auto ${
             session ? "h-[calc(100vh-5rem)]" : "h-screen"
           }`}
         >

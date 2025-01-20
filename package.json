@@ -43,7 +43,7 @@
     "react-dom": "19.0.0",
     "react-hook-form": "^7.53.2",
     "react-select": "^5.8.0",
-    "recharts": "^2.13.3",
+    "recharts": "^2.15.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.0.4",
@@ -66,5 +66,8 @@
       "@types/react": "19.0.2",
       "@types/react-dom": "19.0.2"
     }
+  },
+  "overrides": {
+    "react-is": "19.0.2"
   }
 }

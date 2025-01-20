@@ -45,9 +45,7 @@ export function SelectProjectDialog({
     const getProjects = async () => {
       const response = await apiClient.get<Project[]>("/projects")
       setProjects(response.data)
-      console.log(response.data)
     }
-    console.log("isOpen", isOpen)
     if (isOpen) getProjects()
   }, [isOpen])
 

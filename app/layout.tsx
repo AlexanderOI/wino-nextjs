@@ -8,6 +8,8 @@ import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { PermissionServer } from "@/features/permission/permission-server"
 import { Toaster } from "@/components/ui/toaster"
+import { cookies } from "next/headers"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 // const inter = Inter({ subsets: ["latin"] })
 const firaCode = Montserrat({ subsets: ["latin"] })
@@ -20,6 +22,8 @@ export const metadata: Metadata = {
 type RootLayoutProps = Readonly<{ children: React.ReactNode }>
 
 export default async function RootLayout({ children }: RootLayoutProps) {
+  const cookieStore = await cookies()
+  const isOpenSidebar = cookieStore.get("sidebar:state")?.value === "true"
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${firaCode.className} antialiased`}>
@@ -30,12 +34,14 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             enableSystem
             disableTransitionOnChange
           >
-            <SidebarProvider>
-              <PermissionServer>
-                <AppSidebar />
-              </PermissionServer>
-              <Main>{children}</Main>
-              <Toaster />
+            <SidebarProvider defaultOpen={isOpenSidebar}>
+              <TooltipProvider>
+                <PermissionServer>
+                  <AppSidebar />
+                </PermissionServer>
+                <Main>{children}</Main>
+                <Toaster />
+              </TooltipProvider>
             </SidebarProvider>
           </ThemeProvider>
         </SessionAuthProvider>
