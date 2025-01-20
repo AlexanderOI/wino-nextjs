@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { ColumnData, Task } from "@/app/tasks/[projectId]/page"
 import apiClient from "@/utils/api-client"
 
-interface TaskStore {
+interface ColumnStore {
   columns: ColumnData[]
   projectId: string
   setColumns: (columns: ColumnData[]) => void
@@ -24,14 +24,14 @@ interface TaskStore {
   reorderColumns: (newColumns: ColumnData[]) => Promise<void>
 }
 
-export const useTaskStore = create<TaskStore>((set, get) => ({
+export const useColumnStore = create<ColumnStore>((set, get) => ({
   columns: [],
   projectId: "",
   setColumns: (columns) => set({ columns }),
 
   fetchColumns: async (projectId: string) => {
     set({ projectId })
-    const response = await apiClient.get(`/columns/project/${projectId}`)
+    const response = await apiClient.get(`/columns/project/${projectId}?withTasks=true`)
     set({ columns: response.data })
   },
 
@@ -56,7 +56,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     if (response.status === 200) {
       set((state) => ({
         columns: state.columns.map((col) =>
-          col.id === columnId ? { ...col, name: newTitle } : col
+          col._id === columnId ? { ...col, name: newTitle } : col
         ),
       }))
     }
@@ -66,13 +66,13 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     const response = await apiClient.delete<ColumnData>(`/columns/${columnId}`)
     if (response.status === 200) {
       set((state) => ({
-        columns: state.columns.filter((col) => col.id !== columnId),
+        columns: state.columns.filter((col) => col._id !== columnId),
       }))
     }
   },
 
   addTask: async (columnId: string, name: string) => {
-    const order = get().columns.find((col) => col.id === columnId)?.tasks.length ?? 0
+    const order = get().columns.find((col) => col._id === columnId)?.tasks.length ?? 0
     const response = await apiClient.post<Task>("/tasks", {
       name,
       order,
@@ -83,7 +83,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     if (response.status === 201) {
       set((state) => ({
         columns: state.columns.map((col) =>
-          col.id === columnId ? { ...col, tasks: [...col.tasks, response.data] } : col
+          col._id === columnId ? { ...col, tasks: [...col.tasks, response.data] } : col
         ),
       }))
     }
@@ -98,7 +98,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     if (response.status === 200) {
       set((state) => ({
         columns: state.columns.map((col) =>
-          col.id === columnId
+          col._id === columnId
             ? {
                 ...col,
                 tasks: col.tasks.map((task) =>
@@ -120,7 +120,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
 
     set((state) => ({
       columns: state.columns.map((col) =>
-        col.id === columnId ? { ...col, tasks: newTasks } : col
+        col._id === columnId ? { ...col, tasks: newTasks } : col
       ),
     }))
   },
@@ -146,13 +146,13 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   ) => {
     set((state) => ({
       columns: state.columns.map((col) => {
-        if (col.id === activeColumnId) {
+        if (col._id === activeColumnId) {
           return {
             ...col,
             tasks: col.tasks.filter((task) => task._id !== activeTaskId),
           }
         }
-        if (col.id === overColumnId) {
+        if (col._id === overColumnId) {
           const overTaskIndex = col.tasks.findIndex((task) => task._id === overTaskId)
           const newTasks = [...col.tasks]
 
@@ -185,7 +185,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
 
   reorderColumns: async (newColumns: ColumnData[]) => {
     const newOrder = newColumns.map((col, index) => ({
-      id: col.id,
+      id: col._id,
       order: index,
     }))
     apiClient.put(`/columns/project/${get().projectId}/reorder`, newOrder)

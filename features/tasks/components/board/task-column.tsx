@@ -3,19 +3,19 @@
 import { useState, useRef, useEffect } from "react"
 import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import TaskItem from "./TaskItem"
+import TaskItem from "./task-item"
 import { Input } from "@/components/ui/input"
 import { Plus } from "lucide-react"
-import { ColumnData } from "@/app/tasks/[projectId]/page"
+import { ColumnData, Task } from "@/app/tasks/[projectId]/page"
 import { cn } from "@/lib/utils"
-import { useTaskStore } from "./store/useTaskStore"
+import { useColumnStore } from "../../store/column.store"
 
 interface TaskColumnProps {
   column: ColumnData
 }
 
 export default function TaskColumn({ column }: TaskColumnProps) {
-  const { updateColumnTitle, addTask, updateTask, deleteTask } = useTaskStore()
+  const { updateColumnTitle, addTask, updateTask, deleteTask } = useColumnStore()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [titleInput, setTitleInput] = useState(column.name)
@@ -24,18 +24,18 @@ export default function TaskColumn({ column }: TaskColumnProps) {
   const newTaskInputRef = useRef<HTMLInputElement>(null)
 
   const { isOver, setNodeRef } = useDroppable({
-    id: column.id,
+    id: column._id,
   })
 
   const handleTitleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    updateColumnTitle(column.id, titleInput)
+    updateColumnTitle(column._id, titleInput)
     setIsEditingTitle(false)
   }
 
   const handleAddTask = () => {
     if (newTaskContent.trim()) {
-      addTask(column.id, newTaskContent.trim())
+      addTask(column._id, newTaskContent.trim())
       setNewTaskContent("")
     }
     setIsAddingTask(false)
@@ -83,7 +83,7 @@ export default function TaskColumn({ column }: TaskColumnProps) {
             <TaskItem
               key={task._id}
               task={task}
-              updateTask={(newContent) => updateTask(column.id, task._id, newContent)}
+              updateTask={(newContent) => updateTask(column._id, task._id, newContent)}
               deleteTask={deleteTask}
             />
           ))}
