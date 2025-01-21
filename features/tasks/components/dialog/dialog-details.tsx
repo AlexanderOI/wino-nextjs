@@ -23,6 +23,8 @@ import { useSession } from "next-auth/react"
 import { User } from "@/features/user/intefaces/user.interface"
 import SelectSimple from "@/components/common/form/select-simple"
 import { DatePicker } from "@/components/ui/date-picker"
+import { useToast } from "@/components/ui/use-toast"
+import apiClient from "@/utils/api-client"
 
 interface Props {
   users: User[]
@@ -30,21 +32,59 @@ interface Props {
 }
 
 export default function DialogTaskDetails({ users, columns }: Props) {
+  const toast = useToast()
   const task = useTaskStore((state) => state.task)
-  const handleSelectChange = useTaskStore((state) => state.handleSelectChange)
-  const handleSelectAssignChange = useTaskStore((state) => state.handleSelectAssignChange)
-  const handleSelectDate = useTaskStore((state) => state.handleSelectDate)
+  const updateTaskField = useTaskStore((state) => state.updateTaskField)
   const { data: session } = useSession()
 
   if (!task) return null
 
-  const handleAssignClick = () => {
-    if (task.assignedTo) return
-    handleSelectAssignChange(session?.user?._id ?? "", users)
+  const handleSelectAssignChange = (value: string) => {
+    if (value === task.assignedTo?._id) return
+
+    const user = users.find((user) => user._id === value)
+    updateTaskField("assignedTo", user)
+    sendChanges("assignedTo", value)
+  }
+
+  const handleSelectColumnChange = (name: string, value: string) => {
+    const column = columns.find((column) => column._id === value)
+    updateTaskField(name, column)
+    sendChanges(name, value)
+  }
+
+  const handleSelectDateChange = (
+    name: string,
+    value: Date | undefined,
+    sendChange?: boolean
+  ) => {
+    updateTaskField(name, value)
+    if (sendChange) {
+      sendChanges(name, value)
+    }
+  }
+
+  const sendChanges = async (name: string, value: string | Date | undefined) => {
+    const response = await apiClient.patch(`/tasks/${task._id}`, {
+      [name]: value,
+    })
+
+    if (response.status === 200) {
+      toast.toast({
+        title: "Task updated successfully",
+        description: "Task updated successfully",
+      })
+    } else {
+      toast.toast({
+        title: "Failed to update task",
+        description: "Failed to update task",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
-    <div className="flex flex-col gap-2 w-4/12">
+    <div className="flex flex-col gap-2 w-5/12">
       <DialogHeader className="mb-5">
         <DialogTitle className="flex items-center gap-2">Details</DialogTitle>
       </DialogHeader>
@@ -53,9 +93,9 @@ export default function DialogTaskDetails({ users, columns }: Props) {
         <Label>Status</Label>
 
         <SelectSimple
-          name="status"
+          name="columnId"
           label="Status"
-          onValueChange={handleSelectChange}
+          onValueChange={handleSelectColumnChange}
           value={task.columnId._id}
           className="w-7/12"
         >
@@ -76,7 +116,10 @@ export default function DialogTaskDetails({ users, columns }: Props) {
               asChild
               className={cn(task.assignedTo ? "cursor-default" : "cursor-pointer")}
             >
-              <Avatar className="w-7 h-7 " onClick={handleAssignClick}>
+              <Avatar
+                className="w-7 h-7 "
+                onClick={() => handleSelectAssignChange(session?.user?._id ?? "")}
+              >
                 <AvatarImage src={"/avatar.png"} />
                 <AvatarFallback>{task.assignedTo?.name}</AvatarFallback>
               </Avatar>
@@ -88,7 +131,7 @@ export default function DialogTaskDetails({ users, columns }: Props) {
 
           <SelectSimple
             name="assignedTo"
-            onValueChange={(value) => handleSelectAssignChange(value, users)}
+            onValueChange={(_, value) => handleSelectAssignChange(value)}
             value={task.assignedTo?._id ?? ""}
             placeholder="Select User"
             label="Users"
@@ -109,7 +152,8 @@ export default function DialogTaskDetails({ users, columns }: Props) {
           name="startDate"
           className="w-7/12"
           selected={task.startDate}
-          onSelect={handleSelectDate}
+          onSelect={handleSelectDateChange}
+          onClose={() => handleSelectDateChange("startDate", task.startDate, true)}
         />
       </DetailItemContainer>
 
@@ -120,8 +164,9 @@ export default function DialogTaskDetails({ users, columns }: Props) {
           name="endDate"
           className="w-7/12"
           selected={task.endDate}
-          onSelect={handleSelectDate}
+          onSelect={handleSelectDateChange}
           widthMinutes
+          onClose={() => handleSelectDateChange("endDate", task.endDate, true)}
         />
       </DetailItemContainer>
     </div>

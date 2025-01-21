@@ -25,6 +25,7 @@ export function TimePicker({ date, onChange, minuteStep = 1 }: TimePickerProps) 
   }
 
   const handleMinuteChange = (value: string) => {
+    console.log(value, "value")
     onChange(date?.getHours() ?? 0, parseInt(value))
   }
 

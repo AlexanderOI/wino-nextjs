@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 
 interface Props {
   name: string
-  onValueChange: (value: string, name: string) => void
+  onValueChange: (name: string, value: string) => void
   value: string
   label: string
   placeholder?: string
@@ -30,7 +30,7 @@ export default function SelectSimple({
   return (
     <Select
       name={name}
-      onValueChange={(value) => onValueChange(value, name)}
+      onValueChange={(value) => onValueChange(name, value)}
       value={value}
     >
       <SelectTrigger className={cn("w-full", className)}>

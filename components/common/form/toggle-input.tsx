@@ -1,12 +1,12 @@
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 
-interface Props {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string
   onChange: (newValue: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export function ToggleInput({ value, onChange }: Props) {
+export function ToggleInput({ value, onChange, ...props }: Props) {
   const [isEditing, setIsEditing] = useState(false)
 
   const handleBlur = () => {
@@ -26,6 +26,7 @@ export function ToggleInput({ value, onChange }: Props) {
           onChange={onChange}
           onBlur={handleBlur}
           autoFocus
+          {...props}
         />
       ) : (
         <span>{value || "Click para editar"}</span>

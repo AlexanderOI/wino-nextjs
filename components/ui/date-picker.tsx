@@ -8,24 +8,27 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { TimePicker } from "./time-picker"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface Props {
   name: string
   selected?: Date
-  onSelect?: (date: Date | undefined, name: string) => void
+  onSelect?: (name: string, date: Date | undefined) => void
   className?: string
   widthMinutes?: boolean
+  onClose?: () => void
 }
 
 export function DatePicker({
   name,
   selected,
   onSelect,
+  onClose,
   className,
   widthMinutes = false,
 }: Props) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(selected)
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleDateSelect = (newDate: Date | undefined) => {
     if (newDate) {
@@ -37,7 +40,7 @@ export function DatePicker({
         selectedDate?.getMinutes() ?? 0
       )
       setSelectedDate(updatedDate)
-      onSelect?.(updatedDate, name)
+      onSelect?.(name, updatedDate)
     }
   }
 
@@ -46,11 +49,17 @@ export function DatePicker({
     updatedDate.setHours(newHour)
     updatedDate.setMinutes(newMinute)
     setSelectedDate(updatedDate)
-    onSelect?.(updatedDate, name)
+    onSelect?.(name, updatedDate)
   }
 
+  useEffect(() => {
+    if (!isOpen) {
+      onClose?.()
+    }
+  }, [isOpen])
+
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -68,7 +77,7 @@ export function DatePicker({
         <Calendar
           mode="single"
           selected={selected}
-          onSelect={(date) => onSelect?.(date, name)}
+          onSelect={(date) => onSelect?.(name, date)}
           initialFocus
         />
 

@@ -22,14 +22,16 @@ export function useTaskDialog(id?: string) {
       const responseUsers = await apiClient.get<User[]>(USERS_URL)
       setUsers(responseUsers.data)
 
-      const responseColumns = await apiClient.get(
-        `/columns/project/${projectId}?withTasks=true`
-      )
+      const responseColumns = await apiClient.get(`/columns/project/${projectId}`)
       setColumns(responseColumns.data)
 
       if (id) {
         const taskResponse = await apiClient.get<Task>(`${TASKS_URL}/${id}`)
-        setTask(taskResponse.data)
+        setTask({
+          ...taskResponse.data,
+          startDate: new Date(taskResponse.data.startDate),
+          endDate: new Date(taskResponse.data.endDate),
+        })
       }
     } catch (error) {
       console.error("Error fetching data:", error)
