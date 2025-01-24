@@ -25,6 +25,8 @@ import SelectSimple from "@/components/common/form/select-simple"
 import { DatePicker } from "@/components/ui/date-picker"
 import { useToast } from "@/components/ui/use-toast"
 import apiClient from "@/utils/api-client"
+import { EditableField } from "@/components/common/form/EditableField"
+import { format, isValid } from "date-fns"
 
 interface Props {
   users: User[]
@@ -44,27 +46,20 @@ export default function DialogTaskDetails({ users, columns }: Props) {
 
     const user = users.find((user) => user._id === value)
     updateTaskField("assignedTo", user)
-    sendChanges("assignedTo", value)
   }
 
   const handleSelectColumnChange = (name: string, value: string) => {
     const column = columns.find((column) => column._id === value)
     updateTaskField(name, column)
-    sendChanges(name, value)
   }
 
-  const handleSelectDateChange = (
+  const sendChanges = async (
     name: string,
-    value: Date | undefined,
-    sendChange?: boolean
+    value: string | Date | undefined,
+    wasChanged: boolean
   ) => {
-    updateTaskField(name, value)
-    if (sendChange) {
-      sendChanges(name, value)
-    }
-  }
+    if (!wasChanged) return
 
-  const sendChanges = async (name: string, value: string | Date | undefined) => {
     const response = await apiClient.patch(`/tasks/${task._id}`, {
       [name]: value,
     })
@@ -84,27 +79,33 @@ export default function DialogTaskDetails({ users, columns }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-2 w-5/12">
+    <div className="flex flex-col gap-2 w-5/12 border p-5 mt-16 rounded-md">
       <DialogHeader className="mb-5">
-        <DialogTitle className="flex items-center gap-2">Details</DialogTitle>
+        <DialogTitle className="flex items-center gap-2">Details :</DialogTitle>
       </DialogHeader>
 
       <DetailItemContainer>
         <Label>Status</Label>
 
-        <SelectSimple
-          name="columnId"
-          label="Status"
-          onValueChange={handleSelectColumnChange}
-          value={task.columnId._id}
+        <EditableField
+          value={task.columnId.name}
           className="w-7/12"
+          onClose={(name, wasChanged) => sendChanges(name, task.columnId._id, wasChanged)}
         >
-          {columns.map((column) => (
-            <SelectItem key={column._id} value={column._id}>
-              {column.name}
-            </SelectItem>
-          ))}
-        </SelectSimple>
+          <SelectSimple
+            name="columnId"
+            label="Status"
+            onValueChange={handleSelectColumnChange}
+            value={task.columnId._id}
+            className=""
+          >
+            {columns.map((column) => (
+              <SelectItem key={column._id} value={column._id}>
+                {column.name}
+              </SelectItem>
+            ))}
+          </SelectSimple>
+        </EditableField>
       </DetailItemContainer>
 
       <DetailItemContainer>
@@ -129,45 +130,69 @@ export default function DialogTaskDetails({ users, columns }: Props) {
             </TooltipContent>
           </Tooltip>
 
-          <SelectSimple
-            name="assignedTo"
-            onValueChange={(_, value) => handleSelectAssignChange(value)}
-            value={task.assignedTo?._id ?? ""}
-            placeholder="Select User"
-            label="Users"
+          <EditableField
+            value={task.assignedTo?.name}
+            onClose={(name, wasChanged) =>
+              sendChanges(name, task.assignedTo?._id, wasChanged)
+            }
           >
-            {users.map((user) => (
-              <SelectItem key={user._id} value={user._id}>
-                {user.name}
-              </SelectItem>
-            ))}
-          </SelectSimple>
+            <SelectSimple
+              name="assignedTo"
+              onValueChange={(_, value) => handleSelectAssignChange(value)}
+              value={task.assignedTo?._id ?? ""}
+              placeholder="Select User"
+              label="Users"
+            >
+              {users.map((user) => (
+                <SelectItem key={user._id} value={user._id}>
+                  {user.name}
+                </SelectItem>
+              ))}
+            </SelectSimple>
+          </EditableField>
         </div>
       </DetailItemContainer>
 
       <DetailItemContainer>
         <Label>Start Date</Label>
 
-        <DatePicker
-          name="startDate"
+        <EditableField
+          value={
+            task.startDate && isValid(task.startDate)
+              ? format(task.startDate, "PPP HH:mm")
+              : "Pick a date"
+          }
+          onClose={(name, wasChanged) => sendChanges(name, task.startDate, wasChanged)}
           className="w-7/12"
-          selected={task.startDate}
-          onSelect={handleSelectDateChange}
-          onClose={() => handleSelectDateChange("startDate", task.startDate, true)}
-        />
+        >
+          <DatePicker
+            name="startDate"
+            selected={task.startDate}
+            onSelect={updateTaskField}
+            widthMinutes
+          />
+        </EditableField>
       </DetailItemContainer>
 
       <DetailItemContainer>
         <Label>End Date</Label>
 
-        <DatePicker
-          name="endDate"
+        <EditableField
+          value={
+            task.endDate && isValid(task.endDate)
+              ? format(task.endDate, "PPP HH:mm")
+              : "Pick a date"
+          }
+          onClose={(name, wasChanged) => sendChanges(name, task.endDate, wasChanged)}
           className="w-7/12"
-          selected={task.endDate}
-          onSelect={handleSelectDateChange}
-          widthMinutes
-          onClose={() => handleSelectDateChange("endDate", task.endDate, true)}
-        />
+        >
+          <DatePicker
+            name="endDate"
+            selected={task.endDate}
+            onSelect={updateTaskField}
+            widthMinutes
+          />
+        </EditableField>
       </DetailItemContainer>
     </div>
   )

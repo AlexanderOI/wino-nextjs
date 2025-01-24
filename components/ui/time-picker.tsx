@@ -25,14 +25,13 @@ export function TimePicker({ date, onChange, minuteStep = 1 }: TimePickerProps) 
   }
 
   const handleMinuteChange = (value: string) => {
-    console.log(value, "value")
     onChange(date?.getHours() ?? 0, parseInt(value))
   }
 
   return (
     <div className="flex space-x-2">
       <Select onValueChange={handleHourChange} defaultValue={date?.getHours().toString()}>
-        <SelectTrigger className="w-1/2">
+        <SelectTrigger className="w-1/2 bg-purple-light">
           <SelectValue placeholder="Hour" />
         </SelectTrigger>
         <SelectContent>
@@ -47,7 +46,7 @@ export function TimePicker({ date, onChange, minuteStep = 1 }: TimePickerProps) 
         onValueChange={handleMinuteChange}
         defaultValue={date?.getMinutes().toString()}
       >
-        <SelectTrigger className="w-1/2">
+        <SelectTrigger className="w-1/2 bg-purple-light">
           <SelectValue placeholder="Minute" />
         </SelectTrigger>
         <SelectContent>

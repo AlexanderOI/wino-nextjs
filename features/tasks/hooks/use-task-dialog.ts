@@ -10,6 +10,8 @@ import { useTaskStore } from "../store/task.store"
 export function useTaskDialog(id?: string) {
   const { toast } = useToast()
 
+  const [loading, setLoading] = useState(true)
+
   const projectId = useColumnStore((state) => state.projectId)
   const task = useTaskStore((state) => state.task)
   const setTask = useTaskStore((state) => state.setTask)
@@ -18,6 +20,7 @@ export function useTaskDialog(id?: string) {
   const [users, setUsers] = useState<User[]>([])
 
   const fetchInitialData = useCallback(async () => {
+    setLoading(true)
     try {
       const responseUsers = await apiClient.get<User[]>(USERS_URL)
       setUsers(responseUsers.data)
@@ -27,11 +30,14 @@ export function useTaskDialog(id?: string) {
 
       if (id) {
         const taskResponse = await apiClient.get<Task>(`${TASKS_URL}/${id}`)
+
         setTask({
           ...taskResponse.data,
           startDate: new Date(taskResponse.data.startDate),
           endDate: new Date(taskResponse.data.endDate),
         })
+
+        setLoading(false)
       }
     } catch (error) {
       console.error("Error fetching data:", error)
@@ -63,6 +69,8 @@ export function useTaskDialog(id?: string) {
     task,
     users,
     columns,
+    loading,
+    setLoading,
     fetchInitialData,
     handleSubmit,
   }
