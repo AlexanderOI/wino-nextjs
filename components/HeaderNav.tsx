@@ -23,11 +23,18 @@ import {
   SelectGroup,
 } from "@/components/ui/select"
 import { SidebarTrigger } from "./ui/sidebar"
-import { Company, useCompanyStore } from "@/features/company/stores/company.store"
+import { useCompanyStore } from "@/features/company/stores/company.store"
 import { refreshToken } from "@/features/auth/actions/auth-actions"
+import { Company } from "@/features/company/interfaces/company.inteface"
+import { Session } from "next-auth"
 
-export function HeaderNav({ companiesData }: { companiesData: Company[] }) {
-  const { data: session, update } = useSession()
+interface Props {
+  companiesData: Company[]
+  session: Session | null
+}
+
+export function HeaderNav({ companiesData, session }: Props) {
+  const { update } = useSession()
   const router = useRouter()
 
   const companies = useCompanyStore((state) => state.companies)

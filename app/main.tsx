@@ -16,7 +16,7 @@ export async function Main({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen flex-1 overflow-hidden">
       <div className="flex-1 overflow-hidden">
         <PermissionServer>
-          <HeaderNav companiesData={companiesData || []} />
+          <HeaderNav companiesData={companiesData || []} session={session} />
         </PermissionServer>
         <main
           className={`flex-1 p-5 overflow-hidden overflow-y-auto ${

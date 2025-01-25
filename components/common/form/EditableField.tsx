@@ -28,7 +28,6 @@ export const EditableField = memo(
         let isOpen = target.getAttribute("data-state") === "open"
 
         let isPopover = target.closest("[data-radix-popper-content-wrapper]")
-        console.log(valueTest, value, wasChanged.current)
 
         if (ref.current && !ref.current.contains(target) && !isPopover && !isOpen) {
           setIsEditing(false)
@@ -48,7 +47,6 @@ export const EditableField = memo(
         document.removeEventListener("mousedown", handleClickOutside)
       }
     }, [isEditing])
-    console.log({ value, valueTest })
 
     return (
       <div

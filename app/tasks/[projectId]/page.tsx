@@ -20,6 +20,7 @@ import { useColumnStore } from "@/features/tasks/store/column.store"
 import { User } from "@/features/user/intefaces/user.interface"
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
+import { SkeletonTaskBoard } from "@/features/tasks/components/skeleton/skeleton-task-board"
 
 export interface Task {
   _id: string
@@ -130,15 +131,20 @@ export default function TasksPage() {
     form.reset()
   }
 
+  const isLoading = columns.length === 0
+  if (isLoading) return <SkeletonTaskBoard />
+
   return (
     <div className="h-full overflow-hidden">
       <div className="flex justify-between items-center mb-4 px-4 pt-4">
         <h1 className="text-2xl font-bold">Add your tasks</h1>
+
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
           <Input placeholder="Add a new column" className="w-[200px]" name="title" />
           <Button type="submit">Add Column</Button>
         </form>
       </div>
+
       <DndContext
         collisionDetection={closestCorners}
         sensors={sensors}
