@@ -20,7 +20,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useSession } from "next-auth/react"
-import { User } from "@/features/user/intefaces/user.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 import SelectSimple from "@/components/common/form/select-simple"
 import { DatePicker } from "@/components/ui/date-picker"
 import { useToast } from "@/components/ui/use-toast"

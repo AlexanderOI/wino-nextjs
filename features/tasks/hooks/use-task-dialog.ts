@@ -4,7 +4,7 @@ import apiClient from "@/utils/api-client"
 import { TASKS_URL, USERS_URL } from "@/constants/routes"
 import { ColumnData, ColumnTask, Task } from "@/app/tasks/[projectId]/page"
 import { useColumnStore } from "../store/column.store"
-import { User } from "@/features/user/intefaces/user.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 import { useTaskStore } from "../store/task.store"
 
 export function useTaskDialog(id?: string) {

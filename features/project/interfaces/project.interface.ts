@@ -1,5 +1,5 @@
-import { Company } from "@/features/company/interfaces/company.inteface"
-import { User } from "@/features/user/intefaces/user.interface"
+import { Company } from "@/features/company/interfaces/company.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 
 export interface Project {
   _id: string

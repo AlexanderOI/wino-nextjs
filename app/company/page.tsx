@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Company } from "@/features/company/interfaces/company.inteface"
+import { Company } from "@/features/company/interfaces/company.interface"
 import { CardHeaderPage } from "@/components/common/card-header-page"
 import { CardCompany } from "@/features/company/components/card-company"
 import { getSession } from "@/utils/get-session"

@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { Task } from "@/app/tasks/[projectId]/page"
-import { User } from "@/features/user/intefaces/user.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 
 interface TaskStore {
   task: Task | null

@@ -1,4 +1,4 @@
-import { User } from "@/features/user/intefaces/user.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 
 export interface Company {
   _id: string

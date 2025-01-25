@@ -25,7 +25,7 @@ import {
 import { SidebarTrigger } from "./ui/sidebar"
 import { useCompanyStore } from "@/features/company/stores/company.store"
 import { refreshToken } from "@/features/auth/actions/auth-actions"
-import { Company } from "@/features/company/interfaces/company.inteface"
+import { Company } from "@/features/company/interfaces/company.interface"
 import { Session } from "next-auth"
 
 interface Props {

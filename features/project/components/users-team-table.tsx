@@ -7,7 +7,7 @@ import { TableAction } from "@/components/common/table-action"
 import { DialogDelete } from "@/components/common/dialog/dialog-delete"
 import { useState } from "react"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { User } from "@/features/user/intefaces/user.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 
 const Columns = (handleDelete: (user: string) => void) => {
   const columns: ColumnDef<User>[] = [

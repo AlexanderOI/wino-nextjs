@@ -4,7 +4,7 @@ import { useToast } from "@/components/ui/use-toast"
 import apiClient from "@/utils/api-client"
 import { ROLES_URL, USERS_URL } from "@/constants/routes"
 import { Roles } from "@/types/global"
-import { User } from "@/features/user/intefaces/user.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 
 interface UserDialog extends Omit<User, "_id"> {}
 

@@ -1,4 +1,4 @@
-import { Project } from "@/features/project/intefaces/project.inteface"
+import { Project } from "@/features/project/interfaces/project.interface"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 

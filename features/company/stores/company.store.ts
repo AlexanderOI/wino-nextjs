@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { Company } from "../interfaces/company.inteface"
+import { Company } from "../interfaces/company.interface"
 
 interface CompanyStore {
   companies: { [key: string]: Company }

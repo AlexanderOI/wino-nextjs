@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { Project } from "../intefaces/project.inteface"
+import { Project } from "../interfaces/project.interface"
 import { useProjectStore } from "../store/project.store"
 import apiClient from "@/utils/api-client"
 import { cn } from "@/lib/utils"
