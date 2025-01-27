@@ -34,7 +34,7 @@ const Columns = (handleDelete: (user: string) => void) => {
 }
 
 interface Props {
-  users: User[]
+  users?: User[]
 }
 
 export default function DataTableUsersTeam({ users }: Props) {

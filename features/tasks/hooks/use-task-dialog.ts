@@ -2,10 +2,11 @@ import { useState, useCallback } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import apiClient from "@/utils/api-client"
 import { TASKS_URL, USERS_URL } from "@/constants/routes"
-import { ColumnData, ColumnTask, Task } from "@/app/tasks/[projectId]/page"
 import { useColumnStore } from "../store/column.store"
 import { User } from "@/features/user/interfaces/user.interface"
 import { useTaskStore } from "../store/task.store"
+import { ColumnTask } from "../interfaces/column.interface"
+import { Task } from "../interfaces/task.interface"
 
 export function useTaskDialog(id?: string) {
   const { toast } = useToast()
@@ -44,24 +45,28 @@ export function useTaskDialog(id?: string) {
     }
   }, [id])
 
-  const handleSubmit = async (event: React.FormEvent, onClose: () => void) => {
-    event.preventDefault()
+  const sendChanges = async (
+    name: string,
+    value: string | Date | undefined,
+    wasChanged: boolean
+  ) => {
+    if (!wasChanged) return
 
-    try {
-      if (id) {
-        await apiClient.patch(`${TASKS_URL}/${id}`, task)
-      } else {
-        await apiClient.post(TASKS_URL, task)
-      }
-      setTask(null)
-      onClose()
+    const response = await apiClient.patch(`/tasks/${id}`, {
+      [name]: value,
+    })
+
+    if (response.status === 200) {
       toast({
-        title: "Task saved",
-        description: "Task has been saved successfully",
-        duration: 1000,
+        title: "Task updated successfully",
+        description: "Task updated successfully",
       })
-    } catch (error) {
-      console.error("Error saving task:", error)
+    } else {
+      toast({
+        title: "Failed to update task",
+        description: "Failed to update task",
+        variant: "destructive",
+      })
     }
   }
 
@@ -72,6 +77,6 @@ export function useTaskDialog(id?: string) {
     loading,
     setLoading,
     fetchInitialData,
-    handleSubmit,
+    sendChanges,
   }
 }

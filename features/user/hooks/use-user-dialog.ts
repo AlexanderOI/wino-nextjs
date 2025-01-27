@@ -3,16 +3,24 @@ import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import apiClient from "@/utils/api-client"
 import { ROLES_URL, USERS_URL } from "@/constants/routes"
-import { Roles } from "@/types/global"
-import { User } from "@/features/user/interfaces/user.interface"
-
-interface UserDialog extends Omit<User, "_id"> {}
+import { Role } from "@/features/roles/interfaces/role.interface"
+interface UserDialog {
+  name: string
+  userName: string
+  email: string
+  roles: string[]
+  rolesId: string[]
+  password: string
+  confirmPassword: string
+  roleType: string
+}
 
 const initialUser: UserDialog = {
   name: "",
   userName: "",
   email: "",
   roles: [],
+  rolesId: [],
   password: "",
   confirmPassword: "",
   roleType: "",
@@ -22,19 +30,20 @@ export function useUserDialog(id?: string) {
   const { toast } = useToast()
   const router = useRouter()
   const [user, setUser] = useState<UserDialog>(initialUser)
-  const [roles, setRoles] = useState<Roles[]>([])
+  const [roles, setRoles] = useState<Role[]>([])
 
   const fetchInitialData = useCallback(async () => {
     try {
-      const roleResponse = await apiClient.get<Roles[]>(ROLES_URL)
+      const roleResponse = await apiClient.get<Role[]>(ROLES_URL)
       setRoles(roleResponse.data)
       if (id) {
         const userResponse = await apiClient.get<UserDialog>(`${USERS_URL}/${id}`)
-        const { name, roles, userName, email, roleType } = userResponse.data
+        const { name, roles, rolesId, userName, email, roleType } = userResponse.data
         setUser((prev) => ({
           ...prev,
           name,
           roles,
+          rolesId,
           userName,
           email,
           roleType,

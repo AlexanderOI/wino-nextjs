@@ -3,7 +3,8 @@ import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import apiClient from "@/utils/api-client"
 import { COMPANY_URL } from "@/constants/routes"
-import { Company, useCompanyStore } from "@/features/company/stores/company.store"
+import { useCompanyStore } from "@/features/company/stores/company.store"
+import { Company } from "@/features/company/interfaces/company.interface"
 
 export function useCompanyDialog(id?: string) {
   const { toast } = useToast()

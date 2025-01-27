@@ -2,11 +2,12 @@ import { USERS_URL } from "@/constants/routes"
 
 import { useToast } from "@/components/ui/use-toast"
 import { PROJECTS_URL } from "@/constants/routes"
-import { useCallback, useEffect } from "react"
-import { User } from "@/types/next-auth"
+import { useCallback } from "react"
 import apiClient from "@/utils/api-client"
 import { useState } from "react"
-import { Projects } from "@/types/global"
+
+import { Project } from "@/features/project/interfaces/project.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 
 export function useTeamProjectSheet(id?: string) {
   const { toast } = useToast()
@@ -20,16 +21,18 @@ export function useTeamProjectSheet(id?: string) {
       setUsers(response.data)
 
       if (id) {
-        const responseProjectTeam = await apiClient.get<Projects>(`${PROJECTS_URL}/${id}`)
-        setUsersProjectTeam(responseProjectTeam.data.usersTeam)
+        const responseProjectTeam = await apiClient.get<Project>(
+          `${PROJECTS_URL}/${id}?withUsers=true`
+        )
+        setUsersProjectTeam(responseProjectTeam.data.membersId)
       }
     } catch (error) {
       console.error("Error fetching data:", error)
     }
   }, [id])
 
-  const handleSelect = (item: string) => {
-    setUsersProjectTeam((prevValues) => [...prevValues, item])
+  const handleSelect = (value: string) => {
+    setUsersProjectTeam((prevValues) => [...prevValues, value])
   }
 
   const handleRemove = (value: string) => {

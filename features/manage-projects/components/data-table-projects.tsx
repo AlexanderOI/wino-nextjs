@@ -1,7 +1,6 @@
 "use client"
 
 import { DataTable } from "@/components/ui/datatable/DataTable"
-import { Projects } from "@/types/global"
 import { ColumnDef } from "@tanstack/react-table"
 import { createColumn } from "@/components/ui/datatable/createColumn"
 import { TableAction } from "@/components/common/table-action"
@@ -10,13 +9,14 @@ import { useState } from "react"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { DialogProject } from "./dialog-project"
 import { SheetTeamProject } from "./sheet-team-project"
+import { Project } from "@/features/project/interfaces/project.interface"
 
 const Columns = (
   handleEdit: (project: string) => void,
   handleDelete: (project: string) => void,
   handleUserTeamProject: (project: string) => void
 ) => {
-  const columns: ColumnDef<Projects>[] = [
+  const columns: ColumnDef<Project>[] = [
     createColumn("id"),
     createColumn("name"),
     createColumn("description"),
@@ -57,7 +57,7 @@ const Columns = (
 }
 
 interface Props {
-  projects: Projects[]
+  projects: Project[]
 }
 
 export default function DataTableProjects({ projects }: Props) {

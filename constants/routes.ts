@@ -6,7 +6,7 @@ export const PERMISSIONS_URL = "/permissions"
 
 export const COMPANY_URL = "/company"
 
-export const USERS_URL = "/user"
+export const USERS_URL = "/users"
 
 export const PROJECTS_URL = "/projects"
 

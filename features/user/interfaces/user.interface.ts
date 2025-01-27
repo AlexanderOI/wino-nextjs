@@ -1,10 +1,12 @@
 export interface User {
   _id: string
   name: string
+  company?: string
   userName: string
   email: string
+  avatar: string
   roles: string[]
-  password: string
-  confirmPassword: string
+  rolesId: string[]
   roleType: string
+  isActive: boolean
 }

@@ -80,9 +80,9 @@ export function DialogProject({
                 <Label className="w-1/4">
                   Owner
                   <Select
-                    name="owner"
-                    onValueChange={(value) => handleSelectChange(value, "owner")}
-                    value={project.owner}
+                    name="leaderId"
+                    onValueChange={(value) => handleSelectChange(value, "leaderId")}
+                    value={project.leaderId || ""}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Owner" />

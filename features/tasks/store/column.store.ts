@@ -1,6 +1,7 @@
 import { create } from "zustand"
-import { ColumnData, Task } from "@/app/tasks/[projectId]/page"
 import apiClient from "@/utils/api-client"
+import { ColumnData } from "../interfaces/column.interface"
+import { Task } from "../interfaces/task.interface"
 
 interface ColumnStore {
   columns: ColumnData[]

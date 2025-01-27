@@ -27,7 +27,7 @@ export function TaskDialog({
 
   const task = useTaskStore((state) => state.task)
 
-  const { users, columns, loading, fetchInitialData } = useTaskDialog(id)
+  const { users, columns, loading, fetchInitialData, sendChanges } = useTaskDialog(id)
 
   useEffect(() => {
     if (isOpen) fetchInitialData()
@@ -46,8 +46,12 @@ export function TaskDialog({
             <SkeletonTaskDialog />
           ) : (
             <>
-              <DialogTaskContent />
-              <DialogTaskDetails users={users} columns={columns} />
+              <DialogTaskContent sendChanges={sendChanges} />
+              <DialogTaskDetails
+                sendChanges={sendChanges}
+                users={users}
+                columns={columns}
+              />
             </>
           )}
         </DialogContent>

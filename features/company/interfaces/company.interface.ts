@@ -1,11 +1,17 @@
-import { User } from "@/features/user/interfaces/user.interface"
+import { Role } from "@/features/roles/interfaces/role.interface"
 
 export interface Company {
   _id: string
   name: string
   address: string
-  owner: User
-  users: string[]
-  roles: string[]
+  owner: {
+    _id: string
+    name: string
+    avatar: string
+  }
+  usersCompany: string[]
+  rolesId: string[]
   isMain: boolean
+
+  roles?: Role[]
 }

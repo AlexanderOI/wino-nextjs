@@ -6,9 +6,9 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import TaskItem from "./task-item"
 import { Input } from "@/components/ui/input"
 import { Plus } from "lucide-react"
-import { ColumnData, Task } from "@/app/tasks/[projectId]/page"
 import { cn } from "@/lib/utils"
 import { useColumnStore } from "../../store/column.store"
+import { ColumnData } from "@/features/tasks/interfaces/column.interface"
 
 interface TaskColumnProps {
   column: ColumnData

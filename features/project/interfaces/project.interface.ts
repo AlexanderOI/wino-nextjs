@@ -5,12 +5,13 @@ export interface Project {
   _id: string
   name: string
   description: string
-  owner: User
-  usersTeam: User[]
+  leaderId: string
+  leader?: User
+  membersId: string[]
+  members?: User[]
   client: string
   status: string
   startDate: Date
   endDate: Date
   company: Company
-  tasks: string[]
 }

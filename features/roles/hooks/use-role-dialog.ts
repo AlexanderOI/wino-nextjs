@@ -3,17 +3,21 @@ import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import apiClient from "@/utils/api-client"
 import { PERMISSIONS_URL, ROLES_URL } from "@/constants/routes"
-import { Permissions, Role } from "@/types/global"
+import { Permissions, Role } from "@/features/roles/interfaces/role.interface"
+
+interface RoleDialog extends Omit<Role, "_id"> {}
+
+const initialRole: RoleDialog = {
+  name: "",
+  description: "",
+  permissions: [],
+}
 
 export function useRoleDialog(id?: string) {
   const { toast } = useToast()
   const router = useRouter()
   const [permissions, setPermissions] = useState<Permissions[] | null>(null)
-  const [role, setRole] = useState<Role>({
-    name: "",
-    description: "",
-    permissions: [],
-  })
+  const [role, setRole] = useState<RoleDialog>(initialRole)
 
   const fetchInitialData = useCallback(async () => {
     try {
@@ -54,7 +58,7 @@ export function useRoleDialog(id?: string) {
       } else {
         await apiClient.post(ROLES_URL, role)
       }
-      setRole({ name: "", description: "", permissions: [] })
+      setRole(initialRole)
       onClose()
       router.refresh()
       toast({

@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 
 declare module "next-auth" {
   interface Session {
-    user: User
+    user: UserAuth
     backendTokens: {
       accessToken: string
       refreshToken: string
@@ -15,7 +15,7 @@ import { JWT } from "next-auth/jwt"
 
 declare module "next-auth/jwt" {
   interface JWT {
-    user: User
+    user: UserAuth
     backendTokens: {
       accessToken: string
       refreshToken: string
@@ -24,7 +24,7 @@ declare module "next-auth/jwt" {
   }
 }
 
-interface User {
+interface UserAuth {
   _id: string
   name: string
   userName: string
@@ -34,4 +34,5 @@ interface User {
   companyId: string
   companyName: string
   permissions: string[]
+  avatar: string
 }

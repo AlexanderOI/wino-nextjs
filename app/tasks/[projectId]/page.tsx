@@ -17,37 +17,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useParams } from "next/navigation"
 import { useColumnStore } from "@/features/tasks/store/column.store"
-import { User } from "@/features/user/interfaces/user.interface"
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
 import { SkeletonTaskBoard } from "@/features/tasks/components/skeleton/skeleton-task-board"
-
-export interface Task {
-  _id: string
-  name: string
-  description: string
-  columnId: ColumnTask
-  assignedTo?: User
-  order: number
-  projectId: string
-  startDate: Date
-  endDate: Date
-  createdAt: Date
-  updatedAt: Date
-  __v: number
-}
-
-export interface ColumnTask {
-  _id: string
-  name: string
-  order?: number
-  projectId?: string
-  isActive?: boolean
-}
-
-export interface ColumnData extends ColumnTask {
-  tasks: Task[]
-}
 
 export default function TasksPage() {
   const columns = useColumnStore((state) => state.columns)

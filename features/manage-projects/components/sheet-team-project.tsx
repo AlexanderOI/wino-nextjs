@@ -1,8 +1,5 @@
 "use client"
 import { useEffect, useState } from "react"
-import { User } from "@/types/next-auth"
-import apiClient from "@/utils/api-client"
-import { PROJECTS_URL, USERS_URL } from "@/constants/routes"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MultiSelect, Option } from "@/components/ui/multi-select"
@@ -21,8 +18,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { X } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
-import { Projects } from "@/types/global"
 import { useTeamProjectSheet } from "../hooks/use-team-project-sheet"
 
 interface Props {
@@ -112,7 +107,7 @@ export function SheetTeamProject({
                     >
                       <div className="flex items-center gap-2">
                         <Avatar className="w-7 h-7">
-                          <AvatarImage src={"/avatar.png"} />
+                          <AvatarImage src={user.avatar || ""} />
                           <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <p>{user.name}</p>

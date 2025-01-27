@@ -3,15 +3,15 @@ import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
 import apiClient from "@/utils/api-client"
 import { PROJECTS_URL, USERS_URL } from "@/constants/routes"
-import { Projects } from "@/types/global"
-import { User } from "@/types/next-auth"
+import { Project } from "@/features/project/interfaces/project.interface"
+import { User } from "@/features/user/interfaces/user.interface"
 
-type ProjectDialog = Omit<Projects, "_id" | "usersTeam">
+type ProjectDialog = Omit<Project, "_id" | "membersId" | "company">
 
 const initialProject: ProjectDialog = {
   name: "",
   description: "",
-  owner: "",
+  leaderId: "",
   startDate: new Date(),
   endDate: new Date(),
   client: "",
@@ -30,15 +30,15 @@ export function useProjectDialog(id?: string) {
       setUsers(response.data)
 
       if (id) {
-        const projectResponse = await apiClient.get<Projects>(`${PROJECTS_URL}/${id}`)
+        const projectResponse = await apiClient.get<Project>(`${PROJECTS_URL}/${id}`)
 
-        const { name, description, owner, startDate, endDate, status, client } =
+        const { name, description, leaderId, startDate, endDate, status, client } =
           projectResponse.data
 
         setProject({
           name,
           description,
-          owner,
+          leaderId,
           startDate: new Date(startDate),
           endDate: new Date(endDate),
           status,
@@ -57,7 +57,7 @@ export function useProjectDialog(id?: string) {
     setProject((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSelectDate = (date: Date | undefined, name: string) => {
+  const handleSelectDate = (name: string, date: Date | undefined) => {
     setProject((prev) => ({ ...prev, [name]: date }))
   }
 
@@ -72,6 +72,8 @@ export function useProjectDialog(id?: string) {
       if (id) {
         await apiClient.patch(`${PROJECTS_URL}/${id}`, project)
       } else {
+        console.log(project)
+
         await apiClient.post(PROJECTS_URL, project)
       }
       setProject(initialProject)

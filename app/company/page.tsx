@@ -20,7 +20,7 @@ export default async function CompanyPage() {
 
   const companiesEmployee = companies.filter(
     (company) =>
-      company.users.includes(session?.user._id || "") &&
+      company.usersCompany.includes(session?.user._id || "") &&
       company.owner._id !== session?.user._id
   )
 

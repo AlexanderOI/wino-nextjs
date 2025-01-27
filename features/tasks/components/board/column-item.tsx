@@ -3,9 +3,10 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import TaskColumn from "./task-column"
-import { ColumnData, Task } from "@/app/tasks/[projectId]/page"
 import { BookmarkX, GripVertical } from "lucide-react"
 import { useColumnStore } from "../../store/column.store"
+import { ColumnData } from "@/features/tasks/interfaces/column.interface"
+import { Task } from "@/features/tasks/interfaces/task.interface"
 
 interface ColumnItemProps {
   column: ColumnData

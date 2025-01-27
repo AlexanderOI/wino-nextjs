@@ -11,7 +11,15 @@ import { useTaskStore } from "../../store/task.store"
 import apiClient from "@/utils/api-client"
 import { useToast } from "@/components/ui/use-toast"
 
-export default function DialogTaskContent() {
+interface Props {
+  sendChanges: (
+    name: string,
+    value: string | Date | undefined,
+    wasChanged: boolean
+  ) => void
+}
+
+export default function DialogTaskContent({ sendChanges }: Props) {
   const toast = useToast()
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
@@ -20,28 +28,13 @@ export default function DialogTaskContent() {
 
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    sendChanges?: boolean
+    sendChange?: boolean
   ) => {
     const { name, value } = event.target
     updateTaskField(name, value)
 
-    if (sendChanges) {
-      const response = await apiClient.patch(`/tasks/${task._id}`, {
-        [name]: value,
-      })
-
-      if (response.status === 200) {
-        toast.toast({
-          title: "Task updated",
-          description: "Task updated successfully",
-        })
-      } else {
-        toast.toast({
-          title: "Failed to update task",
-          description: "Failed to update task",
-          variant: "destructive",
-        })
-      }
+    if (sendChange) {
+      sendChanges(name, value, true)
     }
   }
 

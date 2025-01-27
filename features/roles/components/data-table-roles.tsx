@@ -1,7 +1,6 @@
 "use client"
 
 import { DataTable } from "@/components/ui/datatable/DataTable"
-import { Roles, Permissions } from "@/types/global"
 import { ColumnDef } from "@tanstack/react-table"
 import { createColumn } from "@/components/ui/datatable/createColumn"
 import { DialogRole } from "./dialog-role"
@@ -9,13 +8,14 @@ import { TableAction } from "@/components/common/table-action"
 import { DialogDelete } from "@/components/common/dialog/dialog-delete"
 import { useState } from "react"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import { Role, Permissions } from "@/features/roles/interfaces/role.interface"
 
 const Columns = (
   handleEdit: (role: string) => void,
   handleDelete: (role: string) => void,
   permissions: Permissions[]
 ) => {
-  const columns: ColumnDef<Roles>[] = [
+  const columns: ColumnDef<Role>[] = [
     createColumn("id"),
     createColumn("name"),
     createColumn("description"),
@@ -59,7 +59,7 @@ const Columns = (
 }
 
 interface Props {
-  roles: Roles[]
+  roles: Role[]
   permissions: Permissions[]
 }
 

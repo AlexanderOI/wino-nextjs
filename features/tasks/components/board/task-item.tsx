@@ -4,12 +4,10 @@ import { useState } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { Input } from "@/components/ui/input"
-import { Task } from "@/app/tasks/[projectId]/page"
 import { cn } from "@/lib/utils"
 import { Trash2 } from "lucide-react"
-import { TaskDialog } from "../dialog/task-dialog"
 import { useTaskStore } from "../../store/task.store"
-
+import { Task } from "@/features/tasks/interfaces/task.interface"
 interface TaskItemProps {
   task: Task
   updateTask: (newContent: string) => void

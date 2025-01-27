@@ -1,40 +1,29 @@
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectLabel,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { SelectItem } from "@/components/ui/select"
 import { useTaskStore } from "../../store/task.store"
-import { ColumnTask } from "@/app/tasks/[projectId]/page"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useSession } from "next-auth/react"
 import { User } from "@/features/user/interfaces/user.interface"
 import SelectSimple from "@/components/common/form/select-simple"
 import { DatePicker } from "@/components/ui/date-picker"
-import { useToast } from "@/components/ui/use-toast"
-import apiClient from "@/utils/api-client"
 import { EditableField } from "@/components/common/form/EditableField"
 import { format, isValid } from "date-fns"
+import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
 
 interface Props {
   users: User[]
   columns: ColumnTask[]
+  sendChanges: (
+    name: string,
+    value: string | Date | undefined,
+    wasChanged: boolean
+  ) => void
 }
 
-export default function DialogTaskDetails({ users, columns }: Props) {
-  const toast = useToast()
+export default function DialogTaskDetails({ users, columns, sendChanges }: Props) {
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
   const { data: session } = useSession()
@@ -53,31 +42,6 @@ export default function DialogTaskDetails({ users, columns }: Props) {
     updateTaskField(name, column)
   }
 
-  const sendChanges = async (
-    name: string,
-    value: string | Date | undefined,
-    wasChanged: boolean
-  ) => {
-    if (!wasChanged) return
-
-    const response = await apiClient.patch(`/tasks/${task._id}`, {
-      [name]: value,
-    })
-
-    if (response.status === 200) {
-      toast.toast({
-        title: "Task updated successfully",
-        description: "Task updated successfully",
-      })
-    } else {
-      toast.toast({
-        title: "Failed to update task",
-        description: "Failed to update task",
-        variant: "destructive",
-      })
-    }
-  }
-
   return (
     <div className="flex flex-col gap-2 w-5/12 border p-5 mt-16 rounded-md">
       <DialogHeader className="mb-5">
@@ -88,15 +52,15 @@ export default function DialogTaskDetails({ users, columns }: Props) {
         <Label>Status</Label>
 
         <EditableField
-          value={task.columnId.name}
+          value={task.column.name}
           className="w-7/12"
-          onClose={(name, wasChanged) => sendChanges(name, task.columnId._id, wasChanged)}
+          onClose={(name, wasChanged) => sendChanges(name, task.column._id, wasChanged)}
         >
           <SelectSimple
             name="columnId"
             label="Status"
             onValueChange={handleSelectColumnChange}
-            value={task.columnId._id}
+            value={task.column._id}
             className=""
           >
             {columns.map((column) => (

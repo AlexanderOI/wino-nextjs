@@ -132,7 +132,7 @@ export function DialogUser({
                   <RoleCheckbox
                     key={role._id}
                     role={role}
-                    isChecked={user.roles.includes(role._id)}
+                    isChecked={user.rolesId.includes(role._id)}
                     onChange={handleCheckboxChange}
                   />
                 ))}

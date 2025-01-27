@@ -27,6 +27,7 @@ import { useCompanyStore } from "@/features/company/stores/company.store"
 import { refreshToken } from "@/features/auth/actions/auth-actions"
 import { Company } from "@/features/company/interfaces/company.interface"
 import { Session } from "next-auth"
+import { USERS_URL } from "@/constants/routes"
 
 interface Props {
   companiesData: Company[]
@@ -50,7 +51,7 @@ export function HeaderNav({ companiesData, session }: Props) {
     const selectedCompany = companies[value]
 
     const response = await apiClient.get(
-      `user/change-current-company/${selectedCompany._id}`
+      `${USERS_URL}/change-current-company/${selectedCompany._id}`
     )
 
     if (response.status === 200) {

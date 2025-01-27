@@ -4,7 +4,7 @@ import { USERS_URL } from "@/constants/routes"
 import { CardHeaderPage } from "@/components/common/card-header-page"
 import { DialogUser } from "@/features/user/components/dialog-user"
 import { DataTableUsers } from "@/features/user/components/data-table-user"
-import { User } from "@/types/next-auth"
+import { User } from "@/features/user/interfaces/user.interface"
 import apiClientServer from "@/utils/api-client-server"
 
 export default async function UsersPage() {
