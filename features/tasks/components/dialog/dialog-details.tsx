@@ -18,8 +18,8 @@ interface Props {
   columns: ColumnTask[]
   sendChanges: (
     name: string,
-    value: string | Date | undefined,
-    wasChanged: boolean
+    wasChanged: boolean,
+    value?: string | Date | undefined
   ) => void
 }
 
@@ -30,16 +30,22 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
 
   if (!task) return null
 
-  const handleSelectAssignChange = (value: string) => {
+  const handleSelectAssignChange = (value: string, send: boolean = false) => {
     if (value === task.assignedTo?._id) return
 
     const user = users.find((user) => user._id === value)
     updateTaskField("assignedTo", user)
+    updateTaskField("assignedToId", value)
+
+    if (send) {
+      sendChanges("assignedToId", true, value)
+    }
   }
 
   const handleSelectColumnChange = (name: string, value: string) => {
     const column = columns.find((column) => column._id === value)
-    updateTaskField(name, column)
+    updateTaskField("column", column)
+    updateTaskField(name, column?._id)
   }
 
   return (
@@ -54,7 +60,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
         <EditableField
           value={task.column.name}
           className="w-7/12"
-          onClose={(name, wasChanged) => sendChanges(name, task.column._id, wasChanged)}
+          onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
         >
           <SelectSimple
             name="columnId"
@@ -83,7 +89,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
             >
               <Avatar
                 className="w-7 h-7 "
-                onClick={() => handleSelectAssignChange(session?.user?._id ?? "")}
+                onClick={() => handleSelectAssignChange(session?.user?._id ?? "", true)}
               >
                 <AvatarImage src={"/avatar.png"} />
                 <AvatarFallback>{task.assignedTo?.name}</AvatarFallback>
@@ -96,12 +102,10 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
 
           <EditableField
             value={task.assignedTo?.name}
-            onClose={(name, wasChanged) =>
-              sendChanges(name, task.assignedTo?._id, wasChanged)
-            }
+            onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
           >
             <SelectSimple
-              name="assignedTo"
+              name="assignedToId"
               onValueChange={(_, value) => handleSelectAssignChange(value)}
               value={task.assignedTo?._id ?? ""}
               placeholder="Select User"
@@ -126,7 +130,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
               ? format(task.startDate, "PPP HH:mm")
               : "Pick a date"
           }
-          onClose={(name, wasChanged) => sendChanges(name, task.startDate, wasChanged)}
+          onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
           className="w-7/12"
         >
           <DatePicker
@@ -147,7 +151,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
               ? format(task.endDate, "PPP HH:mm")
               : "Pick a date"
           }
-          onClose={(name, wasChanged) => sendChanges(name, task.endDate, wasChanged)}
+          onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
           className="w-7/12"
         >
           <DatePicker

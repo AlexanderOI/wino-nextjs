@@ -47,13 +47,20 @@ export function useTaskDialog(id?: string) {
 
   const sendChanges = async (
     name: string,
-    value: string | Date | undefined,
-    wasChanged: boolean
+    wasChanged: boolean,
+    value?: string | Date | undefined
   ) => {
     if (!wasChanged) return
 
+    let valueToSend = null
+    if (!value) {
+      valueToSend = useTaskStore.getState().task?.[name as keyof Task]
+    }
+
+    console.log("valueToSend", valueToSend, name, value)
+
     const response = await apiClient.patch(`/tasks/${id}`, {
-      [name]: value,
+      [name]: value ?? valueToSend,
     })
 
     if (response.status === 200) {

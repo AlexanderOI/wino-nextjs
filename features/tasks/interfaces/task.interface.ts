@@ -7,6 +7,7 @@ export interface Task {
   description: string
   columnId: string
   column: ColumnTask
+  assignedToId?: string
   assignedTo?: User
   order: number
   projectId: string
