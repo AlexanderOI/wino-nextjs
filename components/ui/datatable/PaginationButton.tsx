@@ -12,6 +12,7 @@ export function PaginationButton({ table }: { table: any }) {
         <Button
           variant="outline"
           size="sm"
+          className="bg-purple-deep"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -20,6 +21,7 @@ export function PaginationButton({ table }: { table: any }) {
         <Button
           variant="outline"
           size="sm"
+          className="bg-purple-deep"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >

@@ -63,7 +63,7 @@ export function DataTable({ data, columns }: { data: any; columns: any }) {
           placeholder="Filter all columns..."
           value={globalFilter}
           onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm"
+          className="max-w-sm dark:bg-dark-800"
         />
         <TableColumnsView table={table} />
       </div>

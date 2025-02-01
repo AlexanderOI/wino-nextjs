@@ -72,8 +72,6 @@ export function useProjectDialog(id?: string) {
       if (id) {
         await apiClient.patch(`${PROJECTS_URL}/${id}`, project)
       } else {
-        console.log(project)
-
         await apiClient.post(PROJECTS_URL, project)
       }
       setProject(initialProject)

@@ -9,16 +9,17 @@ import { Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useColumnStore } from "../../store/column.store"
 import { ColumnData } from "@/features/tasks/interfaces/column.interface"
+import ColorPicker from "@/components/ui/color-picker"
 
 interface TaskColumnProps {
   column: ColumnData
 }
 
 export default function TaskColumn({ column }: TaskColumnProps) {
-  const { updateColumnTitle, addTask, updateTask, deleteTask } = useColumnStore()
+  const { updateColumn, addTask, updateTask, deleteTask } = useColumnStore()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
-  const [titleInput, setTitleInput] = useState(column.name)
+  const [editedColumn, setEditedColumn] = useState(column)
   const [isAddingTask, setIsAddingTask] = useState(false)
   const [newTaskContent, setNewTaskContent] = useState("")
   const newTaskInputRef = useRef<HTMLInputElement>(null)
@@ -29,7 +30,7 @@ export default function TaskColumn({ column }: TaskColumnProps) {
 
   const handleTitleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    updateColumnTitle(column._id, titleInput)
+    updateColumn(column._id, editedColumn.name, editedColumn.color)
     setIsEditingTitle(false)
   }
 
@@ -39,6 +40,22 @@ export default function TaskColumn({ column }: TaskColumnProps) {
       setNewTaskContent("")
     }
     setIsAddingTask(false)
+  }
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handleColorChange = (newColor: string) => {
+    if (column.color === newColor) return
+
+    setEditedColumn((prev) => ({ ...prev, color: newColor }))
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      updateColumn(column._id, column.name, newColor)
+    }, 500)
   }
 
   useEffect(() => {
@@ -55,25 +72,33 @@ export default function TaskColumn({ column }: TaskColumnProps) {
       )}
       ref={setNodeRef}
     >
-      {isEditingTitle ? (
-        <form onSubmit={handleTitleSubmit}>
-          <Input
-            className="ml-5 w-10/12 relative top-[-12px]"
-            type="text"
-            value={titleInput}
-            onChange={(e) => setTitleInput(e.target.value)}
-            onBlur={() => setIsEditingTitle(false)}
-            autoFocus
-          />
-        </form>
-      ) : (
-        <h2
-          className="font-semibold pl-5 mb-4 cursor-text"
-          onClick={() => setIsEditingTitle(true)}
-        >
-          {column.name}
-        </h2>
-      )}
+      <div className="flex items-center">
+        <ColorPicker
+          value={column.color}
+          onChange={(color) => handleColorChange(color)}
+          className="ml-5 mb-4 mt-0 rounded-full w-5 h-5"
+        />
+
+        {isEditingTitle ? (
+          <form onSubmit={handleTitleSubmit}>
+            <Input
+              className="ml-3 w-10/12 relative top-[-12px]"
+              type="text"
+              value={editedColumn.name}
+              onChange={(e) => setEditedColumn({ ...editedColumn, name: e.target.value })}
+              onBlur={() => setIsEditingTitle(false)}
+              autoFocus
+            />
+          </form>
+        ) : (
+          <h2
+            className="font-semibold pl-3 mb-4 cursor-text"
+            onClick={() => setIsEditingTitle(true)}
+          >
+            {column.name}
+          </h2>
+        )}
+      </div>
       <div className="space-y-2 min-h-[100px] ">
         <SortableContext
           items={column.tasks.map((task) => task._id)}

@@ -41,7 +41,7 @@ export function useTeamProjectSheet(id?: string) {
 
   const handleSave = async () => {
     const response = await apiClient.put(`${PROJECTS_URL}/${id}/set-users-team`, {
-      users: usersProjectTeam,
+      membersId: usersProjectTeam,
     })
 
     if (response.status === 200) {

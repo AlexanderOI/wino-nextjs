@@ -20,6 +20,7 @@ import { useColumnStore } from "@/features/tasks/store/column.store"
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
 import { SkeletonTaskBoard } from "@/features/tasks/components/skeleton/skeleton-task-board"
+import ColorPicker from "@/components/ui/color-picker"
 
 export default function TasksPage() {
   const columns = useColumnStore((state) => state.columns)
@@ -36,6 +37,10 @@ export default function TasksPage() {
   const { projectId } = useParams<{ projectId: string }>()
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
+  const [editedColumn, setEditedColumn] = useState({
+    title: "",
+    color: "#33254a",
+  })
 
   useEffect(() => {
     if (!projectId) return
@@ -92,15 +97,15 @@ export default function TasksPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const form = event.target as HTMLFormElement
-    const formData = new FormData(form)
-    const title = formData.get("title") as string
 
-    if (!title) return
+    if (!editedColumn.title) return
 
-    addColumn(title)
+    await addColumn(editedColumn.title, editedColumn.color)
 
-    form.reset()
+    setEditedColumn({
+      title: "",
+      color: "#33254a",
+    })
   }
 
   const isLoading = columns.length === 0
@@ -108,11 +113,26 @@ export default function TasksPage() {
 
   return (
     <div className="h-full overflow-hidden">
-      <div className="flex justify-between items-center mb-4 px-4 pt-4">
+      <div className="flex justify-between items-center mb-4 px-4 pt-2">
         <h1 className="text-2xl font-bold">Add your tasks</h1>
 
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-          <Input placeholder="Add a new column" className="w-[200px]" name="title" />
+          <div className="flex">
+            <Input
+              placeholder="Add a new column"
+              className="w-[200px] rounded-r-none"
+              name="title"
+              onChange={(e) =>
+                setEditedColumn({ ...editedColumn, title: e.target.value })
+              }
+            />
+            <ColorPicker
+              value={editedColumn.color}
+              onChange={(color) => setEditedColumn({ ...editedColumn, color })}
+              className="rounded-l-none"
+            />
+          </div>
+
           <Button type="submit">Add Column</Button>
         </form>
       </div>

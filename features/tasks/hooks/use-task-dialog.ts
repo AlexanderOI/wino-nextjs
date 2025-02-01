@@ -23,14 +23,14 @@ export function useTaskDialog(id?: string) {
   const fetchInitialData = useCallback(async () => {
     setLoading(true)
     try {
-      const responseUsers = await apiClient.get<User[]>(USERS_URL)
-      setUsers(responseUsers.data)
+      // const responseUsers = await apiClient.get<User[]>(USERS_URL)
 
       const responseColumns = await apiClient.get(`/columns/project/${projectId}`)
       setColumns(responseColumns.data)
 
       if (id) {
         const taskResponse = await apiClient.get<Task>(`${TASKS_URL}/${id}`)
+        setUsers(taskResponse.data.project?.members ?? [])
 
         setTask({
           ...taskResponse.data,
@@ -56,8 +56,6 @@ export function useTaskDialog(id?: string) {
     if (!value) {
       valueToSend = useTaskStore.getState().task?.[name as keyof Task]
     }
-
-    console.log("valueToSend", valueToSend, name, value)
 
     const response = await apiClient.patch(`/tasks/${id}`, {
       [name]: value ?? valueToSend,

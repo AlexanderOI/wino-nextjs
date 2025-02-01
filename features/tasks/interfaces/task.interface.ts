@@ -1,19 +1,20 @@
 import { User } from "@/features/user/interfaces/user.interface"
 import { ColumnTask } from "./column.interface"
+import { Project } from "@/features/project/interfaces/project.interface"
 
 export interface Task {
   _id: string
   name: string
   description: string
-  columnId: string
-  column: ColumnTask
-  assignedToId?: string
-  assignedTo?: User
-  order: number
-  projectId: string
   startDate: Date
   endDate: Date
-  createdAt: Date
-  updatedAt: Date
-  __v: number
+  order: number
+  projectId: string
+  columnId: string
+  createdAt: string
+  updatedAt: string
+  assignedToId: string
+  column: ColumnTask
+  assignedTo: User
+  project: Project
 }
