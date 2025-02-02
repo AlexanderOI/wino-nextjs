@@ -8,7 +8,7 @@ import { ToggleInput } from "@/components/common/form/toggle-input"
 
 import { useTaskStore } from "../../store/task.store"
 import { Task } from "../../interfaces/task.interface"
-
+import { useState } from "react"
 interface Props {
   sendChanges: (
     name: string,
@@ -18,6 +18,10 @@ interface Props {
 }
 
 export default function DialogTaskContent({ sendChanges }: Props) {
+  const [isUpdated, setIsUpdated] = useState({
+    name: false,
+    description: false,
+  })
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
 
@@ -28,12 +32,13 @@ export default function DialogTaskContent({ sendChanges }: Props) {
     sendChange?: boolean
   ) => {
     const { name, value } = event.target
-    if (value === task[name as keyof Task]) return
-
     updateTaskField(name, value)
 
-    if (sendChange) {
+    setIsUpdated((prev) => ({ ...prev, [name]: true }))
+
+    if (sendChange && isUpdated[name as keyof typeof isUpdated]) {
       sendChanges(name, true, value)
+      setIsUpdated((prev) => ({ ...prev, [name]: false }))
     }
   }
 

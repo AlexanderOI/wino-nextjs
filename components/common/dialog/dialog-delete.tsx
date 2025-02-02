@@ -53,7 +53,7 @@ export function DialogDelete({
         toast({
           title: "Deleted",
           description: "Item has been deleted successfully",
-          duration: 1000,
+          duration: 1500,
           variant: "destructive",
         })
       }
@@ -62,6 +62,7 @@ export function DialogDelete({
         title: "Error",
         description: "Failed to delete item",
         variant: "destructive",
+        duration: 1500,
       })
     }
   }

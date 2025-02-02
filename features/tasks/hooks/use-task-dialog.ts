@@ -65,12 +65,14 @@ export function useTaskDialog(id?: string) {
       toast({
         title: "Task updated successfully",
         description: "Task updated successfully",
+        duration: 1500,
       })
     } else {
       toast({
         title: "Failed to update task",
         description: "Failed to update task",
         variant: "destructive",
+        duration: 1500,
       })
     }
   }

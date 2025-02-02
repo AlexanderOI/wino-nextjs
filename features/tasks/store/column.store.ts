@@ -8,11 +8,12 @@ interface ColumnStore {
   projectId: string
   setColumns: (columns: ColumnData[]) => void
   fetchColumns: (projectId: string) => Promise<void>
-  addColumn: (name: string) => Promise<void>
-  updateColumnTitle: (columnId: string, newTitle: string) => Promise<void>
+  addColumn: (name: string, color: string) => Promise<void>
+  updateColumn: (columnId: string, name?: string, color?: string) => Promise<void>
   deleteColumn: (columnId: string) => Promise<void>
   addTask: (columnId: string, name: string) => Promise<void>
   updateTask: (columnId: string, taskId: string, newName: string) => Promise<void>
+
   deleteTask: (taskId: string) => Promise<void>
   reorderTasks: (columnId: string, tasks: Task[]) => Promise<void>
   moveTask: (
@@ -36,12 +37,10 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
     set({ columns: response.data })
   },
 
-  addColumn: async (name: string) => {
+  addColumn: async (name: string, color: string) => {
     const response = await apiClient.post<ColumnData>(
       `/columns/project/${get().projectId}`,
-      {
-        name,
-      }
+      { name, color }
     )
     if (response.status === 201) {
       set((state) => ({
@@ -50,14 +49,18 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
     }
   },
 
-  updateColumnTitle: async (columnId: string, newTitle: string) => {
+  updateColumn: async (columnId: string, name?: string, color?: string) => {
     const response = await apiClient.patch<ColumnData>(`/columns/${columnId}`, {
-      name: newTitle,
+      name,
+      color,
     })
+
     if (response.status === 200) {
       set((state) => ({
         columns: state.columns.map((col) =>
-          col._id === columnId ? { ...col, name: newTitle } : col
+          col._id === columnId
+            ? { ...col, name: name ?? col.name, color: color ?? col.color }
+            : col
         ),
       }))
     }

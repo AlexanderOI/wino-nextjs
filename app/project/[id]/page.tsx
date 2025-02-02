@@ -1,12 +1,18 @@
-import { Task } from "@/app/tasks/[projectId]/page"
-import { CardHeaderPage } from "@/components/common/card-header-page"
-import { Card, CardContent } from "@/components/ui/card"
-import { TypographyH1, TypographyH2, TypographyP } from "@/components/ui/typography"
-import { PROJECTS_URL, TASKS_URL } from "@/constants/routes"
-import DataTableUsersTeam from "@/features/project/components/users-team-table"
-import { Project } from "@/features/project/intefaces/project.inteface"
-import apiClientServer from "@/utils/api-client-server"
+import { Button } from "@/components/ui/button"
+import { Calendar, Users } from "lucide-react"
+import { Project } from "@/features/project/interfaces/project.interface"
+import { TASKS_URL } from "@/constants/routes"
+import { PROJECTS_URL } from "@/constants/routes"
 import { notFound } from "next/navigation"
+import { format, isValid } from "date-fns"
+import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
+import { Task } from "@/features/tasks/interfaces/task.interface"
+import { CardTables } from "@/features/project/components/page/card-tables"
+import { CardProgress } from "@/features/project/components/page/card-progress"
+import { CardDetails } from "@/features/project/components/page/card-details"
+import { CardRecentActivity } from "@/features/project/components/page/card-recent-activity"
+import apiClientServer from "@/utils/api-client-server"
+import { Activity } from "@/features/tasks/interfaces/activity.interface"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -15,68 +21,69 @@ interface Props {
 export default async function ProjectPage({ params }: Props) {
   let project: Project | null = null
   let tasks: Task[] = []
+  let columns: ColumnTask[] = []
+  let activities: Activity[] = []
 
   try {
     const { id } = await params
-    const projectResponse = await apiClientServer.get<Project>(`${PROJECTS_URL}/${id}`)
-    project = projectResponse.data
+    const projectResponse = await apiClientServer.get<Project>(
+      `${PROJECTS_URL}/${id}?withMembers=true`
+    )
+    project = {
+      ...projectResponse.data,
+      startDate: new Date(projectResponse.data.startDate),
+      endDate: new Date(projectResponse.data.endDate),
+    }
 
     const tasksResponse = await apiClientServer.get<Task[]>(`${TASKS_URL}/project/${id}`)
     tasks = tasksResponse.data
+
+    const columnsResponse = await apiClientServer.get<ColumnTask[]>(
+      `/columns/project/${id}`
+    )
+    columns = columnsResponse.data
+
+    const resentActivitiesResponse = await apiClientServer.get<Activity[]>(
+      `tasks/project/${id}/activity`
+    )
+    activities = resentActivitiesResponse.data
   } catch (error) {
     notFound()
   }
 
   return (
-    <div className="h-full">
-      <CardHeaderPage>
-        <TypographyH1>Project: {project.name}</TypographyH1>
-      </CardHeaderPage>
-
-      <div className="flex gap-4">
-        <Card className="w-8/12">
-          <CardContent className="h-full">
-            <DataTableUsersTeam users={project.usersTeam} />
-          </CardContent>
-        </Card>
-
-        <div className="flex flex-col gap-4 w-4/12">
-          <Card>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <TypographyH2>Project: {project.name}</TypographyH2>
-                <TypographyP>Description: {project.description}</TypographyP>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="h-full">
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <TypographyH2>Recent Tasks</TypographyH2>
-
-                {tasks.map((task) => (
-                  <TaskCard key={task._id} task={task} />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+    <div className="flex flex-col gap-6 p-6">
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold mb-2">New Project Test</h1>
+          <div className="flex items-center gap-4 text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              <span>6 members</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              <span>
+                {isValid(project?.startDate)
+                  ? format(project?.startDate, "MMM dd, yyyy")
+                  : "No start date"}
+              </span>
+            </div>
+          </div>
         </div>
+        {/* <Button>Add Member</Button> */}
       </div>
-    </div>
-  )
-}
 
-export function TaskCard({ task }: { task: Task }) {
-  return (
-    <div className="flex justify-between gap-2">
-      <div>
-        <TypographyP>{task.name}</TypographyP>
-        <TypographyP className="text-sm">{task.description}</TypographyP>
-      </div>
-      <div>
-        <TypographyP>{task.assignedTo?.name}</TypographyP>
-        <TypographyP>{task.columnId.name}</TypographyP>
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <CardProgress tasks={tasks} columns={columns} />
+          <CardTables tasks={tasks} project={project} />
+        </div>
+
+        <div className="space-y-6">
+          <CardDetails project={project} />
+          <CardRecentActivity activities={activities} />
+        </div>
       </div>
     </div>
   )
