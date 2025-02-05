@@ -55,7 +55,7 @@ export default async function ProjectPage({ params }: Props) {
     <div className="flex flex-col gap-6 p-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold mb-2">New Project Test</h1>
+          <h1 className="text-2xl font-bold mb-2">{project?.name}</h1>
           <div className="flex items-center gap-4 text-muted-foreground">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />

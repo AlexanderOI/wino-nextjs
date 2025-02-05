@@ -5,6 +5,8 @@ export const config = {
     "/dashboard/:path*",
     "/roles/:path*",
     "/company/:path*",
+    "/project/:path*",
+    "/manage-projects/:path*",
     "/users/:path*",
     "/tasks/:path*",
   ],

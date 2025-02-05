@@ -17,16 +17,19 @@ interface Props {
   className?: string
   widthMinutes?: boolean
   onPopoverClose?: (hasChanges: boolean) => void
+  onChange?: (date: Date | undefined) => void
 }
 
 export function DatePicker({
   name,
   selected,
   onSelect,
+  onChange,
   className,
   widthMinutes = false,
 }: Props) {
   const handleDateSelect = (newDate: Date | undefined) => {
+    console.log(selected, typeof selected)
     if (newDate) {
       const updatedDate = new Date(
         newDate.getFullYear(),
@@ -36,6 +39,7 @@ export function DatePicker({
         isNaN(selected?.getMinutes() ?? 0) ? 0 : selected?.getMinutes() ?? 0
       )
       onSelect?.(name, updatedDate)
+      onChange?.(updatedDate)
     }
   }
 
@@ -44,6 +48,7 @@ export function DatePicker({
     updatedDate.setHours(newHour)
     updatedDate.setMinutes(newMinute)
     onSelect?.(name, updatedDate)
+    onChange?.(updatedDate)
   }
 
   return (
@@ -52,14 +57,14 @@ export function DatePicker({
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal mt-1 mb-2",
+            "w-full justify-start text-left font-normal mt-1 mb-2 bg-transparent",
             !selected && "text-muted-foreground",
             className
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {selected && selected instanceof Date && !isNaN(selected.getTime()) ? (
-            format(selected, "PPP HH:mm")
+            format(selected, widthMinutes ? "PPP HH:mm" : "PPP")
           ) : (
             <span>Pick a date</span>
           )}
