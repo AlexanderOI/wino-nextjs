@@ -42,7 +42,7 @@ import { cn } from "@/lib/utils"
 const itemsWorkspace = [
   {
     title: "Dashboard",
-    url: "/",
+    url: "/dashboard",
     icon: Home,
   },
   {
@@ -116,7 +116,11 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <Link
                       href={item.url}
-                      className={pathname === item.url ? "bg-purple-deep" : ""}
+                      className={
+                        pathname === item.url || pathname.includes(item.url + "/")
+                          ? "bg-purple-deep"
+                          : ""
+                      }
                     >
                       <item.icon />
                       <span>{item.title}</span>
@@ -150,7 +154,11 @@ export function AppSidebar() {
                     {project?._id ? (
                       <Link
                         href={`${item.url}/${project?._id}`}
-                        className={pathname === item.url ? "bg-purple-deep" : ""}
+                        className={
+                          pathname === item.url || pathname.includes(item.url + "/")
+                            ? "bg-purple-deep"
+                            : ""
+                        }
                       >
                         <item.icon />
                         <span>{item.title}</span>
