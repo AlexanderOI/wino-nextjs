@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button"
-import { Calendar, Users } from "lucide-react"
+import { buttonVariants } from "@/components/ui/button"
+import { Calendar, Pencil, Users } from "lucide-react"
 import { Project } from "@/features/project/interfaces/project.interface"
 import { TASKS_URL } from "@/constants/routes"
 import { PROJECTS_URL } from "@/constants/routes"
@@ -13,6 +13,7 @@ import { CardDetails } from "@/features/project/components/page/card-details"
 import { CardRecentActivity } from "@/features/project/components/page/card-recent-activity"
 import apiClientServer from "@/utils/api-client-server"
 import { Activity } from "@/features/tasks/interfaces/activity.interface"
+import Link from "next/link"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -71,7 +72,14 @@ export default async function ProjectPage({ params }: Props) {
             </div>
           </div>
         </div>
-        {/* <Button>Add Member</Button> */}
+
+        <Link
+          href={`/manage-projects/edit/${project._id}`}
+          className={buttonVariants({ variant: "purple", className: "gap-2" })}
+        >
+          <Pencil className="w-4 h-4" />
+          Edit Project
+        </Link>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">

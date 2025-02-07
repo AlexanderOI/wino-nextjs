@@ -1,3 +1,4 @@
+import { DonutChart } from "@/components/charts/donut-chart"
 import {
   Card,
   CardContent,
@@ -5,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { TypographyP } from "@/components/ui/typography"
 import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
 import { Task } from "@/features/tasks/interfaces/task.interface"
 
@@ -34,15 +35,32 @@ export function CardProgress({ tasks, columns }: Props) {
               <span className="text-sm font-medium">Overall Progress</span>
               <span className="text-sm text-muted-foreground">{tasks.length} tasks</span>
             </div>
-            <Progress value={65} />
-          </div>
-          <div className="flex justify-between gap-4 pt-4">
-            {Object.entries(tasksGroupedByColumn).map(([columnName, tasks]) => (
-              <div key={columnName}>
-                <h3 className="text-lg font-medium">{columnName}</h3>
-                <p>{tasks.length} tasks</p>
+
+            <div className="flex justify-center items-center gap-4 ">
+              <DonutChart
+                data={columns.map((column) => ({
+                  name: column.name,
+                  value: tasksGroupedByColumn[column.name].length,
+                  fill: column.color,
+                }))}
+                centerText={tasks.length.toString()}
+                bottomText="Tasks"
+                className="m-0 w-8/12 h-full"
+              />
+              <div className="flex flex-col gap-4">
+                {Object.entries(tasksGroupedByColumn).map(([columnName, tasks]) => (
+                  <div key={columnName} className="flex items-center gap-2">
+                    <div
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: tasks[0].column.color }}
+                    />
+                    <TypographyP className="text-sm">
+                      {columnName} ( {tasks.length} )
+                    </TypographyP>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </CardContent>

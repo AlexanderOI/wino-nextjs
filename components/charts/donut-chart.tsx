@@ -1,3 +1,4 @@
+"use client"
 import { Label, Pie, PieChart } from "recharts"
 
 import {
@@ -6,6 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "../ui/chart"
+import { cn } from "@/lib/utils"
 
 const chartConfig = {
   other: {
@@ -22,11 +24,15 @@ interface Props {
   }[]
   centerText: string
   bottomText: string
+  className?: string
 }
 
-export default function DonutChart({ data, centerText, bottomText }: Props) {
+export function DonutChart({ data, centerText, bottomText, className }: Props) {
   return (
-    <ChartContainer className="mx-auto aspect-square max-h-[250px]" config={chartConfig}>
+    <ChartContainer
+      className={cn("mx-auto aspect-square max-h-[250px]", className)}
+      config={chartConfig}
+    >
       <PieChart>
         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
         <Pie data={data} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5}>

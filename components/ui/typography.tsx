@@ -6,8 +6,14 @@ export function TypographyH2({ children }: { children: React.ReactNode }) {
   return <h2 className="text-xl font-bold">{children}</h2>
 }
 
-export function TypographyH3({ children }: { children: React.ReactNode }) {
-  return <h3 className="text-lg font-bold">{children}</h3>
+export function TypographyH3({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return <h3 className={`text-lg font-bold ${className}`}>{children}</h3>
 }
 
 export function TypographyH4({ children }: { children: React.ReactNode }) {

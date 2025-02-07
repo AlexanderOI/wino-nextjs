@@ -20,6 +20,7 @@ import { Tooltip } from "@/components/ui/tooltip"
 import { TooltipContent } from "@/components/ui/tooltip"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DropdownAction } from "./ui/dropdown-action"
 
 export default async function ManageProjects() {
   const response = await apiClientServer.get<Project[]>(PROJECTS_URL)
@@ -86,26 +87,7 @@ async function ProjectCard({ project }: { project: Project }) {
               {project.description}
             </p>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>View Details</DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href={`manage-projects/edit/${project._id}`}>Edit Project</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
-                Delete Project
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DropdownAction id={project._id} />
         </div>
 
         <div className="flex-grow flex flex-col justify-end">

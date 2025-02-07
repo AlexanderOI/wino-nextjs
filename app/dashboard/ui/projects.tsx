@@ -8,15 +8,7 @@ import { Button } from "@/components/ui/button"
 import { TypographyH2 } from "@/components/ui/typography"
 import { ProjectWithTasks } from "../page"
 import { Task } from "@/features/tasks/interfaces/task.interface"
-import { Label, Pie, PieChart } from "recharts"
-
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
-import DonutChart from "@/components/charts/donut-chart"
+import { DonutChart } from "@/components/charts/donut-chart"
 
 interface Props {
   projects: ProjectWithTasks[]
@@ -102,7 +94,7 @@ export default function ProjectsDashboard({ projects }: Props) {
                 </div>
               </>
             ) : (
-              <div className="text-center text-sm text-muted-foreground">
+              <div className="text-center text-sm text-muted-foreground mt-4">
                 No tasks yet
               </div>
             )}
