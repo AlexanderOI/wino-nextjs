@@ -11,7 +11,7 @@ import { CardTables } from "@/features/project/components/page/card-tables"
 import { CardProgress } from "@/features/project/components/page/card-progress"
 import { CardDetails } from "@/features/project/components/page/card-details"
 import { CardRecentActivity } from "@/features/project/components/page/card-recent-activity"
-import apiClientServer from "@/utils/api-client-server"
+import { apiClientServer } from "@/utils/api-client-server"
 import { Activity } from "@/features/tasks/interfaces/activity.interface"
 import Link from "next/link"
 

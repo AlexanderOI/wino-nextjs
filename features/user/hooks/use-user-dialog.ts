@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import { ROLES_URL, USERS_URL } from "@/constants/routes"
 import { Role } from "@/features/roles/interfaces/role.interface"
 interface UserDialog {

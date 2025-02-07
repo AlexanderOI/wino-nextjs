@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import { COMPANY_URL } from "@/constants/routes"
 import { useCompanyStore } from "@/features/company/stores/company.store"
 import { Company } from "@/features/company/interfaces/company.interface"

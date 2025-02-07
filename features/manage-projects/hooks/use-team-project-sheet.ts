@@ -3,7 +3,7 @@ import { USERS_URL } from "@/constants/routes"
 import { useToast } from "@/components/ui/use-toast"
 import { PROJECTS_URL } from "@/constants/routes"
 import { useCallback } from "react"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import { useState } from "react"
 
 import { Project } from "@/features/project/interfaces/project.interface"

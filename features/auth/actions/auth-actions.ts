@@ -1,7 +1,7 @@
 "use server"
 
 import { BACKEND_URL } from "@/constants/routes"
-import apiClientServer from "@/utils/api-client-server"
+import { apiClientServer } from "@/utils/api-client-server"
 import { getSession } from "@/utils/get-session"
 
 export const refreshToken = async () => {

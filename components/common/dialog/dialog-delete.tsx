@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useToast } from "@/components/ui/use-toast"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 

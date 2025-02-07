@@ -1,7 +1,7 @@
 import { HeaderNav } from "@/components/HeaderNav"
 import { Company } from "@/features/company/interfaces/company.interface"
 import { PermissionServer } from "@/features/permission/permission-server"
-import apiClientServer from "@/utils/api-client-server"
+import { apiClientServer } from "@/utils/api-client-server"
 import { getSession } from "@/utils/get-session"
 
 export async function Main({ children }: { children: React.ReactNode }) {

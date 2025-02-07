@@ -20,4 +20,4 @@ apiClientServer.interceptors.request.use(
   }
 )
 
-export default apiClientServer
+export { apiClientServer }

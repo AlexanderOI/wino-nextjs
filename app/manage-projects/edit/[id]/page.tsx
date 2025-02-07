@@ -3,8 +3,9 @@ import FormProject from "../../ui/form"
 import { Project } from "@/features/project/interfaces/project.interface"
 import { PROJECTS_URL } from "@/constants/routes"
 import { User } from "@/features/user/interfaces/user.interface"
-import apiClientServer from "@/utils/api-client-server"
+import { apiClientServer } from "@/utils/api-client-server"
 import { notFound } from "next/navigation"
+import { TypographyH1 } from "@/components/ui/typography"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -31,10 +32,8 @@ export default async function EditPage({ params }: Props) {
   }
 
   return (
-    <div className="p-6 flex flex-col gap-4 items-start justify-center">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Edit Project</h1>
-      </div>
+    <div className="p-6 space-y-6">
+      <TypographyH1>Edit Project</TypographyH1>
       <FormProject users={users} project={project} />
     </div>
   )

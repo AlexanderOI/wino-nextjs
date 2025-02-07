@@ -19,7 +19,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-export default function SelectSimple({
+export function SelectSimple({
   name,
   onValueChange,
   onChange,

@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { User } from "@/features/user/interfaces/user.interface"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Project } from "@/features/project/interfaces/project.interface"
-import SelectSimple from "@/components/common/form/select-simple"
+import { SelectSimple } from "@/components/common/form/select-simple"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -27,7 +27,7 @@ import {
 import { useRouter } from "next/navigation"
 import { PROJECTS_URL } from "@/constants/routes"
 import { toast } from "@/components/ui/use-toast"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 const statusOptions = ["Pending", "In Progress", "Completed"]
 
 const projectSchema = z.object({

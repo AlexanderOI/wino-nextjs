@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import { Clock, MoreVertical, Plus, Search } from "lucide-react"
-import apiClientServer from "@/utils/api-client-server"
+import { apiClientServer } from "@/utils/api-client-server"
 import { Project } from "@/features/project/interfaces/project.interface"
 import { PROJECTS_URL, TASKS_URL } from "@/constants/routes"
 
@@ -21,6 +21,7 @@ import { TooltipContent } from "@/components/ui/tooltip"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownAction } from "./ui/dropdown-action"
+import { TypographyH1 } from "@/components/ui/typography"
 
 export default async function ManageProjects() {
   const response = await apiClientServer.get<Project[]>(PROJECTS_URL)
@@ -30,7 +31,7 @@ export default async function ManageProjects() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Manage Projects</h1>
+          <TypographyH1>Manage Projects</TypographyH1>
           <p className="text-muted-foreground mt-1">
             Track and manage your active projects
           </p>

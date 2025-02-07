@@ -21,6 +21,7 @@ import { useTaskStore } from "@/features/tasks/store/task.store"
 import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
 import { SkeletonTaskBoard } from "@/features/tasks/components/skeleton/skeleton-task-board"
 import ColorPicker from "@/components/ui/color-picker"
+import { TypographyH1 } from "@/components/ui/typography"
 
 export default function TasksPage() {
   const columns = useColumnStore((state) => state.columns)
@@ -112,15 +113,15 @@ export default function TasksPage() {
   if (isLoading) return <SkeletonTaskBoard />
 
   return (
-    <div className="h-full overflow-hidden">
-      <div className="flex justify-between items-center mb-4 px-4 pt-2">
-        <h1 className="text-2xl font-bold">Add your tasks</h1>
+    <div className="h-full overflow-hidden p-6 pt-4">
+      <div className="flex justify-between items-center mb-4">
+        <TypographyH1>Manage your tasks</TypographyH1>
 
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
           <div className="flex">
             <Input
               placeholder="Add a new column"
-              className="w-[200px] rounded-r-none"
+              className="w-[200px] rounded-r-none m-0"
               name="title"
               onChange={(e) =>
                 setEditedColumn({ ...editedColumn, title: e.target.value })
@@ -129,11 +130,13 @@ export default function TasksPage() {
             <ColorPicker
               value={editedColumn.color}
               onChange={(color) => setEditedColumn({ ...editedColumn, color })}
-              className="rounded-l-none"
+              className="rounded-l-none m-0"
             />
           </div>
 
-          <Button type="submit">Add Column</Button>
+          <Button type="submit" variant="purple">
+            Add Column
+          </Button>
         </form>
       </div>
 
@@ -154,7 +157,7 @@ export default function TasksPage() {
           setOverId(null)
         }}
       >
-        <div className="flex space-x-4 overflow-x-auto px-4 pb-4">
+        <div className="flex space-x-4 overflow-x-auto">
           <SortableContext
             items={columns.map((col) => col._id)}
             strategy={horizontalListSortingStrategy}

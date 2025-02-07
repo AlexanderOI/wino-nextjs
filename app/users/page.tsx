@@ -5,7 +5,8 @@ import { CardHeaderPage } from "@/components/common/card-header-page"
 import { DialogUser } from "@/features/user/components/dialog-user"
 import { DataTableUsers } from "@/features/user/components/data-table-user"
 import { User } from "@/features/user/interfaces/user.interface"
-import apiClientServer from "@/utils/api-client-server"
+import { apiClientServer } from "@/utils/api-client-server"
+import { TypographyH1 } from "@/components/ui/typography"
 
 export default async function UsersPage() {
   const response = await apiClientServer.get<User[]>(USERS_URL)
@@ -14,14 +15,14 @@ export default async function UsersPage() {
   return (
     <div className="h-full">
       <CardHeaderPage>
-        <h2>User Management</h2>
+        <TypographyH1>Manage Users</TypographyH1>
 
         <DialogUser>
-          <Button className="bg-purple-light text-white">Create User</Button>
+          <Button variant="purple">Create User</Button>
         </DialogUser>
       </CardHeaderPage>
 
-      <Card className="dark:bg-dark-800 rounded h-5/6 overflow-y-auto">
+      <Card>
         <CardContent className="h-full">
           <DataTableUsers users={users} />
         </CardContent>

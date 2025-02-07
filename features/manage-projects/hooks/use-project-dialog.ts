@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import { PROJECTS_URL, USERS_URL } from "@/constants/routes"
 import { Project } from "@/features/project/interfaces/project.interface"
 import { User } from "@/features/user/interfaces/user.interface"

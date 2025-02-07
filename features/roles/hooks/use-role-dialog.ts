@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/components/ui/use-toast"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import { PERMISSIONS_URL, ROLES_URL } from "@/constants/routes"
 import { Permissions, Role } from "@/features/roles/interfaces/role.interface"
 

@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import { ColumnData } from "../interfaces/column.interface"
 import { Task } from "../interfaces/task.interface"
 

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react"
 import { useToast } from "@/components/ui/use-toast"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import { TASKS_URL, USERS_URL } from "@/constants/routes"
 import { useColumnStore } from "../store/column.store"
 import { User } from "@/features/user/interfaces/user.interface"

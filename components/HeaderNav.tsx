@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
-import apiClient from "@/utils/api-client"
+import { apiClient } from "@/utils/api-client"
 import {
   DropdownMenu,
   DropdownMenuContent,
