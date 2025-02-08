@@ -1,12 +1,17 @@
 "use client"
+
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+
+import { useEffect, useState } from "react"
+import { signIn, useSession } from "next-auth/react"
+import { useForm } from "react-hook-form"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { signIn, useSession } from "next-auth/react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { TypographyH2 } from "@/components/ui/typography"
 
 export default function Login() {
   const router = useRouter()
@@ -40,19 +45,20 @@ export default function Login() {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen-40">
-      <div className=" flex flex-col justify-center items-center w-full max-w-[30rem] py-7 border bg-dark-800 rounded-xl">
-        <div className="sm:w-full sm:max-w-sm">
-          <div className="flex justify-center items-center text-3xl md:text-4xl lg:text-5xl border-b-2 mb-5 pb-2">
-            <span className=" text-sky-700">{"<"}</span>
+      <Card className="w-full max-w-[30rem] p-5">
+        <CardHeader className="flex justify-center items-center flex-col gap-y-2">
+          <div className="flex justify-center items-center text-3xl md:text-4xl lg:text-5xl border-b-2 mb-5 pb-2 w-full">
+            <span className="text-purple-light">{"<"}</span>
             WINO
-            <span className=" text-sky-700">/{">"}</span>
+            <span className="text-purple-light">{"/>"}</span>
           </div>
-          <h2 className="text-center text-2xl leading-9 tracking-tight">Login</h2>
-        </div>
 
-        <div className="mt-5 w-full max-w-96">
-          <form className="space-y-6" onSubmit={onSubmitRegister}>
-            <Label className=" py-8">
+          <TypographyH2>Login to your account</TypographyH2>
+        </CardHeader>
+
+        <CardContent>
+          <form className="space-y-4" onSubmit={onSubmitRegister}>
+            <Label>
               Username
               <Input
                 {...register("userName", { required: true })}
@@ -73,19 +79,19 @@ export default function Login() {
 
             {passwordError && <span className="text-red-500">{passwordError}</span>}
 
-            <div>
-              <Button className="w-full mt-4">Login</Button>
-            </div>
+            <Button variant="purple" className="w-full">
+              Login
+            </Button>
           </form>
-        </div>
+        </CardContent>
 
-        <div className="flex text-center mt-2">
+        <CardFooter className="flex justify-center items-center">
           <p>Don't have an account?</p>
-          <Link href="/auth/register" className={`px-3 text-sky-400 hover:underline`}>
+          <Link href="/auth/register" className="px-3 text-purple-500 hover:underline">
             Register
           </Link>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   )
 }

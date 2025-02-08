@@ -25,34 +25,42 @@ export function CardProgress({ tasks, columns }: Props) {
   return (
     <Card>
       <CardHeader className="flex gap-2">
-        <CardTitle className="text-lg font-medium">Project Progress</CardTitle>
-        <CardDescription>State count</CardDescription>
+        <CardTitle className="text-lg font-medium text-center w-full">
+          Project Progress
+        </CardTitle>
       </CardHeader>
+
       <CardContent>
         <div className="space-y-4">
           <div>
-            <div className="flex justify-between mb-2">
-              <span className="text-sm font-medium">Overall Progress</span>
-              <span className="text-sm text-muted-foreground">{tasks.length} tasks</span>
-            </div>
-
             <div className="flex justify-center items-center gap-4 ">
-              <DonutChart
-                data={columns.map((column) => ({
-                  name: column.name,
-                  value: tasksGroupedByColumn[column.name].length,
-                  fill: column.color,
-                }))}
-                centerText={tasks.length.toString()}
-                bottomText="Tasks"
-                className="m-0 w-8/12 h-full"
-              />
+              {tasks.length > 0 ? (
+                <DonutChart
+                  data={columns.map((column) => ({
+                    name: column.name,
+
+                    value: tasksGroupedByColumn[column.name].length ?? 0,
+                    fill: column.color,
+                  }))}
+                  centerText={tasks.length.toString()}
+                  bottomText="Tasks"
+                  className="m-0 w-5/12 h-full"
+                />
+              ) : (
+                <div className="flex flex-col gap-4 w-5/12 h-full justify-center items-center">
+                  <TypographyP className="text-sm ">No tasks</TypographyP>
+                </div>
+              )}
               <div className="flex flex-col gap-4">
                 {Object.entries(tasksGroupedByColumn).map(([columnName, tasks]) => (
                   <div key={columnName} className="flex items-center gap-2">
                     <div
                       className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: tasks[0].column.color }}
+                      style={{
+                        backgroundColor: columns.find(
+                          (column) => column.name === columnName
+                        )?.color,
+                      }}
                     />
                     <TypographyP className="text-sm">
                       {columnName} ( {tasks.length} )

@@ -11,36 +11,38 @@ import { Task } from "@/features/tasks/interfaces/task.interface"
 import { DonutChart } from "@/components/charts/donut-chart"
 
 interface Props {
-  projects: ProjectWithTasks[]
+  projects?: ProjectWithTasks[]
 }
 
 export default function ProjectsDashboard({ projects }: Props) {
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0)
-  const currentProject = projects[currentProjectIndex]
+  const currentProject = projects?.[currentProjectIndex]
 
   const handlePrevProject = () => {
+    if (!projects) return
     setCurrentProjectIndex((prevIndex) =>
       prevIndex > 0 ? prevIndex - 1 : projects.length - 1
     )
   }
 
   const handleNextProject = () => {
+    if (!projects) return
     setCurrentProjectIndex((prevIndex) =>
       prevIndex < projects.length - 1 ? prevIndex + 1 : 0
     )
   }
 
-  const tasks = currentProject.tasks
+  const tasks = currentProject?.tasks
 
   const columns = [
-    ...new Map(tasks.map((task) => [task.column._id, task.column])).values(),
+    ...new Map(tasks?.map((task) => [task.column._id, task.column])).values(),
   ]
 
   const tasksGroupedByColumn = columns.reduce((groups, column) => {
-    const columnTasks = tasks.filter((task) => task.column._id === column._id)
+    const columnTasks = tasks?.filter((task) => task.column._id === column._id)
     groups[column.name] = columnTasks
     return groups
-  }, {} as Record<string, Task[]>)
+  }, {} as Record<string, Task[] | undefined>)
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function ProjectsDashboard({ projects }: Props) {
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <TypographyH2>{currentProject.name}</TypographyH2>
+        <TypographyH2>{currentProject?.name ?? "No existing project"}</TypographyH2>
         <Button
           variant="ghost"
           size="icon"
@@ -69,14 +71,13 @@ export default function ProjectsDashboard({ projects }: Props) {
           <CardHeader className="flex flex-col items-center pb-0">
             <TypographyH2>Tasks by column</TypographyH2>
           </CardHeader>
-
           <CardContent className="flex-1 py-0">
-            {tasks.length > 0 ? (
+            {tasks && tasks.length > 0 ? (
               <>
                 <DonutChart
                   data={columns.map((column) => ({
                     name: column.name,
-                    value: tasksGroupedByColumn[column.name].length,
+                    value: tasksGroupedByColumn?.[column.name]?.length ?? 0,
                     fill: column.color,
                   }))}
                   centerText={tasks.length.toString()}
@@ -108,13 +109,13 @@ export default function ProjectsDashboard({ projects }: Props) {
 
           <CardContent className="space-y-4">
             <div className="space-y-4">
-              {currentProject.activities.length > 0 ? (
-                currentProject.activities.map((activity, index) => (
+              {currentProject && currentProject?.activities.length > 0 ? (
+                currentProject?.activities.map((activity, index) => (
                   <div key={index} className="flex flex-col items-start">
                     <div className="flex items-center gap-2">
                       <div
                         className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: activity.task.column.color }}
+                        style={{ backgroundColor: activity.column.color }}
                       />
 
                       <p className="text-sm">{activity.task.name}</p>

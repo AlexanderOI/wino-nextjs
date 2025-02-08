@@ -1,9 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Activity } from "@/features/tasks/interfaces/activity.interface"
-import { CheckCircle2 } from "lucide-react"
-import { PlayCircle } from "lucide-react"
-import { Clock } from "lucide-react"
-import { PauseCircle } from "lucide-react"
 
 interface Props {
   activities: Activity[]
@@ -22,10 +18,10 @@ export function CardRecentActivity({ activities }: Props) {
               <div className="flex items-center gap-2">
                 <div
                   className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: activity.task.column.color }}
+                  style={{ backgroundColor: activity.column?.color }}
                 />
 
-                <p className="text-sm">{activity.task.name}</p>
+                <p className="text-sm">{activity.task?.name}</p>
               </div>
 
               <p className="text-xs text-muted-foreground">{activity.text}</p>

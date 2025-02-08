@@ -1,14 +1,17 @@
 "use client"
-import { FormField } from "@/components/FormField"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ArrowRight } from "lucide-react"
-import { useSession } from "next-auth/react"
+
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+
 import { useState } from "react"
+import { signIn, useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
+
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { TypographyH2 } from "@/components/ui/typography"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 
 interface FormErrors {
   userName: string[]
@@ -45,7 +48,12 @@ export default function Register() {
     })
 
     if (response.ok) {
-      router.push("/auth/login")
+      console.log(data)
+      const response = await signIn("credentials", {
+        userName: data.userName,
+        password: data.password,
+        redirect: false,
+      })
     } else {
       const responseErrors: FormErrors = await response.json()
       setFormErrors(responseErrors)
@@ -54,85 +62,75 @@ export default function Register() {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen-40">
-      <div className=" flex flex-col justify-center items-center w-full max-w-[30rem] py-7 border bg-dark-800 rounded-xl">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <div className="sm:w-full sm:max-w-sm">
-            <div className="flex justify-center items-center text-3xl md:text-4xl lg:text-5xl border-b-2 mb-5 pb-2">
-              <span className=" text-sky-700">{"<"}</span>
-              WINO
-              <span className=" text-sky-700">/{">"}</span>
-            </div>
-            <h2 className="text-center text-2xl leading-9 tracking-tight">
-              Create your account
-            </h2>
+      <Card className="w-full max-w-[30rem] p-5">
+        <CardHeader className="flex justify-center items-center flex-col gap-y-2">
+          <div className="flex justify-center items-center text-3xl md:text-4xl lg:text-5xl border-b-2 mb-5 pb-2 w-full">
+            <span className="text-purple-light">{"<"}</span>
+            WINO
+            <span className="text-purple-light">{"/>"}</span>
           </div>
-        </div>
 
-        <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={onSubmitRegister}>
-            <div className="mb-5">
-              <Label>
-                Username
-                <Input
-                  {...register("userName", { required: true })}
-                  name="userName"
-                  type="userName"
-                />
-                <FormError errors={formErrors.userName} />
-              </Label>
-            </div>
+          <TypographyH2>Create your account</TypographyH2>
+        </CardHeader>
 
-            <div className="mb-5">
-              <Label>
-                Email
-                <Input
-                  {...register("email", { required: true })}
-                  name="email"
-                  type="email"
-                />
-                <FormError errors={formErrors.email} />
-              </Label>
-            </div>
+        <CardContent>
+          <form className="space-y-4" onSubmit={onSubmitRegister}>
+            <Label>
+              Username
+              <Input
+                {...register("userName", { required: true })}
+                name="userName"
+                type="userName"
+              />
+              <FormError errors={formErrors.userName} />
+            </Label>
 
-            <div className="mb-5">
-              <Label>
-                Password
-                <Input
-                  {...register("password", { required: true })}
-                  name="password"
-                  type="password"
-                  autoComplete="off"
-                />
-                <FormError errors={formErrors.password} />
-              </Label>
-            </div>
+            <Label>
+              Email
+              <Input
+                {...register("email", { required: true })}
+                name="email"
+                type="email"
+              />
+              <FormError errors={formErrors.email} />
+            </Label>
 
-            <div className="mb-5">
-              <Label>
-                Confirm Password
-                <Input
-                  {...register("confirmPassword", { required: true })}
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="off"
-                />
-                <FormError errors={formErrors.confirmPassword} />
-              </Label>
-            </div>
+            <Label>
+              Password
+              <Input
+                {...register("password", { required: true })}
+                name="password"
+                type="password"
+                autoComplete="off"
+              />
+              <FormError errors={formErrors.password} />
+            </Label>
 
-            <div>
-              <Button className="w-full">Register</Button>
-            </div>
+            <Label>
+              Confirm Password
+              <Input
+                {...register("confirmPassword", { required: true })}
+                name="confirmPassword"
+                type="password"
+                autoComplete="off"
+              />
+              <FormError errors={formErrors.confirmPassword} />
+            </Label>
+
+            <Button variant="purple" className="w-full">
+              Register
+            </Button>
           </form>
-        </div>
+        </CardContent>
 
-        <div className="flex text-center mt-2">
+        <CardFooter className="flex justify-center items-center">
           <p>Already registered?</p>
-          <Link href="/auth/login" className={`px-3 text-sky-400 hover:underline`}>
+
+          <Link href="/auth/login" className="px-3 text-purple-500 hover:underline">
             Sign in
           </Link>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   )
 }
