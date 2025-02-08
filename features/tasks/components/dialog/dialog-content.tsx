@@ -9,6 +9,7 @@ import { ToggleInput } from "@/components/common/form/toggle-input"
 import { useTaskStore } from "../../store/task.store"
 import { Task } from "../../interfaces/task.interface"
 import { useState } from "react"
+import { useColumnStore } from "../../store/column.store"
 interface Props {
   sendChanges: (
     name: string,
@@ -24,6 +25,7 @@ export default function DialogTaskContent({ sendChanges }: Props) {
   })
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
+  const setOneTask = useColumnStore((state) => state.setOneTask)
 
   if (!task) return null
 
@@ -39,6 +41,7 @@ export default function DialogTaskContent({ sendChanges }: Props) {
     if (sendChange && isUpdated[name as keyof typeof isUpdated]) {
       sendChanges(name, true, value)
       setIsUpdated((prev) => ({ ...prev, [name]: false }))
+      setOneTask(task.columnId, task)
     }
   }
 

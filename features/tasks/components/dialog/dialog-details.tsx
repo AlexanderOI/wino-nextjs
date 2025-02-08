@@ -12,6 +12,7 @@ import { DatePicker } from "@/components/ui/date-picker"
 import { EditableField } from "@/components/common/form/EditableField"
 import { format, isValid } from "date-fns"
 import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
+import { useColumnStore } from "../../store/column.store"
 
 interface Props {
   users: User[]
@@ -26,6 +27,7 @@ interface Props {
 export default function DialogTaskDetails({ users, columns, sendChanges }: Props) {
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
+  const setOneTask = useColumnStore((state) => state.setOneTask)
   const { data: session } = useSession()
 
   if (!task) return null
@@ -39,6 +41,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
 
     if (send) {
       sendChanges("assignedToId", true, value)
+      setOneTask(task.columnId, task)
     }
   }
 
@@ -46,6 +49,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
     const column = columns.find((column) => column._id === value)
     updateTaskField("column", column)
     updateTaskField(name, column?._id)
+    setOneTask(value, task)
   }
 
   return (

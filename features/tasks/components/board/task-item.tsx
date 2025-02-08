@@ -8,6 +8,17 @@ import { cn } from "@/lib/utils"
 import { Trash2 } from "lucide-react"
 import { useTaskStore } from "../../store/task.store"
 import { Task } from "@/features/tasks/interfaces/task.interface"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 interface TaskItemProps {
   task: Task
   updateTask: (newContent: string) => void
@@ -20,6 +31,7 @@ export default function TaskItem({ task, updateTask, deleteTask }: TaskItemProps
 
   const [isEditing, setIsEditing] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
+  const [isDialogDeleteOpen, setIsDialogDeleteOpen] = useState(false)
 
   const [editContent, setEditContent] = useState(task.name)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -92,10 +104,37 @@ export default function TaskItem({ task, updateTask, deleteTask }: TaskItemProps
               {task.name}
             </p>
 
-            {isHovering && (
-              <button onClick={() => deleteTask(task._id)}>
-                <Trash2 size={20} />
-              </button>
+            {(isHovering || isDialogDeleteOpen) && (
+              <Dialog open={isDialogDeleteOpen} onOpenChange={setIsDialogDeleteOpen}>
+                <DialogTrigger asChild>
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setIsDialogDeleteOpen(true)
+                    }}
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Delete Task</DialogTitle>
+                  </DialogHeader>
+                  <DialogDescription>
+                    Are you sure you want to delete this task?
+                  </DialogDescription>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button variant="destructive" onClick={() => deleteTask(task._id)}>
+                        Delete
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             )}
           </div>
         )}

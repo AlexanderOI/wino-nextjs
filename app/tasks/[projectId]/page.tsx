@@ -123,6 +123,7 @@ export default function TasksPage() {
               placeholder="Add a new column"
               className="w-[200px] rounded-r-none m-0"
               name="title"
+              value={editedColumn.title}
               onChange={(e) =>
                 setEditedColumn({ ...editedColumn, title: e.target.value })
               }
