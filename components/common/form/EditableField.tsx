@@ -7,9 +7,11 @@ interface Props {
   onClose?: (name: string, wasChanged: boolean) => void
   viewElement?: React.ReactElement
   className?: string
+  disabled?: boolean
 }
+
 export const EditableField = memo(
-  ({ children, value, onClose, viewElement, className }: Props) => {
+  ({ children, value, onClose, viewElement, className, disabled = false }: Props) => {
     const [isEditing, setIsEditing] = useState(false)
     const [valueTest, setValueTest] = useState(value)
     const ref = useRef<HTMLDivElement>(null)
@@ -54,7 +56,7 @@ export const EditableField = memo(
         onClick={() => setIsEditing(true)}
         className={cn("cursor-text flex items-center w-full h-[40px]", className)}
       >
-        {isEditing && React.isValidElement(children)
+        {isEditing && !disabled && React.isValidElement(children)
           ? React.cloneElement(children)
           : viewElement || (
               <span className="hover:bg-purple-500 p-1 px-3 hover:bg-opacity-20 w-full rounded-md">

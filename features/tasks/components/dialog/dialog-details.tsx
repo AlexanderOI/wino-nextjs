@@ -13,6 +13,8 @@ import { EditableField } from "@/components/common/form/EditableField"
 import { format, isValid } from "date-fns"
 import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
 import { useColumnStore } from "../../store/column.store"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { canPermissionSession } from "@/features/permission/utils/can-permission"
 
 interface Props {
   users: User[]
@@ -32,7 +34,10 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
 
   if (!task) return null
 
+  const hasPermission = canPermissionSession([PERMISSIONS.EDIT_TASK], session)
+
   const handleSelectAssignChange = (value: string, send: boolean = false) => {
+    if (!hasPermission) return
     if (value === task.assignedTo?._id) return
 
     const user = users.find((user) => user._id === value)
@@ -65,13 +70,13 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
           value={task.column.name}
           className="w-7/12"
           onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
+          disabled={!hasPermission}
         >
           <SelectSimple
             name="columnId"
             label="Status"
             onValueChange={handleSelectColumnChange}
             value={task.column._id}
-            className=""
           >
             {columns.map((column) => (
               <SelectItem key={column._id} value={column._id}>
@@ -107,6 +112,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
           <EditableField
             value={task.assignedTo?.name}
             onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
+            disabled={!hasPermission}
           >
             <SelectSimple
               name="assignedToId"
@@ -136,6 +142,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
           }
           onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
           className="w-7/12"
+          disabled={!hasPermission}
         >
           <DatePicker
             name="startDate"
@@ -157,6 +164,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
           }
           onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
           className="w-7/12"
+          disabled={!hasPermission}
         >
           <DatePicker
             name="endDate"

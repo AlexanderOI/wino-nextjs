@@ -76,8 +76,6 @@ export default function FormProject({ users, project }: Props) {
   })
 
   const onSubmit = form.handleSubmit(async (values: Project) => {
-    console.log(values)
-
     try {
       let id = ""
       if (project?._id) {
@@ -226,9 +224,7 @@ export default function FormProject({ users, project }: Props) {
                   name="startDate"
                   control={form.control}
                   render={({ field }) => (
-                    <FormItem
-                      onClick={() => console.log(field.value, typeof field.value)}
-                    >
+                    <FormItem>
                       <FormLabel>Start Date</FormLabel>
                       <FormControl>
                         <DatePicker

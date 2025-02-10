@@ -7,6 +7,8 @@ import { apiClientServer } from "@/utils/api-client-server"
 import { DialogRole } from "@/features/roles/components/dialog-role"
 import { TypographyH1 } from "@/components/ui/typography"
 import { Permissions, Role } from "@/features/roles/interfaces/role.interface"
+import { PermissionServer } from "@/features/permission/permission-server"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 
 export default async function RolesPage() {
   const response = await apiClientServer.get<Role[]>(ROLES_URL)
@@ -19,9 +21,11 @@ export default async function RolesPage() {
       <CardHeaderPage>
         <TypographyH1>Roles and Permissions Management</TypographyH1>
 
-        <DialogRole>
-          <Button className="bg-purple-light text-white">Create Role</Button>
-        </DialogRole>
+        <PermissionServer permissions={[PERMISSIONS.CREATE_ROLE]}>
+          <DialogRole>
+            <Button className="bg-purple-light text-white">Create Role</Button>
+          </DialogRole>
+        </PermissionServer>
       </CardHeaderPage>
 
       <Card className="dark:bg-dark-800 rounded h-5/6 overflow-y-auto">

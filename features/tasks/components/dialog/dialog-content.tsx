@@ -10,6 +10,8 @@ import { useTaskStore } from "../../store/task.store"
 import { Task } from "../../interfaces/task.interface"
 import { useState } from "react"
 import { useColumnStore } from "../../store/column.store"
+import { canPermission } from "@/features/permission/utils/can-permission"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 interface Props {
   sendChanges: (
     name: string,
@@ -34,6 +36,9 @@ export default function DialogTaskContent({ sendChanges }: Props) {
     sendChange?: boolean
   ) => {
     const { name, value } = event.target
+    const hasPermission = await canPermission([PERMISSIONS.EDIT_TASK])
+    if (!hasPermission) return
+
     updateTaskField(name, value)
 
     setIsUpdated((prev) => ({ ...prev, [name]: true }))

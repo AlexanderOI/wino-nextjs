@@ -22,6 +22,8 @@ import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownAction } from "./ui/dropdown-action"
 import { TypographyH1 } from "@/components/ui/typography"
+import { PermissionServer } from "@/features/permission/permission-server"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 
 export default async function ManageProjects() {
   const response = await apiClientServer.get<Project[]>(PROJECTS_URL)
@@ -36,13 +38,16 @@ export default async function ManageProjects() {
             Track and manage your active projects
           </p>
         </div>
-        <Link
-          href="/manage-projects/create"
-          className={buttonVariants({ variant: "purple", className: "gap-2" })}
-        >
-          <Plus className="w-4 h-4" />
-          Create Project
-        </Link>
+
+        <PermissionServer permissions={[PERMISSIONS.CREATE_PROJECT]}>
+          <Link
+            href="/manage-projects/create"
+            className={buttonVariants({ variant: "purple", className: "gap-2" })}
+          >
+            <Plus className="w-4 h-4" />
+            Create Project
+          </Link>
+        </PermissionServer>
       </div>
 
       {/* <div className="relative">
@@ -88,7 +93,11 @@ async function ProjectCard({ project }: { project: Project }) {
               {project.description}
             </p>
           </div>
-          <DropdownAction id={project._id} />
+          <PermissionServer
+            permissions={[PERMISSIONS.EDIT_PROJECT, PERMISSIONS.DELETE_PROJECT]}
+          >
+            <DropdownAction id={project._id} />
+          </PermissionServer>
         </div>
 
         <div className="flex-grow flex flex-col justify-end">

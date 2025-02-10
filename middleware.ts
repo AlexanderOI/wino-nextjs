@@ -9,5 +9,6 @@ export const config = {
     "/manage-projects/:path*",
     "/users/:path*",
     "/tasks/:path*",
+    "/profile/:path*",
   ],
 }

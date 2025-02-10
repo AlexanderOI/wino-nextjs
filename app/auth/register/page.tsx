@@ -48,7 +48,6 @@ export default function Register() {
     })
 
     if (response.ok) {
-      console.log(data)
       const response = await signIn("credentials", {
         userName: data.userName,
         password: data.password,

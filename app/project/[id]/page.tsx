@@ -14,6 +14,8 @@ import { CardRecentActivity } from "@/features/project/components/page/card-rece
 import { apiClientServer } from "@/utils/api-client-server"
 import { Activity } from "@/features/tasks/interfaces/activity.interface"
 import Link from "next/link"
+import { PermissionServer } from "@/features/permission/permission-server"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -60,7 +62,7 @@ export default async function ProjectPage({ params }: Props) {
           <div className="flex items-center gap-4 text-muted-foreground">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              <span>6 members</span>
+              {project?.members?.length && <span>{project.members.length} members</span>}
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
@@ -73,13 +75,15 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </div>
 
-        <Link
-          href={`/manage-projects/edit/${project._id}`}
-          className={buttonVariants({ variant: "purple", className: "gap-2" })}
-        >
-          <Pencil className="w-4 h-4" />
-          Edit Project
-        </Link>
+        <PermissionServer permissions={[PERMISSIONS.EDIT_PROJECT]}>
+          <Link
+            href={`/manage-projects/edit/${project._id}`}
+            className={buttonVariants({ variant: "purple", className: "gap-2" })}
+          >
+            <Pencil className="w-4 h-4" />
+            Edit Project
+          </Link>
+        </PermissionServer>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">

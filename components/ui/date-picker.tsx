@@ -29,7 +29,6 @@ export function DatePicker({
   widthMinutes = false,
 }: Props) {
   const handleDateSelect = (newDate: Date | undefined) => {
-    console.log(selected, typeof selected)
     if (newDate) {
       const updatedDate = new Date(
         newDate.getFullYear(),

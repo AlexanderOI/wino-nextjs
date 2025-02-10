@@ -5,10 +5,11 @@ import { DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreVertical } from "lucide-react"
-import { Project } from "@/features/project/interfaces/project.interface"
 import { DialogDelete } from "@/components/common/dialog/dialog-delete"
 import { useState } from "react"
 import Link from "next/link"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { PermissionClient } from "@/features/permission/permission-client"
 
 export function DropdownAction({ id }: { id: string }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -26,15 +27,20 @@ export function DropdownAction({ id }: { id: string }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <Link href={`manage-projects/edit/${id}`}>Edit Project</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-destructive"
-            onClick={() => setIsDeleteModalOpen(true)}
-          >
-            Delete Project
-          </DropdownMenuItem>
+          <PermissionClient permissions={[PERMISSIONS.EDIT_PROJECT]}>
+            <DropdownMenuItem>
+              <Link href={`manage-projects/edit/${id}`}>Edit Project</Link>
+            </DropdownMenuItem>
+          </PermissionClient>
+
+          <PermissionClient permissions={[PERMISSIONS.DELETE_PROJECT]}>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => setIsDeleteModalOpen(true)}
+            >
+              Delete Project
+            </DropdownMenuItem>
+          </PermissionClient>
         </DropdownMenuContent>
       </DropdownMenu>
 

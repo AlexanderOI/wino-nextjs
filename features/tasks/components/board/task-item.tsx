@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/dialog"
 import { DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { canPermission } from "@/features/permission/utils/can-permission"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 interface TaskItemProps {
   task: Task
   updateTask: (newContent: string) => void
@@ -52,15 +54,27 @@ export default function TaskItem({ task, updateTask, deleteTask }: TaskItemProps
     setIsEditing(false)
   }
 
-  const handleClickEdit = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleClickEdit = async (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation()
-    setIsEditing(true)
+    const hasPermission = await canPermission([PERMISSIONS.EDIT_TASK])
+    if (hasPermission) {
+      setIsEditing(true)
+    }
   }
 
   const handleClickDialog = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation()
     setTask(task)
     setIsDialogOpen(true)
+  }
+
+  const handleOpenDialog = (open: boolean) => {
+    setIsDialogDeleteOpen(open)
+
+    if (!open) {
+      setIsEditing(false)
+      setIsHovering(false)
+    }
   }
 
   return (
@@ -99,13 +113,13 @@ export default function TaskItem({ task, updateTask, deleteTask }: TaskItemProps
           <div className="h-auto overflow-hidden flex justify-between items-center">
             <p
               onClick={handleClickDialog}
-              className="p-0 m-0 text-primary underline-offset-4 hover:underline cursor-pointer w-10/12"
+              className="p-0 m-0 text-primary underline-offset-4 hover:underline cursor-pointer"
             >
               {task.name}
             </p>
 
             {(isHovering || isDialogDeleteOpen) && (
-              <Dialog open={isDialogDeleteOpen} onOpenChange={setIsDialogDeleteOpen}>
+              <Dialog open={isDialogDeleteOpen} onOpenChange={handleOpenDialog}>
                 <DialogTrigger asChild>
                   <button
                     onClick={(event) => {

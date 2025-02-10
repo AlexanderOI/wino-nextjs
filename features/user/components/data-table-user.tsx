@@ -9,6 +9,8 @@ import { useState } from "react"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { DialogUser } from "./dialog-user"
 import { User } from "../interfaces/user.interface"
+import { PermissionClient } from "@/features/permission/permission-client"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 
 const Columns = (
   handleEdit: (role: string) => void,
@@ -24,12 +26,17 @@ const Columns = (
       header: () => <div>Action</div>,
       cell: ({ row }) => (
         <TableAction>
-          <DropdownMenuItem onClick={() => handleEdit(row.original._id)}>
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleDelete(row.original._id)}>
-            Eliminar
-          </DropdownMenuItem>
+          <PermissionClient permissions={[PERMISSIONS.EDIT_USER]}>
+            <DropdownMenuItem onClick={() => handleEdit(row.original._id)}>
+              Editar
+            </DropdownMenuItem>
+          </PermissionClient>
+
+          <PermissionClient permissions={[PERMISSIONS.DELETE_USER]}>
+            <DropdownMenuItem onClick={() => handleDelete(row.original._id)}>
+              Eliminar
+            </DropdownMenuItem>
+          </PermissionClient>
         </TableAction>
       ),
     },

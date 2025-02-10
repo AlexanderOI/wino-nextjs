@@ -10,6 +10,9 @@ import { cn } from "@/lib/utils"
 import { useColumnStore } from "../../store/column.store"
 import { ColumnData } from "@/features/tasks/interfaces/column.interface"
 import ColorPicker from "@/components/ui/color-picker"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { canPermission } from "@/features/permission/utils/can-permission"
+import { PermissionClient } from "@/features/permission/permission-client"
 
 interface TaskColumnProps {
   column: ColumnData
@@ -58,6 +61,13 @@ export default function TaskColumn({ column }: TaskColumnProps) {
     }, 500)
   }
 
+  const handleEditingTitle = async () => {
+    const hasPermission = await canPermission([PERMISSIONS.EDIT_COLUMN])
+    if (hasPermission) {
+      setIsEditingTitle(true)
+    }
+  }
+
   useEffect(() => {
     if (isAddingTask) {
       newTaskInputRef.current?.focus()
@@ -93,7 +103,7 @@ export default function TaskColumn({ column }: TaskColumnProps) {
         ) : (
           <h2
             className="font-semibold pl-3 mb-4 cursor-text"
-            onClick={() => setIsEditingTitle(true)}
+            onClick={handleEditingTitle}
           >
             {column.name}
           </h2>
@@ -132,13 +142,15 @@ export default function TaskColumn({ column }: TaskColumnProps) {
           />
         </form>
       ) : (
-        <button
-          onClick={() => setIsAddingTask(true)}
-          className="mt-2 flex items-center text-gray-600 hover:text-gray-800"
-        >
-          <Plus size={20} />
-          <span className="ml-1">Add new task</span>
-        </button>
+        <PermissionClient permissions={[PERMISSIONS.CREATE_TASK]}>
+          <button
+            onClick={() => setIsAddingTask(true)}
+            className="mt-2 flex items-center text-gray-600 hover:text-gray-800"
+          >
+            <Plus size={20} />
+            <span className="ml-1">Add new task</span>
+          </button>
+        </PermissionClient>
       )}
     </div>
   )

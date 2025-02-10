@@ -22,6 +22,8 @@ import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
 import { SkeletonTaskBoard } from "@/features/tasks/components/skeleton/skeleton-task-board"
 import ColorPicker from "@/components/ui/color-picker"
 import { TypographyH1 } from "@/components/ui/typography"
+import { PermissionClient } from "@/features/permission/permission-client"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 
 export default function TasksPage() {
   const columns = useColumnStore((state) => state.columns)
@@ -117,28 +119,30 @@ export default function TasksPage() {
       <div className="flex justify-between items-center mb-4">
         <TypographyH1>Manage your tasks</TypographyH1>
 
-        <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-          <div className="flex">
-            <Input
-              placeholder="Add a new column"
-              className="w-[200px] rounded-r-none m-0"
-              name="title"
-              value={editedColumn.title}
-              onChange={(e) =>
-                setEditedColumn({ ...editedColumn, title: e.target.value })
-              }
-            />
-            <ColorPicker
-              value={editedColumn.color}
-              onChange={(color) => setEditedColumn({ ...editedColumn, color })}
-              className="rounded-l-none m-0"
-            />
-          </div>
+        <PermissionClient permissions={[PERMISSIONS.CREATE_COLUMN]}>
+          <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+            <div className="flex">
+              <Input
+                placeholder="Add a new column"
+                className="w-[200px] rounded-r-none m-0"
+                name="title"
+                value={editedColumn.title}
+                onChange={(e) =>
+                  setEditedColumn({ ...editedColumn, title: e.target.value })
+                }
+              />
+              <ColorPicker
+                value={editedColumn.color}
+                onChange={(color) => setEditedColumn({ ...editedColumn, color })}
+                className="rounded-l-none m-0"
+              />
+            </div>
 
-          <Button type="submit" variant="purple">
-            Add Column
-          </Button>
-        </form>
+            <Button type="submit" variant="purple">
+              Add Column
+            </Button>
+          </form>
+        </PermissionClient>
       </div>
 
       <DndContext
