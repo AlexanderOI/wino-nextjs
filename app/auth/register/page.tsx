@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { TypographyH2 } from "@/components/ui/typography"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { BACKEND_URL } from "@/constants/routes"
 
 interface FormErrors {
   userName: string[]
@@ -37,7 +38,7 @@ export default function Register() {
   } = useForm()
 
   if (session) {
-    router.replace("/dashboard")
+    window.location.href = "/dashboard"
   }
 
   const onSubmitRegister = handleSubmit(async (data) => {
@@ -58,6 +59,20 @@ export default function Register() {
       setFormErrors(responseErrors)
     }
   })
+
+  const handleBlurCheckUsername = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    const response = await fetch(`${BACKEND_URL}/auth/check-user-data?${name}=${value}`)
+
+    if (!response.ok) {
+      const data = await response.json()
+      setFormErrors((prev) => ({ ...prev, [name]: [data.message] }))
+    } else {
+      setFormErrors((prev) => ({ ...prev, [name]: [] }))
+    }
+  }
+
+  console.log(formErrors)
 
   return (
     <div className="flex flex-col justify-center items-center h-screen-40">
@@ -80,6 +95,7 @@ export default function Register() {
                 {...register("userName", { required: true })}
                 name="userName"
                 type="userName"
+                onBlur={handleBlurCheckUsername}
               />
               <FormError errors={formErrors.userName} />
             </Label>
@@ -90,6 +106,7 @@ export default function Register() {
                 {...register("email", { required: true })}
                 name="email"
                 type="email"
+                onBlur={handleBlurCheckUsername}
               />
               <FormError errors={formErrors.email} />
             </Label>

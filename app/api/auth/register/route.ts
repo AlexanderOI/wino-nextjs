@@ -9,26 +9,30 @@ interface FormInputs {
 
 export async function POST(request: NextRequest) {
   const data: FormInputs = await request.json()
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          name: data.userName,
-          userName: data.userName,
-          email: data.email,
-          password: data.password,
-        }),
-        headers: { "Content-Type": "application/json" },
-      }
+
+  if (data.password !== data.confirmPassword) {
+    return NextResponse.json(
+      { confirmPassword: ["Passwords do not match"] },
+      { status: 400 }
     )
+  }
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`, {
+      method: "POST",
+      body: JSON.stringify({
+        name: data.userName,
+        userName: data.userName,
+        email: data.email,
+        password: data.password,
+      }),
+      headers: { "Content-Type": "application/json" },
+    })
     if (res.ok) return NextResponse.json(true)
 
     const datas = await res.json()
 
-    const parsedErrors = parseValidationErrors(datas.message)
-    return NextResponse.json(parsedErrors, { status: 400 })
+    return NextResponse.json(datas, { status: 400 })
   } catch (error) {
     return NextResponse.json(false, { status: 400 })
   }

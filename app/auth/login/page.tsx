@@ -12,11 +12,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { TypographyH2 } from "@/components/ui/typography"
+import { Loader2 } from "lucide-react"
 
 export default function Login() {
   const router = useRouter()
   const { data: session } = useSession()
   const [passwordError, setPasswordError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -32,6 +34,7 @@ export default function Login() {
   }, [session])
 
   const onSubmitRegister = handleSubmit(async (data) => {
+    setIsLoading(true)
     const response = await signIn("credentials", {
       userName: data.userName,
       password: data.password,
@@ -40,6 +43,7 @@ export default function Login() {
 
     if (response?.error) {
       setPasswordError("No matching credentials")
+      setIsLoading(false)
     }
   })
 
@@ -79,7 +83,8 @@ export default function Login() {
 
             {passwordError && <span className="text-red-500">{passwordError}</span>}
 
-            <Button variant="purple" className="w-full">
+            <Button variant="purple" className="w-full" disabled={isLoading}>
+              {isLoading && <Loader2 className="animate-spin text-purple-600 mr-2" />}
               Login
             </Button>
           </form>
