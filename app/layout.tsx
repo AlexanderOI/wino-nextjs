@@ -10,6 +10,7 @@ import { PermissionServer } from "@/features/permission/permission-server"
 import { Toaster } from "@/components/ui/toaster"
 import { cookies } from "next/headers"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { AuthCheck } from "@/features/auth/components/auth-check"
 
 // const inter = Inter({ subsets: ["latin"] })
 const firaCode = Montserrat({ subsets: ["latin"] })
@@ -28,22 +29,24 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     <html lang="en" suppressHydrationWarning>
       <body className={`${firaCode.className} antialiased`}>
         <SessionAuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <SidebarProvider defaultOpen={isOpenSidebar}>
-              <TooltipProvider>
-                <PermissionServer>
-                  <AppSidebar />
-                </PermissionServer>
-                <Main>{children}</Main>
-                <Toaster />
-              </TooltipProvider>
-            </SidebarProvider>
-          </ThemeProvider>
+          <AuthCheck>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <SidebarProvider defaultOpen={isOpenSidebar}>
+                <TooltipProvider>
+                  <PermissionServer>
+                    <AppSidebar />
+                  </PermissionServer>
+                  <Main>{children}</Main>
+                  <Toaster />
+                </TooltipProvider>
+              </SidebarProvider>
+            </ThemeProvider>
+          </AuthCheck>
         </SessionAuthProvider>
       </body>
     </html>
