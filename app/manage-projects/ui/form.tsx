@@ -106,7 +106,7 @@ export default function FormProject({ users, project }: Props) {
     <Card className="w-full p-2">
       <CardContent className="space-y-6">
         <Form {...form}>
-          <form id="project-form" className="" onSubmit={onSubmit}>
+          <form id="project-form" onSubmit={onSubmit}>
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Basic Information</h3>
 

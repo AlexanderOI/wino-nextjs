@@ -2,13 +2,14 @@
 import { useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import Loading from "@/components/common/loading"
 
 export default function Home() {
   const router = useRouter()
   const { data: session, status } = useSession()
 
   useEffect(() => {
-    if (status === "loading") return // Si la sesión está cargando, no hacer nada.
+    if (status === "loading") return
 
     if (session) {
       router.replace("/dashboard")
@@ -17,5 +18,9 @@ export default function Home() {
     }
   }, [session, status, router])
 
-  return <main className="">Loading</main>
+  return (
+    <main className="">
+      <Loading />
+    </main>
+  )
 }

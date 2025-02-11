@@ -47,7 +47,8 @@ export default async function ProjectPage({ params }: Props) {
     columns = columnsResponse.data
 
     const resentActivitiesResponse = await apiClientServer.get<Activity[]>(
-      `tasks/project/${id}/activity`
+      `tasks/activity`,
+      { params: { projectId: id } }
     )
     activities = resentActivitiesResponse.data
   } catch (error) {

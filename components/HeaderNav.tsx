@@ -28,6 +28,7 @@ import { refreshToken } from "@/features/auth/actions/auth-actions"
 import { Company } from "@/features/company/interfaces/company.interface"
 import { Session } from "next-auth"
 import { USERS_URL } from "@/constants/routes"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface Props {
   companiesData: Company[]
@@ -40,10 +41,15 @@ export function HeaderNav({ companiesData, session }: Props) {
 
   const companies = useCompanyStore((state) => state.companies)
   const setCompanies = useCompanyStore((state) => state.setCompanies)
+  const setCurrentCompany = useCompanyStore((state) => state.setCurrentCompany)
 
   useEffect(() => {
     companiesData.forEach((company) => {
       setCompanies(company)
+
+      if (session?.user.companyId === company._id) {
+        setCurrentCompany(company)
+      }
     })
   }, [companiesData, setCompanies])
 
@@ -96,9 +102,13 @@ export function HeaderNav({ companiesData, session }: Props) {
         <div className="flex items-center pr-2">
           <div className="relative ml-3">
             <DropdownMenu>
-              <DropdownMenuTrigger className="text-left">
-                <div className="flex items-center text-sm cursor-pointer">
-                  <img className="h-8 mx-2 w-8 rounded-full" src="/avatar.png" alt="" />
+              <DropdownMenuTrigger className="text-left outline-none">
+                <div className="flex items-center gap-2 text-sm cursor-pointer hover:bg-purple-deep rounded-md py-1 px-2">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={session?.user.avatar} />
+                    <AvatarFallback>{session?.user.name?.charAt(0)}</AvatarFallback>
+                  </Avatar>
+
                   <div className="flex flex-col">
                     <span>{session?.user.name}</span>
                     <span>{session?.user.userName}</span>
@@ -108,9 +118,9 @@ export function HeaderNav({ companiesData, session }: Props) {
               <DropdownMenuContent>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href={"/profile"}>Profile</Link>
-                </DropdownMenuItem>
+                <Link className="w-full h-full hover:bg-purple-deep" href={"/profile"}>
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem onClick={() => signOut()}>Sign out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

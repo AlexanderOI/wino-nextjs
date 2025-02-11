@@ -1,8 +1,8 @@
 "use server"
 
 import { BACKEND_URL } from "@/constants/routes"
-import { apiClientServer } from "@/utils/api-client-server"
 import { getSession } from "@/utils/get-session"
+import { cookies } from "next/headers"
 
 export const refreshToken = async () => {
   const session = await getSession()
@@ -16,4 +16,10 @@ export const refreshToken = async () => {
   const data = await res.json()
 
   return data
+}
+
+export const deleteSession = async () => {
+  const cookieStore = await cookies()
+  cookieStore.delete("next-auth.session-token")
+  cookieStore.delete("next-auth.csrf-token")
 }

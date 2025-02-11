@@ -27,7 +27,9 @@ export default async function Dashboard() {
     let taskPromise = projects.map(async (project) => {
       const [tasksResponse, resentActivitiesResponse] = await Promise.all([
         apiClientServer.get<Task[]>(`${TASKS_URL}/project/${project._id}`),
-        apiClientServer.get<Activity[]>(`tasks/project/${project._id}/activity`),
+        apiClientServer.get<Activity[]>(`tasks/activity`, {
+          params: { projectId: project._id },
+        }),
       ])
 
       totalTasks += tasksResponse.data.length
