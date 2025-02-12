@@ -13,5 +13,6 @@ export interface Project {
   status: string
   startDate: Date
   endDate: Date
-  company: Company
+  company?: Company
+  companyId: string
 }

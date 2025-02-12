@@ -31,6 +31,7 @@ interface UserAuth {
   name: string
   userName: string
   email: string
+  roleType: string
   createdAt: string
   updatedAt: string
   companyId: string

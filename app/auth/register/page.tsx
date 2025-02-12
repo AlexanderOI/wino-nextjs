@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 
 import { useState } from "react"
 import { signIn, useSession } from "next-auth/react"
@@ -13,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { TypographyH2 } from "@/components/ui/typography"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { BACKEND_URL } from "@/constants/routes"
+import { Loader2 } from "lucide-react"
 
 interface FormErrors {
   userName: string[]
@@ -22,8 +22,8 @@ interface FormErrors {
 }
 
 export default function Register() {
-  const router = useRouter()
   const { data: session } = useSession()
+  const [isLoading, setIsLoading] = useState(false)
   const [formErrors, setFormErrors] = useState<FormErrors>({
     userName: [],
     email: [],
@@ -42,6 +42,7 @@ export default function Register() {
   }
 
   const onSubmitRegister = handleSubmit(async (data) => {
+    setIsLoading(true)
     const response = await fetch("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(data),
@@ -58,6 +59,7 @@ export default function Register() {
       const responseErrors: FormErrors = await response.json()
       setFormErrors(responseErrors)
     }
+    setIsLoading(false)
   })
 
   const handleBlurCheckUsername = async (e: React.FocusEvent<HTMLInputElement>) => {
@@ -133,7 +135,8 @@ export default function Register() {
               <FormError errors={formErrors.confirmPassword} />
             </Label>
 
-            <Button variant="purple" className="w-full">
+            <Button variant="purple" className="w-full" disabled={isLoading}>
+              {isLoading && <Loader2 className="animate-spin text-purple-600 mr-2" />}
               Register
             </Button>
           </form>

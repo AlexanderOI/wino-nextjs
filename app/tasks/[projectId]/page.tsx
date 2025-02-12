@@ -15,7 +15,7 @@ import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortabl
 import { ColumnItem } from "@/features/tasks/components/board/column-item"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useColumnStore } from "@/features/tasks/store/column.store"
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
@@ -24,8 +24,13 @@ import ColorPicker from "@/components/ui/color-picker"
 import { TypographyH1 } from "@/components/ui/typography"
 import { PermissionClient } from "@/features/permission/permission-client"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { toast } from "@/components/ui/use-toast"
+import { useProjectStore } from "@/features/project/store/project.store"
 
 export default function TasksPage() {
+  const project = useProjectStore((state) => state.project)
+  const setProject = useProjectStore((state) => state.setProject)
+
   const columns = useColumnStore((state) => state.columns)
   const fetchColumns = useColumnStore((state) => state.fetchColumns)
   const addColumn = useColumnStore((state) => state.addColumn)
@@ -45,9 +50,28 @@ export default function TasksPage() {
     color: "#33254a",
   })
 
+  const router = useRouter()
+
   useEffect(() => {
     if (!projectId) return
-    fetchColumns(projectId)
+
+    async function fetchColumnsAndCheck() {
+      const success = await fetchColumns(projectId)
+      if (!success) {
+        toast({
+          title: "Project not found",
+          description: "Please create a project first or select another project",
+        })
+
+        if (project?._id == projectId) {
+          setProject(null)
+        }
+
+        router.push("/manage-projects")
+      }
+    }
+
+    fetchColumnsAndCheck()
   }, [projectId])
 
   const sensors = useSensors(

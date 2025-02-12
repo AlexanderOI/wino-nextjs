@@ -4,7 +4,7 @@ import { createJSONStorage, persist } from "zustand/middleware"
 
 interface ProjectStore {
   project: Project | null
-  setProject: (project: Project) => void
+  setProject: (project: Project | null) => void
 }
 
 export const useProjectStore = create<ProjectStore>()(

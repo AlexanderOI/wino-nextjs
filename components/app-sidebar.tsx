@@ -1,19 +1,11 @@
 "use client"
 
 import {
-  Calendar,
   Home,
-  Inbox,
-  Search,
   Settings,
-  Badge,
-  BedSingle,
-  Plus,
-  PlusCircle,
   UserCog,
   Users,
   Building,
-  LucideBoxSelect,
   FolderKanban,
   FolderOpenDot,
   FolderRoot,
@@ -34,10 +26,11 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { SelectProjectDialog } from "@/features/project/components/select-project-dialog"
 import { useProjectStore } from "@/features/project/store/project.store"
 import { cn } from "@/lib/utils"
+import { useEffect } from "react"
 
 const itemsWorkspace = [
   {
@@ -90,16 +83,25 @@ export function AppSidebar() {
   const { open } = useSidebar()
   const { data: session } = useSession()
   const project = useProjectStore((state) => state.project)
+  const setProject = useProjectStore((state) => state.setProject)
 
   const pathname = usePathname()
+
+  useEffect(() => {
+    if (project && session && project.companyId !== session?.user.companyId) {
+      setProject(null)
+    }
+  }, [project, session])
 
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarHeader>
           <div
-            className={`flex justify-center items-center border-b-2 h-14
-            ${open ? "text-4xl" : " text-sm"}`}
+            className={cn(
+              "flex justify-center items-center border-b-2 h-14",
+              open ? "text-4xl" : " text-[0.6rem]"
+            )}
           >
             <span className=" text-purple-light">{"<"}</span>
             WINO

@@ -281,7 +281,7 @@ export default function FormProject({ users, project }: Props) {
                 {users
                   .filter(
                     (user) =>
-                      !selectedParticipants.includes(user) &&
+                      !selectedParticipants.map((p) => p._id).includes(user._id) &&
                       user.name
                         .toLowerCase()
                         .includes(searchParticipantTerm.toLowerCase())

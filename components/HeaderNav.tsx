@@ -111,7 +111,7 @@ export function HeaderNav({ companiesData, session }: Props) {
 
                   <div className="flex flex-col">
                     <span>{session?.user.name}</span>
-                    <span>{session?.user.userName}</span>
+                    <span>{session?.user.roleType}</span>
                   </div>
                 </div>
               </DropdownMenuTrigger>

@@ -9,6 +9,7 @@ import { TypographyH2 } from "@/components/ui/typography"
 import { ProjectWithTasks } from "../page"
 import { Task } from "@/features/tasks/interfaces/task.interface"
 import { DonutChart } from "@/components/charts/donut-chart"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface Props {
   projects?: ProjectWithTasks[]
@@ -108,28 +109,30 @@ export default function ProjectsDashboard({ projects }: Props) {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            <div className="space-y-4">
-              {currentProject && currentProject?.activities.length > 0 ? (
-                currentProject?.activities.map((activity, index) => (
-                  <div key={index} className="flex flex-col items-start">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: activity.column.color }}
-                      />
+            <ScrollArea className="h-[300px]">
+              <div className="space-y-4">
+                {currentProject && currentProject?.activities.length > 0 ? (
+                  currentProject?.activities.map((activity, index) => (
+                    <div key={index} className="flex flex-col items-start">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: activity.column.color }}
+                        />
 
-                      <p className="text-sm">{activity.task.name}</p>
+                        <p className="text-sm">{activity.task.name}</p>
+                      </div>
+
+                      <p className="text-xs text-muted-foreground">{activity.text}</p>
                     </div>
-
-                    <p className="text-xs text-muted-foreground">{activity.text}</p>
+                  ))
+                ) : (
+                  <div className="text-center text-sm text-muted-foreground">
+                    No activities yet
                   </div>
-                ))
-              ) : (
-                <div className="text-center text-sm text-muted-foreground">
-                  No activities yet
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            </ScrollArea>
           </CardContent>
         </Card>
       </div>

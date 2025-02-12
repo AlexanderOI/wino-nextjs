@@ -10,9 +10,10 @@ import { useState } from "react"
 import Link from "next/link"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
 import { PermissionClient } from "@/features/permission/permission-client"
-
+import { useProjectStore } from "@/features/project/store/project.store"
 export function DropdownAction({ id }: { id: string }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const project = useProjectStore((state) => state.project)
 
   return (
     <>

@@ -7,7 +7,7 @@ interface ColumnStore {
   columns: ColumnData[]
   projectId: string
   setColumns: (columns: ColumnData[]) => void
-  fetchColumns: (projectId: string) => Promise<void>
+  fetchColumns: (projectId: string) => Promise<boolean>
   addColumn: (name: string, color: string) => Promise<void>
   updateColumn: (columnId: string, name?: string, color?: string) => Promise<void>
   deleteColumn: (columnId: string) => Promise<void>
@@ -32,9 +32,15 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
   setColumns: (columns) => set({ columns }),
 
   fetchColumns: async (projectId: string) => {
-    set({ projectId })
-    const response = await apiClient.get(`/columns/project/${projectId}?withTasks=true`)
-    set({ columns: response.data })
+    try {
+      const response = await apiClient.get(`/columns/project/${projectId}?withTasks=true`)
+      set({ projectId })
+      set({ columns: response.data })
+      return true
+    } catch (error) {
+      console.error(error)
+      return false
+    }
   },
 
   addColumn: async (name: string, color: string) => {
