@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Table } from "@/components/ui/datatable/table"
 import { TableColumnsView } from "./TableColumnsView"
 import { useState } from "react"
-import { PaginationButton } from "./PaginationButton"
+import { PaginationTableButton } from "./PaginationButton"
 import { DataTableBody } from "./DataTableBody"
 import { DataTableHeader } from "./DataTableHeader"
 
@@ -26,17 +26,21 @@ const globalFilterFunction: FilterFn<any> = (row, columnId, filterValue) => {
   return String(value).toLowerCase().includes(String(filterValue).toLowerCase())
 }
 
-type DatatableOptions<T> = {
+type DatatableOptions = {
   inputSearch?: boolean
 }
 
 interface Props<T> {
   data: T[]
   columns: ColumnDef<T>[]
-  options?: DatatableOptions<T>
+  options?: DatatableOptions
 }
 
-export function DataTable<T>({ data, columns, options }: Props<T>) {
+const defaultOptions: DatatableOptions = {
+  inputSearch: true,
+}
+
+export function DataTable<T>({ data, columns, options = defaultOptions }: Props<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -86,7 +90,7 @@ export function DataTable<T>({ data, columns, options }: Props<T>) {
           <DataTableBody table={table} columns={columns} />
         </Table>
       </div>
-      <PaginationButton table={table} />
+      <PaginationTableButton table={table} />
     </div>
   )
 }
