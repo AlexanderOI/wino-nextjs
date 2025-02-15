@@ -1,22 +1,19 @@
 import { ButtonSorted } from "./ButtonSorted"
+import { ColumnDef } from "@tanstack/react-table"
 
-export const createColumn = (accessorKey: string, buttonText?: string) => {
+export const createColumn = (
+  accessorKey: string,
+  buttonText?: string
+): ColumnDef<any> => {
   const visible = accessorKey.toLocaleLowerCase() !== "id".toLocaleLowerCase()
 
   return {
     accessorKey: accessorKey,
-    header: ({ column }: any) => (
+    header: ({ column }) => (
       <ButtonSorted column={column} text={buttonText || accessorKey} />
     ),
-    cell: ({ row }: any) => {
-      const value = row.getValue(accessorKey)
-
-      if (
-        accessorKey.toLocaleLowerCase() === "createdby" ||
-        accessorKey.toLocaleLowerCase() === "updatedby"
-      ) {
-        return <div>{value?.name || ""}</div>
-      }
+    cell: ({ row }) => {
+      const value = row.getValue(accessorKey) as string
 
       return <div>{value}</div>
     },

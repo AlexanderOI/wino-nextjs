@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { ChevronsUpDown } from "lucide-react"
-
+import { Column } from "@tanstack/react-table"
 interface ButtonSortedProps {
-  column: any
+  column: Column<any>
   text: string
   className?: string
 }

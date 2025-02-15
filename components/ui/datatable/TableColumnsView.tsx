@@ -6,8 +6,9 @@ import {
   DropdownMenuCheckboxItem,
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from "lucide-react"
+import { Table, Column } from "@tanstack/react-table"
 
-export function TableColumnsView({ table }: { table: any }) {
+export function TableColumnsView<T>({ table }: { table: Table<T> }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -18,8 +19,8 @@ export function TableColumnsView({ table }: { table: any }) {
       <DropdownMenuContent align="end">
         {table
           .getAllColumns()
-          .filter((column: any) => column.getCanHide())
-          .map((column: any) => {
+          .filter((column: Column<T>) => column.getCanHide())
+          .map((column: Column<T>) => {
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}

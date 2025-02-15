@@ -1,7 +1,8 @@
 "use client"
 import { Button } from "@/components/ui/button"
+import { Table } from "@tanstack/react-table"
 
-export function PaginationButton({ table }: { table: any }) {
+export function PaginationButton<T>({ table }: { table: Table<T> }) {
   return (
     <div className="flex items-center justify-end space-x-2 py-4">
       <div className="flex-1 text-sm text-muted-foreground">

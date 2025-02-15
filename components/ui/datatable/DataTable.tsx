@@ -10,6 +10,7 @@ import {
   getSortedRowModel,
   useReactTable,
   FilterFn,
+  ColumnDef,
 } from "@tanstack/react-table"
 
 import { Input } from "@/components/ui/input"
@@ -25,7 +26,17 @@ const globalFilterFunction: FilterFn<any> = (row, columnId, filterValue) => {
   return String(value).toLowerCase().includes(String(filterValue).toLowerCase())
 }
 
-export function DataTable({ data, columns }: { data: any; columns: any }) {
+type DatatableOptions<T> = {
+  inputSearch?: boolean
+}
+
+interface Props<T> {
+  data: T[]
+  columns: ColumnDef<T>[]
+  options?: DatatableOptions<T>
+}
+
+export function DataTable<T>({ data, columns, options }: Props<T>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -34,7 +45,7 @@ export function DataTable({ data, columns }: { data: any; columns: any }) {
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState("")
 
-  const table = useReactTable({
+  const table = useReactTable<T>({
     data,
     columns,
     onSortingChange: setSorting,
@@ -58,15 +69,17 @@ export function DataTable({ data, columns }: { data: any; columns: any }) {
 
   return (
     <div className="w-full h-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter all columns..."
-          value={globalFilter}
-          onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm dark:bg-dark-800"
-        />
-        <TableColumnsView table={table} />
-      </div>
+      {options?.inputSearch && (
+        <div className="flex items-center py-4">
+          <Input
+            placeholder="Filter all columns..."
+            value={globalFilter}
+            onChange={(event) => setGlobalFilter(event.target.value)}
+            className="max-w-sm dark:bg-dark-800"
+          />
+          <TableColumnsView table={table} />
+        </div>
+      )}
       <div className="rounded-md border h-[75%]">
         <Table>
           <DataTableHeader table={table} />
