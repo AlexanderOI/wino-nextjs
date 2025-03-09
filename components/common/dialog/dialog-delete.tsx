@@ -29,6 +29,7 @@ interface Props {
   toastSuccess?: ToasterToast
   buttonText?: string
   onOpenChange?: (open: boolean) => void
+  onAction?: () => void
 }
 
 export function DialogDelete({
@@ -41,6 +42,7 @@ export function DialogDelete({
   toastSuccess,
   onOpenChange,
   buttonText,
+  onAction,
 }: Props) {
   const [internalIsOpen, setInternalIsOpen] = useState(false)
   const isOpen = externalIsOpen ?? internalIsOpen
@@ -56,6 +58,7 @@ export function DialogDelete({
       const res = await apiClient.delete(`${url}/${id}`)
 
       if (res.status === 200) {
+        onAction?.()
         router.refresh()
         toast({
           title: toastSuccess?.title || "Deleted",

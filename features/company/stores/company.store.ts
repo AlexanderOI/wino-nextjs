@@ -6,6 +6,7 @@ interface CompanyStore {
   currentCompany: Company | null
   setCompanies: (companies: Company) => void
   setCurrentCompany: (company: Company) => void
+  removeCompany: (id: string) => void
 }
 
 export const useCompanyStore = create<CompanyStore>((set) => ({
@@ -22,6 +23,13 @@ export const useCompanyStore = create<CompanyStore>((set) => ({
   setCurrentCompany: (company) => {
     set((state) => ({
       currentCompany: company,
+    }))
+  },
+  removeCompany: (id: string) => {
+    set((state) => ({
+      companies: Object.fromEntries(
+        Object.entries(state.companies).filter(([key]) => key !== id)
+      ),
     }))
   },
 }))

@@ -75,7 +75,6 @@ export function DialogInviteUser({
   useEffect(() => {
     const fetchRoles = async () => {
       const response = await apiClient.get<Role[]>(`${ROLES_URL}`)
-      console.log(response.data)
       setRoles(response.data)
     }
     if (isOpen) fetchRoles()

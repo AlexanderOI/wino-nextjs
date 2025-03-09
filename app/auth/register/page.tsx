@@ -74,8 +74,6 @@ export default function Register() {
     }
   }
 
-  console.log(formErrors)
-
   return (
     <div className="flex flex-col justify-center items-center h-screen-40">
       <Card className="w-full max-w-[30rem] p-5">

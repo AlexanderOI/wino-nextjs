@@ -20,7 +20,7 @@ interface Props {
   children?: React.ReactNode
   isOpen?: boolean
   onOpenChange?: (open: boolean) => void
-  onConfirm?: () => void
+  onConfirm?: () => void | Promise<void>
 }
 
 export function DialogConfirm({

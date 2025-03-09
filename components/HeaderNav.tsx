@@ -41,6 +41,7 @@ export function HeaderNav({ companiesData, session }: Props) {
 
   const companies = useCompanyStore((state) => state.companies)
   const setCompanies = useCompanyStore((state) => state.setCompanies)
+  const currentCompany = useCompanyStore((state) => state.currentCompany)
   const setCurrentCompany = useCompanyStore((state) => state.setCurrentCompany)
 
   useEffect(() => {
@@ -82,7 +83,7 @@ export function HeaderNav({ companiesData, session }: Props) {
       <nav className="flex justify-between items-center w-full h-full">
         <div className="flex items-center justify-center h-full gap-5">
           <SidebarTrigger />
-          <Select onValueChange={handleCompanyChange} value={session?.user.companyId}>
+          <Select onValueChange={handleCompanyChange} value={currentCompany?._id}>
             <SelectTrigger className="bg-purple-deep border-none">
               <SelectValue placeholder="Select Company" />
             </SelectTrigger>

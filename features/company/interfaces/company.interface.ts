@@ -14,4 +14,8 @@ export interface Company {
   isMain: boolean
   isActive: boolean
   roles?: Role[]
+  roleType?: string
+  invitePending?: boolean
+  isInvited?: boolean
+  createdAt: string
 }
