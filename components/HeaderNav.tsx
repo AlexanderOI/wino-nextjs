@@ -89,11 +89,13 @@ export function HeaderNav({ companiesData, session }: Props) {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Companies</SelectLabel>
-                {Object.values(companies).map((comp) => (
-                  <SelectItem key={comp._id} value={comp._id}>
-                    {comp.name}
-                  </SelectItem>
-                ))}
+                {Object.values(companies)
+                  .filter((comp) => comp.isActive)
+                  .map((comp) => (
+                    <SelectItem key={comp._id} value={comp._id}>
+                      {comp.name}
+                    </SelectItem>
+                  ))}
               </SelectGroup>
             </SelectContent>
           </Select>

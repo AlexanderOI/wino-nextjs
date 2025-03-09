@@ -20,9 +20,7 @@ export default async function CompanyPage() {
   )
 
   const companiesEmployee = companies.filter(
-    (company) =>
-      company.usersCompany.includes(session?.user._id || "") &&
-      company.owner._id !== session?.user._id
+    (company) => company.owner._id !== session?.user._id
   )
 
   return (
@@ -37,9 +35,17 @@ export default async function CompanyPage() {
         </PermissionServer>
       </CardHeaderPage>
 
-      <CardCompany companies={companiesOwner} title="My Companies" />
+      <CardCompany
+        isOwner={true}
+        companies={companiesOwner}
+        title="My Companies (Owner)"
+      />
 
-      <CardCompany companies={companiesEmployee} title="Companies I Work For" />
+      <CardCompany
+        isOwner={false}
+        companies={companiesEmployee}
+        title="Companies I Work For"
+      />
     </div>
   )
 }

@@ -12,6 +12,6 @@ export interface Company {
   usersCompany: string[]
   rolesId: string[]
   isMain: boolean
-
+  isActive: boolean
   roles?: Role[]
 }

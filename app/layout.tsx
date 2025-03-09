@@ -1,16 +1,18 @@
 import "./globals.css"
 import type { Metadata } from "next"
+import { cookies } from "next/headers"
 import { Montserrat } from "next/font/google"
-import SessionAuthProvider from "@/context/SessionAuthProvider"
+
+import { PermissionServer } from "@/features/permission/permission-server"
+import { AuthCheck } from "@/features/auth/components/auth-check"
+import { ReactQueryProvider } from "@/providers/react-quey-provider"
+import { SessionAuthProvider } from "@/context/SessionAuthProvider"
 import { ThemeProvider } from "@/providers/theme-provider"
-import { Main } from "./main"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
-import { PermissionServer } from "@/features/permission/permission-server"
 import { Toaster } from "@/components/ui/toaster"
-import { cookies } from "next/headers"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import { AuthCheck } from "@/features/auth/components/auth-check"
+import { Main } from "./main"
 
 // const inter = Inter({ subsets: ["latin"] })
 const firaCode = Montserrat({ subsets: ["latin"] })
@@ -30,22 +32,24 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body className={`${firaCode.className} antialiased`}>
         <SessionAuthProvider>
           <AuthCheck>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <SidebarProvider defaultOpen={isOpenSidebar}>
-                <TooltipProvider>
-                  <PermissionServer>
-                    <AppSidebar />
-                  </PermissionServer>
-                  <Main>{children}</Main>
-                  <Toaster />
-                </TooltipProvider>
-              </SidebarProvider>
-            </ThemeProvider>
+            <ReactQueryProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <SidebarProvider defaultOpen={isOpenSidebar}>
+                  <TooltipProvider>
+                    <PermissionServer>
+                      <AppSidebar />
+                    </PermissionServer>
+                    <Main>{children}</Main>
+                    <Toaster />
+                  </TooltipProvider>
+                </SidebarProvider>
+              </ThemeProvider>
+            </ReactQueryProvider>
           </AuthCheck>
         </SessionAuthProvider>
       </body>

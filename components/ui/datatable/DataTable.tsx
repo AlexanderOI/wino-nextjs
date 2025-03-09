@@ -11,6 +11,7 @@ import {
   useReactTable,
   FilterFn,
   ColumnDef,
+  GlobalFilterColumn,
 } from "@tanstack/react-table"
 
 import { Input } from "@/components/ui/input"
@@ -20,14 +21,11 @@ import { useState } from "react"
 import { PaginationTableButton } from "./PaginationButton"
 import { DataTableBody } from "./DataTableBody"
 import { DataTableHeader } from "./DataTableHeader"
-
-const globalFilterFunction: FilterFn<any> = (row, columnId, filterValue) => {
-  const value = row.getValue(columnId)
-  return String(value).toLowerCase().includes(String(filterValue).toLowerCase())
-}
+import { User } from "../../../features/user/interfaces/user.interface"
 
 type DatatableOptions = {
   inputSearch?: boolean
+  valueGlobalFilter?: string
 }
 
 interface Props<T> {
@@ -38,6 +36,7 @@ interface Props<T> {
 
 const defaultOptions: DatatableOptions = {
   inputSearch: true,
+  valueGlobalFilter: "",
 }
 
 export function DataTable<T>({ data, columns, options = defaultOptions }: Props<T>) {
@@ -47,7 +46,9 @@ export function DataTable<T>({ data, columns, options = defaultOptions }: Props<
     id: false,
   })
   const [rowSelection, setRowSelection] = useState({})
-  const [globalFilter, setGlobalFilter] = useState("")
+  const [globalInternalFilter, setGlobalInternalFilter] = useState("")
+
+  let globalFilter = options?.valueGlobalFilter || globalInternalFilter
 
   const table = useReactTable<T>({
     data,
@@ -60,7 +61,6 @@ export function DataTable<T>({ data, columns, options = defaultOptions }: Props<
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    globalFilterFn: globalFilterFunction,
 
     state: {
       sorting,
@@ -77,8 +77,8 @@ export function DataTable<T>({ data, columns, options = defaultOptions }: Props<
         <div className="flex items-center py-4">
           <Input
             placeholder="Filter all columns..."
-            value={globalFilter}
-            onChange={(event) => setGlobalFilter(event.target.value)}
+            value={globalInternalFilter}
+            onChange={(event) => setGlobalInternalFilter(event.target.value)}
             className="max-w-sm dark:bg-dark-800"
           />
           <TableColumnsView table={table} />

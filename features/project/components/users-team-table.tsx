@@ -48,7 +48,7 @@ export default function DataTableUsersTeam({ users }: Props) {
 
   return (
     <>
-      <DataTable columns={Columns(handleDelete)} data={users} />
+      <DataTable columns={Columns(handleDelete)} data={users ?? []} />
 
       <DialogDelete
         id={selectedProject}

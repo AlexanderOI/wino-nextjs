@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast, ToasterToast } from "@/components/ui/use-toast"
 import { apiClient } from "@/utils/api-client"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -23,6 +23,8 @@ interface Props {
   description?: string
   children?: React.ReactNode
   isOpen?: boolean
+  toastSuccess?: ToasterToast
+  buttonText?: string
   onOpenChange?: (open: boolean) => void
 }
 
@@ -33,7 +35,9 @@ export function DialogDelete({
   description,
   children,
   isOpen: externalIsOpen,
+  toastSuccess,
   onOpenChange,
+  buttonText,
 }: Props) {
   const [internalIsOpen, setInternalIsOpen] = useState(false)
   const isOpen = externalIsOpen ?? internalIsOpen
@@ -51,16 +55,18 @@ export function DialogDelete({
       if (res.status === 200) {
         router.refresh()
         toast({
-          title: "Deleted",
-          description: "Item has been deleted successfully",
+          title: toastSuccess?.title || "Deleted",
+          description: toastSuccess?.description || "Item has been deleted successfully",
           duration: 1500,
-          variant: "destructive",
+          variant: toastSuccess?.variant || "destructive",
         })
       }
+
+      setIsOpen(false)
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to delete item",
+        description: "Failed to complete action",
         variant: "destructive",
         duration: 1500,
       })
@@ -84,7 +90,7 @@ export function DialogDelete({
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button variant="destructive" onClick={handleDelete}>
-              Delete
+              {buttonText || "Delete"}
             </Button>
           </DialogFooter>
         </DialogContent>

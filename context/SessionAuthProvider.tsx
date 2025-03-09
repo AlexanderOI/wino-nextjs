@@ -5,6 +5,6 @@ import { ReactNode } from "react"
 interface Props {
   children: ReactNode
 }
-export default function SessionAuthProvider({ children }: Props) {
+export function SessionAuthProvider({ children }: Props) {
   return <SessionProvider>{children}</SessionProvider>
 }

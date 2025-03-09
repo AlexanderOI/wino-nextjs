@@ -2,16 +2,17 @@ import { ButtonDelete } from "@/components/common/button/ButtonDelete"
 import { ButtonEdit } from "@/components/common/button/ButtonEdit"
 import { DialogDelete } from "@/components/common/dialog/dialog-delete"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Company } from "@/stores/company.store"
+import { Company } from "@/features/company/interfaces/company.interface"
 import { DialogCompany } from "./dialog-company"
 import { getSession } from "@/utils/get-session"
 
 interface Props {
   companies: Company[]
   title: string
+  isOwner?: boolean
 }
 
-export async function CardCompany({ companies, title }: Props) {
+export async function CardCompany({ companies, title, isOwner }: Props) {
   const session = await getSession()
 
   return (
@@ -27,7 +28,7 @@ export async function CardCompany({ companies, title }: Props) {
           <Card
             key={company._id}
             className={`${
-              company._id == session?.user.companyId ? "dark:border-gray-400" : ""
+              company._id == session?.user.companyId ? "dark:bg-purple-deep" : ""
             }`}
           >
             <CardContent className="flex justify-between">
@@ -36,17 +37,19 @@ export async function CardCompany({ companies, title }: Props) {
                 <p>Owner: {company?.owner?.name}</p>
               </div>
 
-              <div className="flex gap-2 flex-col">
-                <DialogCompany id={company._id}>
-                  <ButtonEdit />
-                </DialogCompany>
+              {isOwner && (
+                <div className="flex gap-2 flex-col">
+                  <DialogCompany id={company._id}>
+                    <ButtonEdit />
+                  </DialogCompany>
 
-                {!company.isMain && (
-                  <DialogDelete id={company._id} url={`/company`}>
-                    <ButtonDelete />
-                  </DialogDelete>
-                )}
-              </div>
+                  {!company.isMain && (
+                    <DialogDelete id={company._id} url={`/company`}>
+                      <ButtonDelete />
+                    </DialogDelete>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
