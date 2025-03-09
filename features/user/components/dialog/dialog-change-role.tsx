@@ -4,8 +4,10 @@ import { useRouter } from "next/navigation"
 
 import { useEffect, useRef, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 
-import { RoleCheckbox } from "@/features/user/components/role-check-box"
+import { apiClient } from "@/utils/api-client"
+
 import { Button } from "@/components/ui/button"
 import {
   DialogClose,
@@ -16,9 +18,8 @@ import {
 } from "@/components/ui/dialog"
 import { toast } from "@/components/ui/use-toast"
 
+import { RoleCheckbox } from "@/features/user/components/role-check-box"
 import { getAllRoles, getPartialUserById } from "@/features/user/actions/action"
-import { apiClient } from "@/utils/api-client"
-import { AxiosError } from "axios"
 
 export const DialogChangeRole = ({ id }: { id: string }) => {
   const router = useRouter()

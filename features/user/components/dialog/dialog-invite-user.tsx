@@ -15,7 +15,6 @@ import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { RoleCheckbox } from "@/features/user/components/role-check-box"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { toast } from "@/components/ui/use-toast"
 import {
@@ -25,6 +24,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+
+import { RoleCheckbox } from "@/features/user/components/role-check-box"
 
 interface Props {
   children?: React.ReactNode

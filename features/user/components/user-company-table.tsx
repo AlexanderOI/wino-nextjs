@@ -16,26 +16,27 @@ import {
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 
+import { apiClient } from "@/utils/api-client"
 import { cn } from "@/lib/utils"
 import { User } from "@/features/user/interfaces/user.interface"
 
 import { TableAction } from "@/components/common/table-action"
+import { DialogData } from "@/components/common/dialog/dialog-data"
+import { DialogConfirm } from "@/components/common/dialog/dialog-confirm"
+import { DialogDelete } from "@/components/common/dialog/dialog-delete"
+import { DataTable } from "@/components/ui/datatable/DataTable"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DialogDelete } from "@/components/common/dialog/dialog-delete"
-import { DataTable } from "@/components/ui/datatable/DataTable"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
-import { DialogCreateUser } from "@/features/user/components/dialog/dialog-create-user"
-import { DialogData } from "@/components/common/dialog/dialog-data"
-import { DialogChangeRole } from "./dialog/dialog-change-role"
-import { DialogEditUser } from "./dialog/dialog-edit-user"
-import { DialogChangePassword } from "./dialog/dialog-change-password"
-import { DialogConfirm } from "@/components/common/dialog/dialog-confirm"
-import { apiClient } from "@/utils/api-client"
 import { toast } from "@/components/ui/use-toast"
+
+import { DialogChangeRole } from "@/features/user/components/dialog/dialog-change-role"
+import { DialogEditUser } from "@/features/user/components/dialog/dialog-edit-user"
+import { DialogChangePassword } from "@/features/user/components/dialog/dialog-change-password"
+
 interface Props {
   usersCompany: User[]
   usersGuests: User[]

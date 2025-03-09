@@ -1,15 +1,19 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
 import { Users, UserPlus, Mail, Activity, UserPlus2 } from "lucide-react"
-import { UserCompanyTable } from "@/features/user/components/user-company-table"
-import { User } from "@/features/user/interfaces/user.interface"
+
 import { apiClientServer } from "@/utils/api-client-server"
-import { PermissionServer } from "@/features/permission/permission-server"
+
+import { Button } from "@/components/ui/button"
+import { User } from "@/features/user/interfaces/user.interface"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { DialogData } from "@/components/common/dialog/dialog-data"
+
+import { PermissionServer } from "@/features/permission/permission-server"
 import { DialogCreateUser } from "@/features/user/components/dialog/dialog-create-user"
 import { DialogInviteUser } from "@/features/user/components/dialog/dialog-invite-user"
-import { DialogData } from "@/components/common/dialog/dialog-data"
+import { UserCompanyTable } from "@/features/user/components/user-company-table"
+
 export default async function UsersPage() {
   const users = await apiClientServer.get<User[]>("/users")
 

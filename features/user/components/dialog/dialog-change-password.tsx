@@ -6,7 +6,12 @@ import { useRef, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { EyeOffIcon, EyeIcon } from "lucide-react"
+import { AxiosError } from "axios"
 import { z } from "zod"
+
+import { cn } from "@/lib/utils"
+import { apiClient } from "@/utils/api-client"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -25,14 +30,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
+import { Input } from "@/components/ui/input"
 
 import { getPartialUserById } from "@/features/user/actions/action"
-import { apiClient } from "@/utils/api-client"
-import { Input } from "@/components/ui/input"
-import { EyeOffIcon } from "lucide-react"
-import { EyeIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { AxiosError } from "axios"
 
 const passwordSchema = z
   .object({

@@ -1,10 +1,11 @@
 "use client"
+import { memo } from "react"
+
+import { cn } from "@/lib/utils"
+import { Role } from "@/features/roles/interfaces/role.interface"
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { memo } from "react"
-import { Role } from "@/features/roles/interfaces/role.interface"
-import { cn } from "@/lib/utils"
 
 interface Props {
   role: Role

@@ -1,12 +1,16 @@
 "use client"
 
-import { ChangeEvent, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
+
+import { ChangeEvent, useRef } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { AxiosError } from "axios"
 import { z } from "zod"
 
-import { RoleCheckbox } from "../role-check-box"
+import { apiClient } from "@/utils/api-client"
+
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,12 +28,10 @@ import {
   FormField,
   FormMessage,
 } from "@/components/ui/form"
-
-import { getAllRoles } from "@/features/user/actions/action"
-import { apiClient } from "@/utils/api-client"
 import { toast } from "@/components/ui/use-toast"
-import { useRouter } from "next/navigation"
-import { AxiosError } from "axios"
+
+import { RoleCheckbox } from "@/features/user/components/role-check-box"
+import { getAllRoles } from "@/features/user/actions/action"
 
 const userSchema = z
   .object({
