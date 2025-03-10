@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { type FC } from "react"
 
 import { useState } from "react"
 import { signIn, useSession } from "next-auth/react"
@@ -19,6 +20,24 @@ interface FormErrors {
   email: string[]
   password: string[]
   confirmPassword: string[]
+}
+
+interface FormErrorProps {
+  errors: string[]
+}
+
+const FormError: FC<FormErrorProps> = ({ errors }) => {
+  if (!errors || errors.length === 0) return null
+
+  return (
+    <div className="space-y-1">
+      {errors.map((error, index) => (
+        <p key={index} className="text-sm text-red-500">
+          {error}
+        </p>
+      ))}
+    </div>
+  )
 }
 
 export default function Register() {
@@ -148,14 +167,6 @@ export default function Register() {
           </Link>
         </CardFooter>
       </Card>
-    </div>
-  )
-}
-
-export function FormError({ errors }: { errors: string[] }) {
-  return (
-    <div className="text-red-500">
-      {errors && errors.map((error, index) => <span key={index}>{error}</span>)}
     </div>
   )
 }
