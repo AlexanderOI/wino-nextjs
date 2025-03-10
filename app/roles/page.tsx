@@ -1,38 +1,34 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { PERMISSIONS_URL, ROLES_URL } from "@/constants/routes"
-import { CardHeaderPage } from "@/components/common/card-header-page"
-import DataTableRoles from "@/features/roles/components/data-table-roles"
 import { apiClientServer } from "@/utils/api-client-server"
-import { DialogRole } from "@/features/roles/components/dialog-role"
-import { TypographyH1 } from "@/components/ui/typography"
-import { Permissions, Role } from "@/features/roles/interfaces/role.interface"
-import { PermissionServer } from "@/features/permission/permission-server"
-import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { Role, Permissions } from "@/features/roles/interfaces/role.interface"
+
+import { RolesData } from "@/features/roles/components/roles-data"
+
+interface PermissionCategory {
+  [key: string]: Permissions[]
+}
 
 export default async function RolesPage() {
-  const response = await apiClientServer.get<Role[]>(ROLES_URL)
-  const responsePermissions = await apiClientServer.get<Permissions[]>(PERMISSIONS_URL)
-  const roles = response.data
-  const permissions = responsePermissions.data
+  const { data: roles } = await apiClientServer.get<Role[]>("/roles")
+  const { data: permissions } = await apiClientServer.get<Permissions[]>("permissions")
+
+  const permisionsGrouped = permissions.reduce((acc: PermissionCategory, permission) => {
+    const category = permission.name.split("-").at(-1) ?? ""
+    if (!acc[category]) {
+      acc[category] = []
+    }
+    acc[category].push(permission)
+    return acc
+  }, {})
 
   return (
-    <div className="h-full">
-      <CardHeaderPage>
-        <TypographyH1>Roles and Permissions Management</TypographyH1>
-
-        <PermissionServer permissions={[PERMISSIONS.CREATE_ROLE]}>
-          <DialogRole>
-            <Button className="bg-purple-light text-white">Create Role</Button>
-          </DialogRole>
-        </PermissionServer>
-      </CardHeaderPage>
-
-      <Card className="dark:bg-dark-800 rounded h-5/6 overflow-y-auto">
-        <CardContent className="h-full">
-          <DataTableRoles roles={roles} permissions={permissions} />
-        </CardContent>
-      </Card>
+    <div className="min-h-screen text-gray-100 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <RolesData
+          roles={roles}
+          permissions={permissions}
+          permisionsGrouped={permisionsGrouped}
+        />
+      </div>
     </div>
   )
 }
