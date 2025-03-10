@@ -1,19 +1,22 @@
-import { buttonVariants } from "@/components/ui/button"
-import { Calendar, Pencil, Users } from "lucide-react"
-import { Project } from "@/features/project/interfaces/project.interface"
-import { TASKS_URL } from "@/constants/routes"
-import { PROJECTS_URL } from "@/constants/routes"
+import Link from "next/link"
 import { notFound } from "next/navigation"
+
+import { Calendar, Pencil, Users } from "lucide-react"
 import { format, isValid } from "date-fns"
+
+import { apiClientServer } from "@/utils/api-client-server"
+import { Project } from "@/features/project/interfaces/project.interface"
 import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
+import { Activity } from "@/features/tasks/interfaces/activity.interface"
 import { Task } from "@/features/tasks/interfaces/task.interface"
+
+import { TASKS_URL, PROJECTS_URL } from "@/constants/routes"
+
+import { buttonVariants } from "@/components/ui/button"
 import { CardTables } from "@/features/project/components/page/card-tables"
 import { CardProgress } from "@/features/project/components/page/card-progress"
 import { CardDetails } from "@/features/project/components/page/card-details"
 import { CardRecentActivity } from "@/features/project/components/page/card-recent-activity"
-import { apiClientServer } from "@/utils/api-client-server"
-import { Activity } from "@/features/tasks/interfaces/activity.interface"
-import Link from "next/link"
 import { PermissionServer } from "@/features/permission/permission-server"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
 

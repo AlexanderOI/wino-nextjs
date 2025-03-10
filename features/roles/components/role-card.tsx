@@ -34,6 +34,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { PermissionClient } from "@/features/permission/permission-client"
 
 interface Props {
   role: Role
@@ -190,17 +192,21 @@ export const RoleCard = ({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <CollapsibleTrigger asChild>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                  </CollapsibleTrigger>
+                  <PermissionClient permissions={[PERMISSIONS.EDIT_ROLE]}>
+                    <CollapsibleTrigger asChild>
+                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                    </CollapsibleTrigger>
+                  </PermissionClient>
                   {/* <DropdownMenuItem>Duplicar</DropdownMenuItem> */}
 
-                  <DropdownMenuItem
-                    className="text-red-400"
-                    onClick={() => setIsDeleteDialogOpen(true)}
-                  >
-                    Delete
-                  </DropdownMenuItem>
+                  <PermissionClient permissions={[PERMISSIONS.DELETE_ROLE]}>
+                    <DropdownMenuItem
+                      className="text-red-400"
+                      onClick={() => setIsDeleteDialogOpen(true)}
+                    >
+                      Delete
+                    </DropdownMenuItem>
+                  </PermissionClient>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

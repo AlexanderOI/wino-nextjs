@@ -11,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CompanyData } from "@/features/company/components/company-data"
 import { DialogData } from "@/components/common/dialog/dialog-data"
 import { DialogCompany } from "@/features/company/components/dialog-company"
+import { PermissionServer } from "@/features/permission/permission-server"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 
 export default async function CompanyPage() {
   const session = await getSession()
@@ -72,12 +74,14 @@ export default async function CompanyPage() {
             <p className="text-gray-400 mt-1">Manage your companies and collaborations</p>
           </div>
 
-          <DialogData content={<DialogCompany />}>
-            <Button variant="purple">
-              <Plus className="w-4 h-4 mr-2" />
-              Create Company
-            </Button>
-          </DialogData>
+          <PermissionServer permissions={[PERMISSIONS.CREATE_COMPANY]}>
+            <DialogData content={<DialogCompany />}>
+              <Button variant="purple">
+                <Plus className="w-4 h-4 mr-2" />
+                Create Company
+              </Button>
+            </DialogData>
+          </PermissionServer>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -1,19 +1,19 @@
 "use client"
+import Link from "next/link"
+
+import { useState } from "react"
+import { MoreVertical } from "lucide-react"
 
 import { DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-
-import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreVertical } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { DialogDelete } from "@/components/common/dialog/dialog-delete"
-import { useState } from "react"
-import Link from "next/link"
+
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
 import { PermissionClient } from "@/features/permission/permission-client"
-import { useProjectStore } from "@/features/project/store/project.store"
+
 export function DropdownAction({ id }: { id: string }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const project = useProjectStore((state) => state.project)
 
   return (
     <>

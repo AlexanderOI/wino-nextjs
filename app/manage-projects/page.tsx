@@ -1,27 +1,21 @@
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { Clock, MoreVertical, Plus, Search } from "lucide-react"
-import { apiClientServer } from "@/utils/api-client-server"
-import { Project } from "@/features/project/interfaces/project.interface"
-import { PROJECTS_URL, TASKS_URL } from "@/constants/routes"
+import Link from "next/link"
 
 import { formatDate } from "date-fns"
+import { Clock, Plus } from "lucide-react"
+
+import { apiClientServer } from "@/utils/api-client-server"
+import { Project } from "@/features/project/interfaces/project.interface"
 import { Task } from "@/features/tasks/interfaces/task.interface"
-import { TooltipTrigger } from "@/components/ui/tooltip"
-import { Tooltip } from "@/components/ui/tooltip"
-import { TooltipContent } from "@/components/ui/tooltip"
-import Link from "next/link"
+import { PROJECTS_URL, TASKS_URL } from "@/constants/routes"
+
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import { buttonVariants } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownAction } from "./ui/dropdown-action"
 import { TypographyH1 } from "@/components/ui/typography"
+import { Badge } from "@/components/ui/badge"
+import { DropdownAction } from "./ui/dropdown-action"
+
 import { PermissionServer } from "@/features/permission/permission-server"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
 

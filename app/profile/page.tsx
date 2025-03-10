@@ -1,17 +1,17 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Pencil } from "lucide-react"
+import { subDays } from "date-fns"
+
 import { getSession } from "@/utils/get-session"
-import { USERS_URL } from "@/constants/routes"
 import { apiClientServer } from "@/utils/api-client-server"
 import { User } from "@/features/user/interfaces/user.interface"
+import { Task } from "@/features/tasks/interfaces/task.interface"
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { UserAvatar } from "@/features/profile/user-avatar"
 import { TypographyH1 } from "@/components/ui/typography"
-import { Task } from "@/features/tasks/interfaces/task.interface"
-import { subDays } from "date-fns"
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+
 import EditDialog from "@/features/profile/edit-dialog"
+import { USERS_URL } from "@/constants/routes"
 
 export default async function ProfilePage() {
   const session = await getSession()

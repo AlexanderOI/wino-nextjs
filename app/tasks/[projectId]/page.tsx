@@ -1,5 +1,7 @@
 "use client"
 
+import { useParams, useRouter } from "next/navigation"
+
 import { useEffect, useState } from "react"
 import {
   DndContext,
@@ -10,22 +12,24 @@ import {
   PointerSensor,
   closestCorners,
 } from "@dnd-kit/core"
-import { arrayMove } from "@dnd-kit/sortable"
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable"
-import { ColumnItem } from "@/features/tasks/components/board/column-item"
+import { arrayMove } from "@dnd-kit/sortable"
+
+import { TypographyH1 } from "@/components/ui/typography"
+import ColorPicker from "@/components/ui/color-picker"
+import { toast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useParams, useRouter } from "next/navigation"
+import { ColumnItem } from "@/features/tasks/components/board/column-item"
+import { SkeletonTaskBoard } from "@/features/tasks/components/skeleton/skeleton-task-board"
+import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
+
 import { useColumnStore } from "@/features/tasks/store/column.store"
 import { useTaskStore } from "@/features/tasks/store/task.store"
-import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
-import { SkeletonTaskBoard } from "@/features/tasks/components/skeleton/skeleton-task-board"
-import ColorPicker from "@/components/ui/color-picker"
-import { TypographyH1 } from "@/components/ui/typography"
+import { useProjectStore } from "@/features/project/store/project.store"
+
 import { PermissionClient } from "@/features/permission/permission-client"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
-import { toast } from "@/components/ui/use-toast"
-import { useProjectStore } from "@/features/project/store/project.store"
 
 export default function TasksPage() {
   const project = useProjectStore((state) => state.project)

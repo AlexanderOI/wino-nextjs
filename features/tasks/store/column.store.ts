@@ -13,7 +13,7 @@ interface ColumnStore {
   deleteColumn: (columnId: string) => Promise<void>
   addTask: (columnId: string, name: string) => Promise<void>
   updateTask: (columnId: string, taskId: string, newName: string) => Promise<void>
-  setOneTask: (columnId: string, task: Task) => void
+  setOneTask: (columnId: string, task: Task, move?: boolean) => void
   deleteTask: (taskId: string) => Promise<void>
   reorderTasks: (columnId: string, tasks: Task[]) => Promise<void>
   moveTask: (
@@ -121,7 +121,7 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
     }
   },
 
-  setOneTask: (newColumnId: string, task: Task) => {
+  setOneTask: (newColumnId: string, task: Task, move: boolean = true) => {
     set((state) => ({
       columns: state.columns.map((col) =>
         col._id === newColumnId
@@ -130,7 +130,7 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
       ),
     }))
 
-    get().moveTask(task._id, task._id, task.columnId, newColumnId, task)
+    if (move) get().moveTask(task._id, task._id, task.columnId, newColumnId, task)
   },
 
   reorderTasks: async (columnId: string, newTasks: Task[]) => {

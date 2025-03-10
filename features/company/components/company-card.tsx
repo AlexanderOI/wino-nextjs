@@ -29,6 +29,8 @@ import {
 import { Company } from "@/features/company/interfaces/company.interface"
 import { format } from "date-fns"
 import { Project } from "@/features/project/interfaces/project.interface"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { PermissionClient } from "@/features/permission/permission-client"
 
 interface CompanyWithProjects extends Company {
   projects: Project[]
@@ -93,47 +95,60 @@ export function CompanyCard({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-[#1a1d27] border-[#2a2d37]">
-            <DropdownMenuItem
-              className="flex items-center"
-              onClick={() => handleOpenCompanyDialog(company._id)}
-            >
-              <Pencil className="w-4 h-4 mr-2" />
-              Edit Company
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="flex items-center"
-              onClick={() => handleManageUsers(company)}
-            >
-              <Users className="w-4 h-4 mr-2" />
-              Manage Users
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="flex items-center"
-              onClick={() => handleManageProjects(company)}
-            >
-              <Users className="w-4 h-4 mr-2" />
-              Manage Projects
-            </DropdownMenuItem>
+            <PermissionClient permissions={[PERMISSIONS.EDIT_COMPANY]}>
+              <DropdownMenuItem
+                className="flex items-center"
+                onClick={() => handleOpenCompanyDialog(company._id)}
+              >
+                <Pencil className="w-4 h-4 mr-2" />
+                Edit Company
+              </DropdownMenuItem>
+            </PermissionClient>
+
+            <PermissionClient permissions={[PERMISSIONS.VIEW_USER]}>
+              <DropdownMenuItem
+                className="flex items-center"
+                onClick={() => handleManageUsers(company)}
+              >
+                <Users className="w-4 h-4 mr-2" />
+                Manage Users
+              </DropdownMenuItem>
+            </PermissionClient>
+
+            <PermissionClient permissions={[PERMISSIONS.MANAGE_PROJECT]}>
+              <DropdownMenuItem
+                className="flex items-center"
+                onClick={() => handleManageProjects(company)}
+              >
+                <Users className="w-4 h-4 mr-2" />
+                Manage Projects
+              </DropdownMenuItem>
+            </PermissionClient>
+
             {isWorkFor || (!company.isMain && <DropdownMenuSeparator />)}
 
             {!isWorkFor && !company.isMain && (
-              <DropdownMenuItem
-                className="flex items-center text-red-400"
-                onClick={() => handleDelete(company._id)}
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Company
-              </DropdownMenuItem>
+              <PermissionClient permissions={[PERMISSIONS.DELETE_COMPANY]}>
+                <DropdownMenuItem
+                  className="flex items-center text-red-400"
+                  onClick={() => handleDelete(company._id)}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Company
+                </DropdownMenuItem>
+              </PermissionClient>
             )}
 
             {isWorkFor && company.isInvited && !company.invitePending && (
-              <DropdownMenuItem
-                className="flex items-center text-red-400"
-                onClick={() => handleLeaveCompany(company._id)}
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Leave Company
-              </DropdownMenuItem>
+              <PermissionClient permissions={[PERMISSIONS.DELETE_COMPANY]}>
+                <DropdownMenuItem
+                  className="flex items-center text-red-400"
+                  onClick={() => handleLeaveCompany(company._id)}
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Leave Company
+                </DropdownMenuItem>
+              </PermissionClient>
             )}
           </DropdownMenuContent>
         </DropdownMenu>

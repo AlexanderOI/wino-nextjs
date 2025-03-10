@@ -12,6 +12,7 @@ export const PERMISSIONS = {
   ASSIGN_TASK: "assign-task",
   VIEW_TASK: "view-task",
   // projects
+  MANAGE_PROJECT: "manage-project",
   CREATE_PROJECT: "create-project",
   EDIT_PROJECT: "edit-project",
   DELETE_PROJECT: "delete-project",

@@ -31,17 +31,21 @@ import { SelectProjectDialog } from "@/features/project/components/select-projec
 import { useProjectStore } from "@/features/project/store/project.store"
 import { cn } from "@/lib/utils"
 import { useEffect } from "react"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { PermissionClient } from "@/features/permission/permission-client"
 
 const itemsWorkspace = [
   {
     title: "Dashboard",
     url: "/dashboard",
     icon: Home,
+    permissions: [PERMISSIONS.VIEW_DASHBOARD],
   },
   {
     title: "Manage Projects",
     url: "/manage-projects",
     icon: Settings,
+    permissions: [PERMISSIONS.MANAGE_PROJECT],
   },
 ]
 
@@ -50,6 +54,7 @@ const itemsCompany = [
     title: "Company",
     url: "/company",
     icon: Building,
+    permissions: [PERMISSIONS.VIEW_COMPANY],
   },
 ]
 
@@ -58,11 +63,13 @@ const itemsRoles = [
     title: "Roles",
     url: "/roles",
     icon: UserCog,
+    permissions: [PERMISSIONS.VIEW_ROLE],
   },
   {
     title: "Users",
     url: "/users",
     icon: Users,
+    permissions: [PERMISSIONS.VIEW_USER],
   },
 ]
 
@@ -71,11 +78,13 @@ const itemsProjects = [
     title: "Project",
     url: "/project",
     icon: FolderOpenDot,
+    permissions: [PERMISSIONS.VIEW_PROJECT],
   },
   {
     title: "Tasks",
     url: "/tasks",
     icon: FolderKanban,
+    permissions: [PERMISSIONS.VIEW_TASK],
   },
 ]
 
@@ -114,21 +123,23 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {itemsWorkspace.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={item.url}
-                      className={
-                        pathname === item.url || pathname.includes(item.url + "/")
-                          ? "bg-purple-deep"
-                          : ""
-                      }
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <PermissionClient key={item.title} permissions={item.permissions}>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={item.url}
+                        className={
+                          pathname === item.url || pathname.includes(item.url + "/")
+                            ? "bg-purple-deep"
+                            : ""
+                        }
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </PermissionClient>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -147,29 +158,31 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {itemsProjects.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    className={cn(project ? "" : "hover:bg-slate-600")}
-                    disabled={!project?._id}
-                    asChild
-                  >
-                    {project?._id ? (
-                      <Link
-                        href={`${item.url}/${project?._id}`}
-                        className={
-                          pathname === item.url || pathname.includes(item.url + "/")
-                            ? "bg-purple-deep"
-                            : ""
-                        }
-                      >
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    ) : (
-                      <span className="text-gray-500">{item.title}</span>
-                    )}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <PermissionClient key={item.title} permissions={item.permissions}>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      className={cn(project ? "" : "hover:bg-slate-600")}
+                      disabled={!project?._id}
+                      asChild
+                    >
+                      {project?._id ? (
+                        <Link
+                          href={`${item.url}/${project?._id}`}
+                          className={
+                            pathname === item.url || pathname.includes(item.url + "/")
+                              ? "bg-purple-deep"
+                              : ""
+                          }
+                        >
+                          <item.icon />
+                          <span>{item.title}</span>
+                        </Link>
+                      ) : (
+                        <span className="text-gray-500">{item.title}</span>
+                      )}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </PermissionClient>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -180,17 +193,19 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {itemsCompany.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={item.url}
-                      className={pathname === item.url ? "bg-purple-deep" : ""}
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <PermissionClient key={item.title} permissions={item.permissions}>
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={item.url}
+                        className={pathname === item.url ? "bg-purple-deep" : ""}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </PermissionClient>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -201,17 +216,19 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {itemsRoles.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={item.url}
-                      className={pathname === item.url ? "bg-purple-deep" : ""}
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <PermissionClient key={item.title} permissions={item.permissions}>
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={item.url}
+                        className={pathname === item.url ? "bg-purple-deep" : ""}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </PermissionClient>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
