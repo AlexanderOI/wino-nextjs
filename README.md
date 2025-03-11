@@ -1,4 +1,4 @@
-# Wino NextJS
+# Wino NextJS - Project And Task Management
 
 Multi-company web application for project and task management,
 developed with Next.js and NestJS. Implements JWT authentication, role
@@ -49,11 +49,9 @@ cp .env.example .env
 
 4. Configure environment variables in `.env`:
 
-```
-NEXT_PUBLIC_BACKEND_URL=your_backend_url
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_secure_secret
-```
+- `NEXT_PUBLIC_BACKEND_URL`: Your backend url
+- `NEXTAUTH_URL`: Your auth url
+- `NEXTAUTH_SECRET`: Your auth secret key
 
 The backend can be found in the [wino-nestjs](https://github.com/AlexanderOI/wino-nestjs) repository
 
