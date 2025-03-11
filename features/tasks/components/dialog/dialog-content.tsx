@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToggleInput } from "@/components/common/form/toggle-input"
 
 import { useTaskStore } from "../../store/task.store"
-import { useState } from "react"
+import { use, useEffect, useState } from "react"
 import { useColumnStore } from "../../store/column.store"
 import { canPermission } from "@/features/permission/utils/can-permission"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
@@ -25,6 +25,13 @@ export default function DialogTaskContent({ sendChanges }: Props) {
     name: false,
     description: false,
   })
+
+  const [canEditTask, setCanEditTask] = useState(false)
+
+  useEffect(() => {
+    canPermission([PERMISSIONS.EDIT_TASK]).then(setCanEditTask)
+  }, [])
+
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
   const setOneTask = useColumnStore((state) => state.setOneTask)
@@ -36,8 +43,7 @@ export default function DialogTaskContent({ sendChanges }: Props) {
     sendChange?: boolean
   ) => {
     const { name, value } = event.target
-    const hasPermission = await canPermission([PERMISSIONS.EDIT_TASK])
-    if (!hasPermission) return
+    if (!canEditTask) return
 
     updateTaskField(name, value)
 

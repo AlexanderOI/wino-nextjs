@@ -43,6 +43,7 @@ export function RolesData({
   }
 
   const handleDeleteRole = (roleId: string) => {
+    if (roleId !== "") return
     setRoles(roles.filter((role) => role._id !== roleId))
   }
 
