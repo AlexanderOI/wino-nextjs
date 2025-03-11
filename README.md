@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Wino NextJS
 
-## Getting Started
+Multi-company web application for project and task management,
+developed with Next.js and NestJS. Implements JWT authentication, role
+and permission-based access control, task assignment, Kanban board,
+and project progress tracking with a modern and efficient interface.
 
-First, run the development server:
+## 🚀 Features
+
+- JWT Authentication
+- Role and permission-based access control
+- Task assignment
+- Kanban board
+- Project progress tracking
+- Modern and efficient interface
+
+## 🛠️ Main Technologies
+
+- [Next.js](https://nextjs.org/) - React Framework
+- [TypeScript](https://www.typescriptlang.org/) - Programming Language
+- [Tailwind CSS](https://tailwindcss.com/) - CSS Framework
+- [Radix UI](https://www.radix-ui.com/) - Primitive Components
+- [Zustand](https://zustand-demo.pmnd.rs/) - State Management
+- [React Query](https://tanstack.com/query/latest) - Server State Management
+- [NextAuth.js](https://next-auth.js.org/) - Authentication
+- [React Hook Form](https://react-hook-form.com/) - Form Handling
+- [Zod](https://zod.dev/) - Schema Validation
+
+## 📦 Installation
+
+1. Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/AlexanderOI/wino-nextjs.git
+cd wino-nextjs
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. Copy the environment variables file:
 
-## Learn More
+```bash
+cp .env.example .env
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Configure environment variables in `.env`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+NEXT_PUBLIC_BACKEND_URL=your_backend_url
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_secure_secret
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The backend can be found in the [wino-nestjs](https://github.com/AlexanderOI/wino-nestjs) repository
 
-## Deploy on Vercel
+## 🚀 Local Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To start the development server:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+pnpm dev
+```
+
+The application will be available at `http://localhost:3000`
+
+## 🏗️ Production Build
+
+1. Build the application:
+
+```bash
+pnpm build
+```
+
+2. Start the production server:
+
+```bash
+pnpm start
+```
+
+## 📝 Available Scripts
+
+- `pnpm dev` - Starts the development server with Turbopack
+- `pnpm build` - Builds the application for production
+- `pnpm start` - Starts the production server
+- `pnpm lint` - Runs the linter
