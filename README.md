@@ -85,3 +85,22 @@ pnpm start
 - `pnpm build` - Builds the application for production
 - `pnpm start` - Starts the production server
 - `pnpm lint` - Runs the linter
+
+## 📸 Screenshots
+
+### Login
+
+<div>
+    <img src="documentation/images/img_1.png" width="24%"></img> 
+    <img src="documentation/images/img_2.png" width="24%"></img> 
+    <img src="documentation/images/img_3.png" width="24%"></img> 
+    <img src="documentation/images/img_4.png" width="24%"></img> 
+    <img src="documentation/images/img_5.png" width="24%"></img> 
+    <img src="documentation/images/img_6.png" width="24%"></img> 
+    <img src="documentation/images/img_7.png" width="24%"></img> 
+    <img src="documentation/images/img_8.png" width="24%"></img> 
+    <img src="documentation/images/img_9.png" width="24%"></img> 
+    <img src="documentation/images/img_10.png" width="24%"></img> 
+    <img src="documentation/images/img_11.png" width="24%"></img> 
+    <img src="documentation/images/img_12.png" width="24%"></img> 
+</div>
