@@ -88,8 +88,6 @@ pnpm start
 
 ## 📸 Screenshots
 
-### Login
-
 <div>
     <img src="documentation/images/img_1.png" width="24%"></img> 
     <img src="documentation/images/img_2.png" width="24%"></img> 
