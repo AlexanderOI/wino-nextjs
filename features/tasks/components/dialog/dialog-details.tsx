@@ -178,7 +178,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
   )
 }
 
-function DetailItemContainer({ children }: { children: React.ReactNode }) {
+export function DetailItemContainer({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-row items-center justify-between text-nowrap gap-2">
       {children}

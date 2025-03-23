@@ -2,6 +2,7 @@
 
 import {
   Home,
+  BookMarked,
   Settings,
   UserCog,
   Users,
@@ -85,6 +86,15 @@ const itemsProjects = [
     url: "/tasks",
     icon: FolderKanban,
     permissions: [PERMISSIONS.VIEW_TASK],
+  },
+]
+
+const itemsForms = [
+  {
+    title: "Forms",
+    url: "/forms",
+    icon: BookMarked,
+    // permissions: [PERMISSIONS.VIEW_FORM],
   },
 ]
 
@@ -180,6 +190,29 @@ export function AppSidebar() {
                       ) : (
                         <span className="text-gray-500">{item.title}</span>
                       )}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </PermissionClient>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Forms</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {itemsForms.map((item) => (
+                <PermissionClient key={item.title} permissions={[]}>
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={item.url}
+                        className={pathname === item.url ? "bg-purple-deep" : ""}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </PermissionClient>
