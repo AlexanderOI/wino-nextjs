@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { Link } from "lucide-react"
+import Link from "next/link"
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Button } from "@/components/ui/button"

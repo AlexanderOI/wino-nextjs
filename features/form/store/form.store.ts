@@ -8,12 +8,14 @@ import {
   SelectOption,
 } from "@/features/form/interfaces/form.interface"
 
+type FormStoreState = Omit<FormSchema, "hasProject">
+
 interface FormStore {
-  formSchema: FormSchema
+  formSchema: FormStoreState
   currentFieldSelected: FormField | null
 
   setCurrentFieldSelected: (field: FormField | null) => void
-  setFormSchema: (schema: FormSchema) => void
+  setFormSchema: (schema: FormStoreState) => void
   addField: (index: number, type: FieldType, placeholder: string) => void
   updateField: (id: string, updates: Partial<FormField>) => void
   removeField: (id: string) => void
