@@ -15,4 +15,5 @@ export interface Project {
   endDate: Date
   company?: Company
   companyId: string
+  formTaskId: string
 }

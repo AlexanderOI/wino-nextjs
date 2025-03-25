@@ -1,5 +1,9 @@
 "use client"
+import { useSession } from "next-auth/react"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 
+import { useEffect } from "react"
 import {
   Home,
   BookMarked,
@@ -11,6 +15,8 @@ import {
   FolderOpenDot,
   FolderRoot,
 } from "lucide-react"
+
+import { cn } from "@/lib/utils"
 
 import {
   Sidebar,
@@ -25,15 +31,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
-import { useSession } from "next-auth/react"
-import { usePathname } from "next/navigation"
-import { SelectProjectDialog } from "@/features/project/components/select-project-dialog"
-import { useProjectStore } from "@/features/project/store/project.store"
-import { cn } from "@/lib/utils"
-import { useEffect } from "react"
+
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
 import { PermissionClient } from "@/features/permission/permission-client"
+
+import { SelectProjectDialog } from "@/features/project/components/dialog/select-project-dialog"
+import { useProjectStore } from "@/features/project/store/project.store"
 
 const itemsWorkspace = [
   {

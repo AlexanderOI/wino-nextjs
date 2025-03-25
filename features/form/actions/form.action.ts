@@ -37,3 +37,14 @@ export async function duplicateFormTask(id: string) {
   const response = await apiClientServer.post<FormSchema>(`/forms-task/${id}/duplicate`)
   return response.data
 }
+
+export const assignFormTaskToProject = async (formTaskId: string, projectId: string) => {
+  const response = await apiClientServer.patch<{ message: string }>(
+    `/forms-task/${formTaskId}/assign-form-task`,
+    {
+      projectId,
+    }
+  )
+
+  return response.data
+}

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { Calendar, Pencil, Users } from "lucide-react"
+import { BookMarked, Calendar, Pencil, Users } from "lucide-react"
 import { format, isValid } from "date-fns"
 
 import { apiClientServer } from "@/utils/api-client-server"
@@ -12,13 +12,16 @@ import { Task } from "@/features/tasks/interfaces/task.interface"
 
 import { TASKS_URL, PROJECTS_URL } from "@/constants/routes"
 
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { DialogData } from "@/components/common/dialog/dialog-data"
+
+import { PermissionServer } from "@/features/permission/permission-server"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
 import { CardTables } from "@/features/project/components/page/card-tables"
 import { CardProgress } from "@/features/project/components/page/card-progress"
 import { CardDetails } from "@/features/project/components/page/card-details"
 import { CardRecentActivity } from "@/features/project/components/page/card-recent-activity"
-import { PermissionServer } from "@/features/permission/permission-server"
-import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { SelectFormDialog } from "@/features/project/components/dialog/select-form-dialog"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -80,13 +83,22 @@ export default async function ProjectPage({ params }: Props) {
         </div>
 
         <PermissionServer permissions={[PERMISSIONS.EDIT_PROJECT]}>
-          <Link
-            href={`/manage-projects/edit/${project._id}`}
-            className={buttonVariants({ variant: "purple", className: "gap-2" })}
-          >
-            <Pencil className="w-4 h-4" />
-            Edit Project
-          </Link>
+          <div className="flex items-center gap-2">
+            <DialogData content={<SelectFormDialog />}>
+              <Button variant="purple" className="gap-2">
+                <BookMarked className="w-4 h-4" />
+                Select Form
+              </Button>
+            </DialogData>
+
+            <Link
+              href={`/manage-projects/edit/${project._id}`}
+              className={buttonVariants({ variant: "purple", className: "gap-2" })}
+            >
+              <Pencil className="w-4 h-4" />
+              Edit Project
+            </Link>
+          </div>
         </PermissionServer>
       </div>
 

@@ -21,22 +21,20 @@ import {
 import { AxiosError } from "axios"
 import { useQuery } from "@tanstack/react-query"
 
+import { apiClient } from "@/utils/api-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { toast } from "@/components/ui/use-toast"
 
 import { FieldSelectPopover } from "@/features/form/components/builder/field-select-popover"
 import { SortableFieldCard } from "@/features/form/components/builder/sortable-field-card"
+import { FormSkeleton } from "@/features/form/components/builder/form-skeleton"
 import { FormPreview } from "@/features/form/components/builder/form-preview"
 import { useFormStore } from "@/features/form/store/form.store"
-
-import { toast } from "@/components/ui/use-toast"
-import { apiClient } from "@/utils/api-client"
 import { FormSchema } from "@/features/form/interfaces/form.interface"
-
 import { getFormTask } from "@/features/form/actions/form.action"
-import { FormSkeleton } from "./form-skeleton"
 
 export function FormBuilder({ id }: { id?: string }) {
   const router = useRouter()
@@ -118,8 +116,10 @@ export function FormBuilder({ id }: { id?: string }) {
         fields: fieldsData,
       }
 
+      let formId: string | null = _id
       if (!id) {
-        await apiClient.post<FormSchema>("/forms-task", form)
+        const response = await apiClient.post<FormSchema>("/forms-task", form)
+        formId = response.data._id
       } else {
         await apiClient.patch<FormSchema>(`/forms-task/${id}`, form)
       }
@@ -130,7 +130,7 @@ export function FormBuilder({ id }: { id?: string }) {
         duration: 1000,
       })
 
-      router.push(`/forms/edit/${_id}`)
+      router.push(`/forms/edit/${formId}`)
     } catch (error) {
       if (error instanceof AxiosError) {
         toast({

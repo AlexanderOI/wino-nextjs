@@ -1,7 +1,12 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+
+import { cn } from "@/lib/utils"
+import { apiClient } from "@/utils/api-client"
+
 import {
   Dialog,
   DialogHeader,
@@ -14,11 +19,8 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { Project } from "../interfaces/project.interface"
-import { useProjectStore } from "../store/project.store"
-import { apiClient } from "@/utils/api-client"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
+import { useProjectStore } from "@/features/project/store/project.store"
+import { Project } from "@/features/project/interfaces/project.interface"
 
 interface Props {
   children?: React.ReactNode
@@ -37,6 +39,7 @@ export function SelectProjectDialog({
   const setIsOpen = onOpenChange ?? setInternalIsOpen
 
   const router = useRouter()
+  const pathname = usePathname()
 
   const [projects, setProjects] = useState<Project[]>()
   const projectSelected = useProjectStore((state) => state.project)
@@ -53,7 +56,11 @@ export function SelectProjectDialog({
   const handleSelectProject = (project: Project) => {
     setProject(project)
     setIsOpen(false)
-    router.push(`/project/${project._id}`)
+    if (pathname.startsWith("/tasks")) {
+      router.push(`/tasks/${project._id}`)
+    } else {
+      router.push(`/project/${project._id}`)
+    }
   }
 
   return (

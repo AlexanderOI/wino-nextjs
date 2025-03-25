@@ -19,6 +19,7 @@ export interface FormSchema {
   _id: string
   name: string
   fields: FormField[]
+  hasProject: boolean
   projectName?: string
   createdAt?: string
   updatedAt?: string

@@ -1,4 +1,5 @@
 "use client"
+
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -138,6 +139,7 @@ const Columns = (
           <DropdownMenuItem
             onClick={() => handleDelete(row.original)}
             className="text-red-400"
+            disabled={row.original.hasProject || !!row.original.projectName}
           >
             <Trash className="w-4 h-4 mr-2" />
             Delete Form
