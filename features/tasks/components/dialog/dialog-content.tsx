@@ -1,16 +1,14 @@
 "use client"
 
-import { DialogTitle } from "@/components/ui/dialog"
-import { DialogHeader } from "@/components/ui/dialog"
+import { useEffect, useState } from "react"
+
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleInput } from "@/components/common/form/toggle-input"
 
-import { useTaskStore } from "../../store/task.store"
-import { use, useEffect, useState } from "react"
-import { useColumnStore } from "../../store/column.store"
-import { canPermission } from "@/features/permission/utils/can-permission"
-import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { useTaskStore } from "@/features/tasks/store/task.store"
+import { useColumnStore } from "@/features/tasks/store/column.store"
 
 interface Props {
   sendChanges: (
@@ -18,23 +16,25 @@ interface Props {
     wasChanged: boolean,
     value?: string | Date | undefined
   ) => void
+  hasPermissionEdit: boolean
 }
 
-export default function DialogTaskContent({ sendChanges }: Props) {
+export function DialogTaskContent({ sendChanges, hasPermissionEdit }: Props) {
   const [isUpdated, setIsUpdated] = useState({
-    name: false,
-    description: false,
+    name: "",
+    description: "",
   })
-
-  const [canEditTask, setCanEditTask] = useState(false)
-
-  useEffect(() => {
-    canPermission([PERMISSIONS.EDIT_TASK]).then(setCanEditTask)
-  }, [])
 
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
   const setOneTask = useColumnStore((state) => state.setOneTask)
+
+  useEffect(() => {
+    setIsUpdated({
+      name: task?.name || "",
+      description: task?.description || "",
+    })
+  }, [])
 
   if (!task) return null
 
@@ -42,17 +42,19 @@ export default function DialogTaskContent({ sendChanges }: Props) {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     sendChange?: boolean
   ) => {
+    if (!hasPermissionEdit) return
+
     const { name, value } = event.target
-    if (!canEditTask) return
 
     updateTaskField(name, value)
 
-    setIsUpdated((prev) => ({ ...prev, [name]: true }))
+    const isChanged =
+      isUpdated.description !== task.description || isUpdated.name !== task.name
 
-    if (sendChange && isUpdated[name as keyof typeof isUpdated]) {
+    if (sendChange && isChanged) {
       sendChanges(name, true, value)
-      setIsUpdated((prev) => ({ ...prev, [name]: false }))
       setOneTask(task.columnId, task, false)
+      setIsUpdated((prev) => ({ ...prev, [name]: value }))
     }
   }
 

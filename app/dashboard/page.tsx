@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { BarChart3, ClipboardList } from "lucide-react"
 import { CardTitle } from "@/components/ui/card"
 import { CardHeader } from "@/components/ui/card"

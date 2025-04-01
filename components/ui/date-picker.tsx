@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { TimePicker } from "./time-picker"
-import { useState } from "react"
 
 interface Props {
   name: string
@@ -51,7 +50,7 @@ export function DatePicker({
   }
 
   return (
-    <Popover>
+    <Popover modal={false}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}

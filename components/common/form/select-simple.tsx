@@ -25,7 +25,7 @@ export function SelectSimple({
   onChange,
   value,
   label,
-  placeholder,
+  placeholder = "Select an option",
   className,
   children,
 }: Props) {

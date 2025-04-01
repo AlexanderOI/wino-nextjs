@@ -30,6 +30,7 @@ import { useProjectStore } from "@/features/project/store/project.store"
 
 import { PermissionClient } from "@/features/permission/permission-client"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { DialogData } from "@/components/common/dialog/dialog-data"
 
 export default function TasksPage() {
   const project = useProjectStore((state) => state.project)
@@ -218,7 +219,11 @@ export default function TasksPage() {
         )}
       </DndContext>
 
-      <TaskDialog isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} id={task?._id} />
+      <DialogData
+        content={<TaskDialog id={task?._id || ""} />}
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+      />
     </div>
   )
 }

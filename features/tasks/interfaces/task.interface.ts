@@ -17,4 +17,12 @@ export interface Task {
   column: ColumnTask
   assignedTo: User
   project: Project
+
+  fields?: Field[]
+}
+
+export interface Field {
+  _id: string
+  idField: string
+  value: string
 }

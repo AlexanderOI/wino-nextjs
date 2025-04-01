@@ -1,61 +1,47 @@
 "use client"
 
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { useEffect, useState } from "react"
+
+import { canPermission } from "@/features/permission/utils/can-permission"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
+
+import { DialogContent } from "@/components/ui/dialog"
+
+import { SkeletonTaskDialog } from "@/features/tasks/components/skeleton/skeleton-task-dialog"
+import { DialogTaskContent } from "@/features/tasks/components/dialog/dialog-content"
+import { DialogTaskDetails } from "@/features/tasks/components/dialog/dialog-details"
+
 import { useTaskDialog } from "@/features/tasks/hooks/use-task-dialog"
-import { useTaskStore } from "../../store/task.store"
-import DialogTaskContent from "./dialog-content"
-import DialogTaskDetails from "./dialog-details"
-import { SkeletonTaskDialog } from "../skeleton/skeleton-task-dialog"
 
 interface Props {
   children?: React.ReactNode
-  id?: string
-  isOpen?: boolean
-  onOpenChange?: (open: boolean) => void
+  id: string
 }
 
-export function TaskDialog({
-  id,
-  isOpen: externalIsOpen,
-  onOpenChange,
-  children,
-}: Props) {
-  const [internalIsOpen, setInternalIsOpen] = useState(false)
-  const isOpen = externalIsOpen ?? internalIsOpen
-  const setIsOpen = onOpenChange ?? setInternalIsOpen
+export function TaskDialog({ id }: Props) {
+  const { taskQuery, columnsQuery, sendChanges } = useTaskDialog(id)
 
-  const task = useTaskStore((state) => state.task)
-
-  const { users, columns, loading, fetchInitialData, sendChanges } = useTaskDialog(id)
+  const [canEditTask, setCanEditTask] = useState(false)
 
   useEffect(() => {
-    if (isOpen) fetchInitialData()
-  }, [isOpen, fetchInitialData])
+    canPermission([PERMISSIONS.EDIT_TASK]).then(setCanEditTask)
+  }, [])
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-
-      {isOpen && task && (
-        <DialogContent
-          className="max-w-7xl min-h-[400px] flex"
-          aria-describedby={undefined}
-        >
-          {loading ? (
-            <SkeletonTaskDialog />
-          ) : (
-            <>
-              <DialogTaskContent sendChanges={sendChanges} />
-              <DialogTaskDetails
-                sendChanges={sendChanges}
-                users={users}
-                columns={columns}
-              />
-            </>
-          )}
-        </DialogContent>
+    <DialogContent className="max-w-7xl min-h-[400px] flex" aria-describedby={undefined}>
+      {taskQuery.isLoading || columnsQuery.isLoading ? (
+        <SkeletonTaskDialog />
+      ) : (
+        <>
+          <DialogTaskContent sendChanges={sendChanges} hasPermissionEdit={canEditTask} />
+          <DialogTaskDetails
+            sendChanges={sendChanges}
+            users={taskQuery.data?.project?.members ?? []}
+            columns={columnsQuery.data ?? []}
+            hasPermissionEdit={canEditTask}
+          />
+        </>
       )}
-    </Dialog>
+    </DialogContent>
   )
 }

@@ -1,20 +1,29 @@
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { SelectItem } from "@/components/ui/select"
-import { useTaskStore } from "../../store/task.store"
+"use client"
+
+import { useSession } from "next-auth/react"
+
+import { CircleDot, User2 } from "lucide-react"
+import { cn } from "@/lib/utils"
+
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { cn } from "@/lib/utils"
-import { useSession } from "next-auth/react"
-import { User } from "@/features/user/interfaces/user.interface"
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { SelectItem } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 import { SelectSimple } from "@/components/common/form/select-simple"
-import { DatePicker } from "@/components/ui/date-picker"
 import { EditableField } from "@/components/common/form/EditableField"
-import { format, isValid } from "date-fns"
+import { toast } from "@/components/ui/use-toast"
+
+import { FieldTask } from "@/features/tasks/components/form/field-task"
+import { LabelField } from "@/features/tasks/components/form/label-field"
+
 import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
-import { useColumnStore } from "../../store/column.store"
-import { PERMISSIONS } from "@/features/permission/constants/permissions"
-import { canPermissionSession } from "@/features/permission/utils/can-permission"
+import { User } from "@/features/user/interfaces/user.interface"
+
+import { useFormTask } from "@/features/tasks/hooks/use-form-task-query"
+import { useColumnStore } from "@/features/tasks/store/column.store"
+import { useTaskStore } from "@/features/tasks/store/task.store"
+import { createFieldTask, updateFieldTask } from "@/features/tasks/action/task.action"
 
 interface Props {
   users: User[]
@@ -24,20 +33,28 @@ interface Props {
     wasChanged: boolean,
     value?: string | Date | undefined
   ) => void
+  hasPermissionEdit: boolean
 }
 
-export default function DialogTaskDetails({ users, columns, sendChanges }: Props) {
+export function DialogTaskDetails({
+  users,
+  columns,
+  sendChanges,
+  hasPermissionEdit,
+}: Props) {
+  const { data: session } = useSession()
+
+  const { formTaskQuery } = useFormTask()
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
   const setOneTask = useColumnStore((state) => state.setOneTask)
-  const { data: session } = useSession()
+  const handleFieldChange = useTaskStore((state) => state.handleFieldChange)
+  const formData = useTaskStore((state) => state.formData)
 
   if (!task) return null
 
-  const hasPermission = canPermissionSession([PERMISSIONS.EDIT_TASK], session)
-
   const handleSelectAssignChange = (value: string, send: boolean = false) => {
-    if (!hasPermission) return
+    if (!hasPermissionEdit) return
     if (value === task.assignedTo?._id) return
 
     const user = users.find((user) => user._id === value)
@@ -57,6 +74,28 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
     setOneTask(value, task)
   }
 
+  const saveFormTask = (name: string, wasChanged: boolean) => {
+    if (!wasChanged) return
+
+    let data = useTaskStore.getState().formData?.[name]
+    console.log(data)
+
+    const field = task.fields?.find((field) => field.idField === name)
+    const newData = { idField: name, value: data?.toString() ?? "" }
+
+    if (!field) {
+      createFieldTask(task._id, newData)
+    } else {
+      updateFieldTask(task._id, field._id, newData)
+    }
+
+    toast({
+      title: "Success",
+      description: "Field updated successfully",
+      duration: 3000,
+    })
+  }
+
   return (
     <div className="flex flex-col gap-2 w-5/12 border p-5 mt-16 rounded-md">
       <DialogHeader className="mb-5">
@@ -64,19 +103,22 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
       </DialogHeader>
 
       <DetailItemContainer>
-        <Label>Status</Label>
+        <div className="flex items-center gap-2 w-4/12">
+          <CircleDot className="h-4 w-4 flex-shrink-0 text-sky-500" />
+          <Label>Status</Label>
+        </div>
 
         <EditableField
-          value={task.column.name}
+          value={task.column?.name}
           className="w-7/12"
           onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
-          disabled={!hasPermission}
+          disabled={!hasPermissionEdit}
         >
           <SelectSimple
             name="columnId"
             label="Status"
             onValueChange={handleSelectColumnChange}
-            value={task.column._id}
+            value={task.column?._id}
           >
             {columns.map((column) => (
               <SelectItem key={column._id} value={column._id}>
@@ -88,7 +130,10 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
       </DetailItemContainer>
 
       <DetailItemContainer>
-        <Label>User Assigned</Label>
+        <div className="flex items-center gap-2 w-4/12">
+          <User2 className="h-4 w-4 flex-shrink-0 text-sky-500" />
+          <Label>User Assigned</Label>
+        </div>
 
         <div className="flex items-center gap-2 w-7/12">
           <Tooltip delayDuration={100}>
@@ -112,7 +157,7 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
           <EditableField
             value={task.assignedTo?.name}
             onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
-            disabled={!hasPermission}
+            disabled={!hasPermissionEdit}
           >
             <SelectSimple
               name="assignedToId"
@@ -131,49 +176,17 @@ export default function DialogTaskDetails({ users, columns, sendChanges }: Props
         </div>
       </DetailItemContainer>
 
-      <DetailItemContainer>
-        <Label>Start Date</Label>
-
-        <EditableField
-          value={
-            task.startDate && isValid(task.startDate)
-              ? format(task.startDate, "PPP HH:mm")
-              : "Pick a date"
-          }
-          onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
-          className="w-7/12"
-          disabled={!hasPermission}
-        >
-          <DatePicker
-            name="startDate"
-            selected={task.startDate}
-            onSelect={updateTaskField}
-            widthMinutes
+      {formTaskQuery.data?.fields?.map((field) => (
+        <DetailItemContainer key={field._id}>
+          <LabelField field={field} />
+          <FieldTask
+            field={field}
+            handleChange={handleFieldChange}
+            formData={formData ?? {}}
+            onClose={(name, wasChanged) => saveFormTask(name, wasChanged)}
           />
-        </EditableField>
-      </DetailItemContainer>
-
-      <DetailItemContainer>
-        <Label>End Date</Label>
-
-        <EditableField
-          value={
-            task.endDate && isValid(task.endDate)
-              ? format(task.endDate, "PPP HH:mm")
-              : "Pick a date"
-          }
-          onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
-          className="w-7/12"
-          disabled={!hasPermission}
-        >
-          <DatePicker
-            name="endDate"
-            selected={task.endDate}
-            onSelect={updateTaskField}
-            widthMinutes
-          />
-        </EditableField>
-      </DetailItemContainer>
+        </DetailItemContainer>
+      ))}
     </div>
   )
 }

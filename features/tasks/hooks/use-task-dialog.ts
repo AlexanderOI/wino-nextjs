@@ -1,49 +1,45 @@
-import { useState, useCallback } from "react"
-import { useToast } from "@/components/ui/use-toast"
+import { useEffect } from "react"
+
 import { apiClient } from "@/utils/api-client"
-import { TASKS_URL, USERS_URL } from "@/constants/routes"
-import { useColumnStore } from "../store/column.store"
-import { User } from "@/features/user/interfaces/user.interface"
-import { useTaskStore } from "../store/task.store"
-import { ColumnTask } from "../interfaces/column.interface"
-import { Task } from "../interfaces/task.interface"
+import { toast } from "@/components/ui/use-toast"
 
-export function useTaskDialog(id?: string) {
-  const { toast } = useToast()
+import { Task } from "@/features/tasks/interfaces/task.interface"
 
-  const [loading, setLoading] = useState(true)
+import { useColumnStore } from "@/features/tasks/store/column.store"
+import { useColumnsQuery } from "@/features/tasks/hooks/use-colums-query"
+import { useTaskStore } from "@/features/tasks/store/task.store"
+import { useTaskQuery } from "@/features/tasks/hooks/use-task-query"
 
+export function useTaskDialog(id: string) {
   const projectId = useColumnStore((state) => state.projectId)
-  const task = useTaskStore((state) => state.task)
+
+  const { taskQuery } = useTaskQuery(id, { fields: true })
+  const { columnsQuery } = useColumnsQuery(projectId)
+
   const setTask = useTaskStore((state) => state.setTask)
+  const setFormData = useTaskStore((state) => state.setFormData)
 
-  const [columns, setColumns] = useState<ColumnTask[]>([])
-  const [users, setUsers] = useState<User[]>([])
+  useEffect(() => {
+    if (taskQuery.data) {
+      setTask({
+        ...taskQuery.data,
+        startDate: new Date(taskQuery.data.startDate),
+        endDate: new Date(taskQuery.data.endDate),
+      })
 
-  const fetchInitialData = useCallback(async () => {
-    setLoading(true)
-    try {
-      // const responseUsers = await apiClient.get<User[]>(USERS_URL)
+      const filteredData =
+        taskQuery.data?.fields?.reduce((acc, field) => {
+          acc[field.idField] = field.value
+          return acc
+        }, {} as Record<string, string | number | Date>) ?? {}
 
-      const responseColumns = await apiClient.get(`/columns/project/${projectId}`)
-      setColumns(responseColumns.data)
+      console.log("files", filteredData)
 
-      if (id) {
-        const taskResponse = await apiClient.get<Task>(`${TASKS_URL}/${id}`)
-        setUsers(taskResponse.data.project?.members ?? [])
-
-        setTask({
-          ...taskResponse.data,
-          startDate: new Date(taskResponse.data.startDate),
-          endDate: new Date(taskResponse.data.endDate),
-        })
-
-        setLoading(false)
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error)
+      setFormData({
+        ...filteredData,
+      })
     }
-  }, [id])
+  }, [id, taskQuery.data])
 
   const sendChanges = async (
     name: string,
@@ -51,7 +47,6 @@ export function useTaskDialog(id?: string) {
     value?: string | Date | undefined
   ) => {
     if (!wasChanged) return
-
     let valueToSend = null
     if (!value) {
       valueToSend = useTaskStore.getState().task?.[name as keyof Task]
@@ -78,12 +73,8 @@ export function useTaskDialog(id?: string) {
   }
 
   return {
-    task,
-    users,
-    columns,
-    loading,
-    setLoading,
-    fetchInitialData,
+    taskQuery,
+    columnsQuery,
     sendChanges,
   }
 }
