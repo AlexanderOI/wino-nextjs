@@ -62,8 +62,10 @@ export function DialogTaskDetails({
     updateTaskField("assignedToId", value)
 
     if (send) {
+      let newTask = useTaskStore.getState().task
+      if (!newTask) return
       sendChanges("assignedToId", true, value)
-      setOneTask(task.columnId, task)
+      setOneTask(task.columnId, newTask, false)
     }
   }
 
