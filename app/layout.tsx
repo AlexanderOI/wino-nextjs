@@ -2,6 +2,7 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
 import { Montserrat } from "next/font/google"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 import { PermissionServer } from "@/features/permission/permission-server"
 import { AuthCheck } from "@/features/auth/components/auth-check"
@@ -13,7 +14,6 @@ import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { Toaster } from "@/components/ui/toaster"
 import { Main } from "./main"
-
 // const inter = Inter({ subsets: ["latin"] })
 const firaCode = Montserrat({ subsets: ["latin"] })
 
@@ -41,11 +41,13 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               >
                 <SidebarProvider defaultOpen={isOpenSidebar}>
                   <TooltipProvider>
-                    <PermissionServer>
-                      <AppSidebar />
-                    </PermissionServer>
-                    <Main>{children}</Main>
-                    <Toaster />
+                    <NuqsAdapter>
+                      <PermissionServer>
+                        <AppSidebar />
+                      </PermissionServer>
+                      <Main>{children}</Main>
+                      <Toaster />
+                    </NuqsAdapter>
                   </TooltipProvider>
                 </SidebarProvider>
               </ThemeProvider>

@@ -1,5 +1,5 @@
 "use client"
-import { Button } from "@/components/ui/button"
+
 import { Table } from "@tanstack/react-table"
 
 import {
@@ -8,7 +8,6 @@ import {
   PaginationButtonPrevious,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationButton,
 } from "@/components/ui/pagination"
 

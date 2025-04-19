@@ -85,7 +85,7 @@ export function DataTable<T>({ data, columns, options = defaultOptions }: Props<
         </div>
       )}
       <div className="rounded-md border h-[75%]">
-        <Table>
+        <Table className="dark:bg-dark-800">
           <DataTableHeader table={table} />
           <DataTableBody table={table} columns={columns} />
         </Table>

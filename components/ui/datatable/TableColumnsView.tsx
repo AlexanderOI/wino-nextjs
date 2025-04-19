@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown } from "lucide-react"
+import { ChevronsUpDown, Settings2 } from "lucide-react"
 import { Table, Column } from "@tanstack/react-table"
 
 export function TableColumnsView<T>({ table }: { table: Table<T> }) {
@@ -13,7 +13,9 @@ export function TableColumnsView<T>({ table }: { table: Table<T> }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="ml-auto dark:bg-dark-800">
-          Columns <ChevronDown className="ml-2 h-4 w-4" />
+          <Settings2 />
+          View
+          <ChevronsUpDown />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

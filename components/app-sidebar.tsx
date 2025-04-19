@@ -14,6 +14,7 @@ import {
   FolderKanban,
   FolderOpenDot,
   FolderRoot,
+  FolderCheck,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -80,14 +81,20 @@ const itemsRoles = [
 const itemsProjects = [
   {
     title: "Project",
-    url: "/project",
+    url: "/project/[projectId]",
     icon: FolderOpenDot,
     permissions: [PERMISSIONS.VIEW_PROJECT],
   },
   {
-    title: "Tasks",
-    url: "/tasks",
+    title: "Task Board",
+    url: "/tasks/[projectId]",
     icon: FolderKanban,
+    permissions: [PERMISSIONS.VIEW_TASK],
+  },
+  {
+    title: "Task List",
+    url: "/tasks/[projectId]/list",
+    icon: FolderCheck,
     permissions: [PERMISSIONS.VIEW_TASK],
   },
 ]
@@ -180,7 +187,7 @@ export function AppSidebar() {
                     >
                       {project?._id ? (
                         <Link
-                          href={`${item.url}/${project?._id}`}
+                          href={`${item.url.replace("[projectId]", project?._id)}`}
                           className={
                             pathname === item.url || pathname.includes(item.url + "/")
                               ? "bg-purple-deep"
