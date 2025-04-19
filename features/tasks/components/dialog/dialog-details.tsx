@@ -80,7 +80,6 @@ export function DialogTaskDetails({
     if (!wasChanged) return
 
     let data = useTaskStore.getState().formData?.[name]
-    console.log(data)
 
     const field = task.fields?.find((field) => field.idField === name)
     const newData = { idField: name, value: data?.toString() ?? "" }

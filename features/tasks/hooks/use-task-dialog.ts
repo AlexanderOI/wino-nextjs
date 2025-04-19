@@ -33,8 +33,6 @@ export function useTaskDialog(id: string) {
           return acc
         }, {} as Record<string, string | number | Date>) ?? {}
 
-      console.log("files", filteredData)
-
       setFormData({
         ...filteredData,
       })

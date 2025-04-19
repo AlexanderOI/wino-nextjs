@@ -2,6 +2,33 @@ import { Task } from "@/features/tasks/interfaces/task.interface"
 import { Field } from "@/features/tasks/interfaces/task.interface"
 import { apiClientServer } from "@/utils/api-client-server"
 
+export type GetTaskAllParams = {
+  sort?: { id: string; desc: boolean }[]
+  projectId?: string
+  columnsId?: string[]
+  assignedToId?: string[]
+  search?: string
+  fromUpdatedAt?: string
+  toUpdatedAt?: string
+  fromCreatedAt?: Date
+  toCreatedAt?: Date
+  limit?: number
+  offset?: number
+}
+
+export const getAllTasks = async (params: GetTaskAllParams) => {
+  const response = await apiClientServer.get<{ tasks: Task[]; total: number }>("/tasks", {
+    params: {
+      ...params,
+      sort: JSON.stringify(params.sort),
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  })
+  return response.data
+}
+
 export type GetTaskParams = {
   fields?: boolean
 }
@@ -23,6 +50,11 @@ export const deleteTask = async (id: string) => {
 
 export const createTask = async (data: Task) => {
   const response = await apiClientServer.post<Task>(`tasks`, data)
+  return response.data
+}
+
+export const getTotalTasks = async () => {
+  const response = await apiClientServer.get<number>(`tasks/total`)
   return response.data
 }
 
