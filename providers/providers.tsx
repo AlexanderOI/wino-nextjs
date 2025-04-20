@@ -1,7 +1,7 @@
 "use server"
 
 import { SessionAuthProvider } from "@/context/SessionAuthProvider"
-import { ReactQueryProvider } from "./react-quey-provider"
+import { ReactQueryProvider } from "./react-query-provider"
 import { AuthCheck } from "@/features/auth/components/auth-check"
 import { ThemeProvider } from "next-themes"
 import { SidebarProvider } from "@/components/ui/sidebar"

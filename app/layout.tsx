@@ -6,7 +6,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 import { PermissionServer } from "@/features/permission/permission-server"
 import { AuthCheck } from "@/features/auth/components/auth-check"
-import { ReactQueryProvider } from "@/providers/react-quey-provider"
+import { ReactQueryProvider } from "@/providers/react-query-provider"
 import { SessionAuthProvider } from "@/context/SessionAuthProvider"
 import { ThemeProvider } from "@/providers/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"

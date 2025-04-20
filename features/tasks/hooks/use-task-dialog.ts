@@ -5,13 +5,13 @@ import { toast } from "@/components/ui/use-toast"
 
 import { Task } from "@/features/tasks/interfaces/task.interface"
 
-import { useColumnStore } from "@/features/tasks/store/column.store"
-import { useColumnsQuery } from "@/features/tasks/hooks/use-colums-query"
+import { useProjectStore } from "@/features/project/store/project.store"
 import { useTaskStore } from "@/features/tasks/store/task.store"
+import { useColumnsQuery } from "@/features/tasks/hooks/use-colums-query"
 import { useTaskQuery } from "@/features/tasks/hooks/use-task-query"
 
 export function useTaskDialog(id: string) {
-  const projectId = useColumnStore((state) => state.projectId)
+  const projectId = useProjectStore((state) => state.project?._id || "")
 
   const { taskQuery } = useTaskQuery(id, { fields: true })
   const { columnsQuery } = useColumnsQuery(projectId)

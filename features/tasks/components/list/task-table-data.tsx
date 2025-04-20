@@ -1,12 +1,18 @@
-import { CalendarIcon, CircleDashed, Pencil, Text, User } from "lucide-react"
+"use client"
+
+import { CalendarIcon, CircleDashed, Text, User, UserCog, Trash2 } from "lucide-react"
 import { Column, ColumnDef, Row } from "@tanstack/react-table"
 import { format } from "date-fns"
 
+import { formatDateWithoutTimezone } from "@/lib/date-format"
+import { DataTableRowAction } from "@/types/data-table"
+
+import { TableAction } from "@/components/common/table-action"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
-import { TableAction } from "@/components/common/table-action"
 
 import { FormField, FormSchema } from "@/features/form/interfaces/form.interface"
 import { Project } from "@/features/project/interfaces/project.interface"
@@ -17,7 +23,9 @@ import { ColumnTaskCount } from "@/features/tasks/action/column.action"
 export const getTaskTableData = (
   columnTaskCount: ColumnTaskCount[],
   project: Project,
-  formTask: FormSchema | null
+  formTask: FormSchema | null,
+  setRowAction: (action: DataTableRowAction<Task> | null) => void,
+  handleMouseEnter: (id: string) => void
 ): ColumnDef<Task>[] => {
   const columns: ColumnDef<Task>[] = [
     {
@@ -51,7 +59,13 @@ export const getTaskTableData = (
       header: ({ column }) => <DataTableColumnHeader title="Task" column={column} />,
       cell: ({ row }) => (
         <div className="flex flex-col gap-2 w-full">
-          <span className="font-semibold truncate w-[250px]">{row.original.name}</span>
+          <span
+            className="font-semibold truncate w-[250px] hover:underline cursor-pointer"
+            onClick={() => setRowAction({ row: row.original, variant: "view" })}
+            onMouseEnter={() => handleMouseEnter(row.original._id)}
+          >
+            {row.original.name}
+          </span>
           <span className="text-sm text-gray-400 truncate w-[250px]">
             {row.original.description}
           </span>
@@ -154,13 +168,25 @@ export const getTaskTableData = (
       accessorKey: "actions",
       header: () => <div></div>,
       cell: ({ row }) => (
-        <div>No action</div>
-        // <TableAction>
-        //   <Button variant="purple">
-        //     <Pencil className="w-4 h-4 mr-2" />
-        //     Edit Task
-        //   </Button>
-        // </TableAction>
+        <TableAction>
+          <DropdownMenuItem
+            onClick={() => setRowAction({ row: row.original, variant: "view" })}
+            onMouseEnter={() => handleMouseEnter(row.original._id)}
+          >
+            <UserCog className="w-4 h-4 mr-2" />
+            Edit
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            className="text-red-400"
+            onClick={() => setRowAction({ row: row.original, variant: "delete" })}
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete
+          </DropdownMenuItem>
+        </TableAction>
       ),
       size: 40,
       enableSorting: false,
@@ -189,11 +215,15 @@ export const createTaskFieldsColumns = (formTask: FormSchema | null) => {
 
 export const createCellContent = (task: Task, field: FormField) => {
   const fieldValue = task.fields?.find((f) => f.idField === field._id)?.value
+
   if (field.type === "text") {
     return fieldValue ? fieldValue : "No text"
   }
   if (field.type === "date") {
-    return fieldValue ? format(fieldValue, "PPP") : "No date"
+    return fieldValue ? formatDateWithoutTimezone(fieldValue, "PPP") : "No date"
+  }
+  if (field.type === "datetime") {
+    return fieldValue ? formatDateWithoutTimezone(fieldValue, "PPP HH:mm") : "No datetime"
   }
   if (field.type === "number") {
     return fieldValue ? fieldValue : "No number"

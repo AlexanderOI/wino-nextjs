@@ -1,24 +1,37 @@
 "use client"
 
-import { use, useMemo } from "react"
+import { useRouter } from "next/navigation"
+
+import { use, useMemo, useState } from "react"
 import { ListIcon } from "lucide-react"
 
 import { Task } from "@/features/tasks/interfaces/task.interface"
 
+import { toast } from "@/components/ui/use-toast"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-
-import { useDataTable } from "@/hooks/use-data-table"
-import { DataTable } from "@/components/data-table/data-table"
+import { DialogData } from "@/components/common/dialog/dialog-data"
+import { DialogDelete } from "@/components/common/dialog/dialog-delete"
+import { DialogConfirm } from "@/components/common/dialog/dialog-confirm"
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTablePerPage } from "@/components/data-table/data-table-per-page"
+import { DataTable } from "@/components/data-table/data-table"
+
+import { useDataTable } from "@/hooks/use-data-table"
+import { DataTableRowAction, DataTableRowActionMany } from "@/types/data-table"
+
+import { getProjectFormTask, getTaskData } from "@/app/tasks/[projectId]/list/page"
+
+import { TasksTableActionBar } from "@/features/tasks/components/list/task-action-bar"
+import { getTaskTableData } from "@/features/tasks/components/list/task-table-data"
+import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
+import { usePrefetchTask } from "@/features/tasks/hooks/use-prefetch-task"
 
 import {
   ColumnTaskCount,
   getColumnTaskCount,
 } from "@/features/tasks/action/column.action"
-import { getTaskTableData } from "@/features/tasks/components/list/task-table-data"
-import { getProjectFormTask, getTaskData } from "@/app/tasks/[projectId]/list/page"
+import { deleteTask } from "@/features/tasks/action/task.action"
 
 interface Props {
   promises: Promise<
@@ -31,10 +44,25 @@ interface Props {
 }
 
 export const TaskTable = ({ promises }: Props) => {
+  const router = useRouter()
+
   const [{ tasks, pageCount }, columnTaskCount, { project, formTask }] = use(promises)
+  const [rowAction, setRowAction] = useState<DataTableRowAction<Task> | null>(null)
+  const [rowActionMany, setRowActionMany] = useState<DataTableRowActionMany<Task> | null>(
+    null
+  )
+
+  const { handleMouseEnter } = usePrefetchTask(project._id)
 
   const columns = useMemo(
-    () => getTaskTableData(columnTaskCount, project, formTask),
+    () =>
+      getTaskTableData(
+        columnTaskCount,
+        project,
+        formTask,
+        setRowAction,
+        handleMouseEnter
+      ),
     [columnTaskCount, project, formTask]
   )
 
@@ -52,6 +80,29 @@ export const TaskTable = ({ promises }: Props) => {
     shallow: false,
     clearOnDefault: true,
   })
+
+  const handleDeleteMany = async () => {
+    await Promise.all(
+      rowActionMany?.rows.map(async (row) => {
+        try {
+          await deleteTask(row._id)
+        } catch (error) {
+          toast({
+            title: "Error deleting task",
+            description: `Error deleting task: ${row.name}`,
+            variant: "destructive",
+          })
+        }
+      }) || []
+    )
+
+    toast({
+      title: "Tasks deleted",
+      description: `Tasks deleted: ${rowActionMany?.rows.length}`,
+    })
+
+    router.refresh()
+  }
 
   return (
     <>
@@ -71,17 +122,52 @@ export const TaskTable = ({ promises }: Props) => {
         ))}
       </div>
 
-      <DataTable table={table}>
+      <DataTable
+        table={table}
+        actionBar={
+          <TasksTableActionBar table={table} setRowActionMany={setRowActionMany} />
+        }
+      >
         <DataTableToolbar table={table}>
           <DataTableSortList table={table} align="end" />
           <DataTablePerPage table={table} />
         </DataTableToolbar>
       </DataTable>
+
+      <DialogData
+        content={<TaskDialog id={rowAction?.row._id || ""} />}
+        isOpen={rowAction?.variant === "view"}
+        onOpenChange={() => {
+          setRowAction(null)
+          router.refresh()
+        }}
+      />
+
+      <DialogDelete
+        id={rowAction?.row._id || ""}
+        url="/tasks"
+        title="Delete Task"
+        description="Are you sure you want to delete this task?"
+        isOpen={rowAction?.variant === "delete"}
+        onOpenChange={() => setRowAction(null)}
+        onAction={() => {
+          setRowAction(null)
+        }}
+      />
+
+      <DialogConfirm
+        title="Alert delete tasks"
+        description="Are you sure you want to delete these tasks?"
+        isOpen={rowActionMany?.variant === "delete-many"}
+        onOpenChange={() => setRowActionMany(null)}
+        onConfirm={handleDeleteMany}
+      />
     </>
   )
 }
 
 const createStats = (columnTaskCount: ColumnTaskCount[]) => {
+  "use client"
   return [
     {
       title: "Total Tasks",

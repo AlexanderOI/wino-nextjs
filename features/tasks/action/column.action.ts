@@ -3,8 +3,8 @@
 import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
 import { apiClientServer } from "@/utils/api-client-server"
 
-export const getColumns = async (id: string) => {
-  const response = await apiClientServer.get<ColumnTask[]>(`columns/project/${id}`)
+export const getColumns = async (projectId: string) => {
+  const response = await apiClientServer.get<ColumnTask[]>(`columns/project/${projectId}`)
   return response.data
 }
 

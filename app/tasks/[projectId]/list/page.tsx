@@ -1,12 +1,9 @@
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 import { Suspense } from "react"
 
-import { Users, UserPlus } from "lucide-react"
-
-import { PermissionServer } from "@/features/permission/permission-server"
-import { PERMISSIONS } from "@/features/permission/constants/permissions"
-
-import { Button } from "@/components/ui/button"
-import { DialogData } from "@/components/common/dialog/dialog-data"
+import { Users } from "lucide-react"
 
 import { TaskTable } from "@/features/tasks/components/list/task-table"
 
@@ -84,17 +81,6 @@ export default async function TasksPage(props: Props) {
             <p className="text-gray-400 mt-1">
               Manage your tasks and generate detailed reports
             </p>
-          </div>
-
-          <div className="flex gap-2">
-            {/* <PermissionServer permissions={[PERMISSIONS.CREATE_USER]}>
-              <DialogData content={<Dialog/>}>
-                <Button variant="purple">
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Create Task
-                </Button>
-              </DialogData>
-            </PermissionServer> */}
           </div>
         </div>
 

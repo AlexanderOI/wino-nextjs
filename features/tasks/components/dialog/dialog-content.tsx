@@ -1,11 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { FileText, CircleDot } from "lucide-react"
 
+import { EditableField } from "@/components/common/form/EditableField"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ToggleInput } from "@/components/common/form/toggle-input"
 
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { useColumnStore } from "@/features/tasks/store/column.store"
@@ -20,21 +21,9 @@ interface Props {
 }
 
 export function DialogTaskContent({ sendChanges, hasPermissionEdit }: Props) {
-  const [isUpdated, setIsUpdated] = useState({
-    name: "",
-    description: "",
-  })
-
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
   const setOneTask = useColumnStore((state) => state.setOneTask)
-
-  useEffect(() => {
-    setIsUpdated({
-      name: task?.name || "",
-      description: task?.description || "",
-    })
-  }, [])
 
   if (!task) return null
 
@@ -48,13 +37,9 @@ export function DialogTaskContent({ sendChanges, hasPermissionEdit }: Props) {
 
     updateTaskField(name, value)
 
-    const isChanged =
-      isUpdated.description !== task.description || isUpdated.name !== task.name
-
-    if (sendChange && isChanged) {
+    if (sendChange) {
       sendChanges(name, true, value)
       setOneTask(task.columnId, task, false)
-      setIsUpdated((prev) => ({ ...prev, [name]: value }))
     }
   }
 
@@ -62,25 +47,42 @@ export function DialogTaskContent({ sendChanges, hasPermissionEdit }: Props) {
     <div className="w-7/12 pr-4">
       <DialogHeader className="mb-5">
         <DialogTitle className="flex items-center gap-2">
-          Task:
-          <ToggleInput
-            name="name"
+          <div className="flex flex-row gap-2">
+            <CircleDot className="w-4 h-4 text-purple-500" />
+            Task:
+          </div>
+          <EditableField
             value={task.name}
-            onChange={handleInputChange}
-            onBlur={(event) => handleInputChange(event, true)}
-          />
+            className="w-full"
+            onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
+            disabled={!hasPermissionEdit}
+          >
+            <Input name="name" value={task.name} onChange={handleInputChange} />
+          </EditableField>
         </DialogTitle>
       </DialogHeader>
 
-      <Label>
+      <Label className="mb-2 flex flex-row gap-2">
+        <FileText className="w-4 h-4 text-purple-500" />
         Description
+      </Label>
+
+      <EditableField
+        value={task.description}
+        className="w-full h-auto"
+        onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
+        disabled={!hasPermissionEdit}
+        viewElement={
+          <div className="text-sm">{task.description || "Write a description"}</div>
+        }
+      >
         <Textarea
+          aria-label="Description"
           name="description"
           value={task.description}
           onChange={handleInputChange}
-          onBlur={(event) => handleInputChange(event, true)}
         />
-      </Label>
+      </EditableField>
     </div>
   )
 }

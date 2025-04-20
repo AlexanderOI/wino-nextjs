@@ -1,6 +1,6 @@
 import type { DataTableConfig } from "@/config/data-table"
 import type { FilterItemSchema } from "@/lib/parsers"
-import type { ColumnSort, Row, RowData } from "@tanstack/react-table"
+import type { ColumnSort, RowData } from "@tanstack/react-table"
 import type { ReactNode } from "react"
 declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: <explanation>
@@ -38,6 +38,11 @@ export interface ExtendedColumnFilter<TData> extends FilterItemSchema {
 }
 
 export interface DataTableRowAction<TData> {
-  row: Row<TData>
-  variant: "update" | "delete"
+  row: TData
+  variant: "update" | "delete" | "view" | "delete-many"
+}
+
+export interface DataTableRowActionMany<TData> {
+  rows: TData[]
+  variant: "delete-many" | "update-many"
 }
