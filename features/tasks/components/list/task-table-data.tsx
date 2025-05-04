@@ -7,9 +7,11 @@ import { format } from "date-fns"
 import { formatDateWithoutTimezone } from "@/lib/date-format"
 import { DataTableRowAction } from "@/types/data-table"
 
+import { EditorViewer } from "@/components/editor/editor"
 import { TableAction } from "@/components/common/table-action"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
@@ -28,6 +30,33 @@ export const getTaskTableData = (
   handleMouseEnter: (id: string) => void
 ): ColumnDef<Task>[] => {
   const columns: ColumnDef<Task>[] = [
+    {
+      accessorKey: "actions",
+      header: () => <div></div>,
+      cell: ({ row }) => (
+        <TableAction>
+          <DropdownMenuItem
+            onClick={() => setRowAction({ row: row.original, variant: "view" })}
+            onMouseEnter={() => handleMouseEnter(row.original._id)}
+          >
+            <UserCog className="w-4 h-4 mr-2" />
+            Edit
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            className="text-red-400"
+            onClick={() => setRowAction({ row: row.original, variant: "delete" })}
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete
+          </DropdownMenuItem>
+        </TableAction>
+      ),
+      size: 40,
+      enableSorting: false,
+    },
     {
       id: "select",
       header: ({ table }) => (
@@ -58,22 +87,34 @@ export const getTaskTableData = (
       accessorFn: (row) => `${row.name}`,
       header: ({ column }) => <DataTableColumnHeader title="Task" column={column} />,
       cell: ({ row }) => (
-        <div className="flex flex-col gap-2 w-full">
-          <span
-            className="font-semibold truncate w-[250px] hover:underline cursor-pointer"
-            onClick={() => setRowAction({ row: row.original, variant: "view" })}
-            onMouseEnter={() => handleMouseEnter(row.original._id)}
-          >
-            {row.original.name}
-          </span>
-          <span className="text-sm text-gray-400 truncate w-[250px]">
-            {row.original.description}
-          </span>
-        </div>
+        <Tooltip delayDuration={0} open={row.getIsSelected()}>
+          <TooltipTrigger>
+            <div className="flex flex-col gap-2 w-full items-start">
+              <span
+                className="font-semibold truncate w-[250px] hover:underline cursor-pointer text-left"
+                onClick={() => setRowAction({ row: row.original, variant: "view" })}
+                onMouseEnter={() => handleMouseEnter(row.original._id)}
+              >
+                {row.original.name}
+              </span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="w-[250px]">
+            <div className="flex flex-col gap-2">
+              <span className="text-sm text-center font-semibold">
+                {row.original.name}
+              </span>
+              <EditorViewer
+                content={row.original.description}
+                users={project.members || []}
+              />
+            </div>
+          </TooltipContent>
+        </Tooltip>
       ),
       meta: {
         label: "Title",
-        placeholder: "Search titles or description...",
+        placeholder: "Search titles...",
         variant: "text",
         icon: Text,
       },
@@ -164,33 +205,6 @@ export const getTaskTableData = (
       enableColumnFilter: true,
     },
     ...createTaskFieldsColumns(formTask),
-    {
-      accessorKey: "actions",
-      header: () => <div></div>,
-      cell: ({ row }) => (
-        <TableAction>
-          <DropdownMenuItem
-            onClick={() => setRowAction({ row: row.original, variant: "view" })}
-            onMouseEnter={() => handleMouseEnter(row.original._id)}
-          >
-            <UserCog className="w-4 h-4 mr-2" />
-            Edit
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            className="text-red-400"
-            onClick={() => setRowAction({ row: row.original, variant: "delete" })}
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Delete
-          </DropdownMenuItem>
-        </TableAction>
-      ),
-      size: 40,
-      enableSorting: false,
-    },
   ]
 
   return columns
@@ -206,7 +220,9 @@ export const createTaskFieldsColumns = (formTask: FormSchema | null) => {
       <DataTableColumnHeader title={field.label} column={column} />
     ),
     cell: ({ row }: { row: Row<Task> }) => (
-      <div>{createCellContent(row.original, field)}</div>
+      <div className="text-left truncate whitespace-nowrap max-w-[120px]">
+        {createCellContent(row.original, field)}
+      </div>
     ),
     enableColumnFilter: true,
     enableSorting: false,

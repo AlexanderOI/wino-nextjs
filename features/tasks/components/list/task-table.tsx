@@ -74,7 +74,6 @@ export const TaskTable = ({ promises }: Props) => {
     pageCount,
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
-      columnPinning: { right: ["actions"] },
     },
     getRowId: (originalRow) => originalRow._id,
     shallow: false,

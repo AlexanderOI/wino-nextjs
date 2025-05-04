@@ -1,12 +1,16 @@
 "use client"
 
+import { useState } from "react"
+import { JSONContent } from "@tiptap/react"
 import { FileText, CircleDot } from "lucide-react"
 
+import { User } from "@/features/user/interfaces/user.interface"
+
+import { Editor, EditorViewer } from "@/components/editor/editor"
 import { EditableField } from "@/components/common/form/EditableField"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { useColumnStore } from "@/features/tasks/store/column.store"
@@ -15,15 +19,22 @@ interface Props {
   sendChanges: (
     name: string,
     wasChanged: boolean,
-    value?: string | Date | undefined
+    value?: string | Date | JSONContent | undefined
   ) => void
   hasPermissionEdit: boolean
+  users: User[]
 }
 
-export function DialogTaskContent({ sendChanges, hasPermissionEdit }: Props) {
+export function DialogTaskContent({ sendChanges, hasPermissionEdit, users }: Props) {
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
   const setOneTask = useColumnStore((state) => state.setOneTask)
+
+  const [isSaving, setIsSaving] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [description, setDescription] = useState<JSONContent | null>(
+    task?.description || null
+  )
 
   if (!task) return null
 
@@ -41,6 +52,25 @@ export function DialogTaskContent({ sendChanges, hasPermissionEdit }: Props) {
       sendChanges(name, true, value)
       setOneTask(task.columnId, task, false)
     }
+  }
+
+  const handleUpdate = (value: JSONContent) => {
+    setIsSaving(true)
+    setDescription(value)
+  }
+
+  const handleSave = () => {
+    if (!description) return
+    sendChanges("description", true, description)
+    setOneTask(task.columnId, task, false)
+    setIsSaving(false)
+    setIsEditing(false)
+  }
+
+  const handleCancel = () => {
+    setDescription(task.description)
+    setIsSaving(false)
+    setIsEditing(false)
   }
 
   return (
@@ -67,22 +97,28 @@ export function DialogTaskContent({ sendChanges, hasPermissionEdit }: Props) {
         Description
       </Label>
 
-      <EditableField
-        value={task.description}
-        className="w-full h-auto"
-        onClose={(name, wasChanged) => sendChanges(name, wasChanged)}
-        disabled={!hasPermissionEdit}
-        viewElement={
-          <div className="text-sm">{task.description || "Write a description"}</div>
-        }
-      >
-        <Textarea
-          aria-label="Description"
-          name="description"
-          value={task.description}
-          onChange={handleInputChange}
-        />
-      </EditableField>
+      <div className="flex flex-col gap-2">
+        {isEditing ? (
+          <Editor
+            users={users}
+            value={description || ""}
+            onUpdate={handleUpdate}
+            saveProps={{
+              onClick: handleSave,
+              className: "bg-accent/80 hover:bg-accent/90 hover:text-accent-foreground",
+              disabled: !isSaving,
+            }}
+            cancelProps={{
+              onClick: handleCancel,
+              className: "bg-red-800/80 hover:bg-red-800 hover:text-white ml-auto",
+            }}
+          />
+        ) : (
+          <div onClick={() => setIsEditing(true)}>
+            <EditorViewer content={description || ""} users={users} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

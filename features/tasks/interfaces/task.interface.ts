@@ -1,11 +1,13 @@
+import { JSONContent } from "@tiptap/react"
+
 import { User } from "@/features/user/interfaces/user.interface"
-import { ColumnTask } from "./column.interface"
+import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
 import { Project } from "@/features/project/interfaces/project.interface"
 
 export interface Task {
   _id: string
   name: string
-  description: string
+  description: JSONContent
   startDate: Date
   endDate: Date
   order: number

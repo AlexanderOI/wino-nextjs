@@ -33,7 +33,11 @@ export function TaskDialog({ id }: Props) {
         <SkeletonTaskDialog />
       ) : (
         <>
-          <DialogTaskContent sendChanges={sendChanges} hasPermissionEdit={canEditTask} />
+          <DialogTaskContent
+            sendChanges={sendChanges}
+            hasPermissionEdit={canEditTask}
+            users={taskQuery.data?.project?.members ?? []}
+          />
           <DialogTaskDetails
             sendChanges={sendChanges}
             users={taskQuery.data?.project?.members ?? []}

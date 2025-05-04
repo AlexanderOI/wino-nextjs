@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { JSONContent } from "@tiptap/react"
 
 import { apiClient } from "@/utils/api-client"
 import { toast } from "@/components/ui/use-toast"
@@ -42,7 +43,7 @@ export function useTaskDialog(id: string) {
   const sendChanges = async (
     name: string,
     wasChanged: boolean,
-    value?: string | Date | undefined
+    value?: string | Date | JSONContent | undefined
   ) => {
     if (!wasChanged) return
     let valueToSend = null
