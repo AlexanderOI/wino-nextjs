@@ -32,7 +32,7 @@ import {
 import { dataTableConfig } from "@/config/data-table"
 import { cn } from "@/lib/utils"
 
-const OPEN_MENU_SHORTCUT = "s"
+const OPEN_MENU_SHORTCUT = "none"
 const REMOVE_SORT_SHORTCUTS = ["backspace", "delete"]
 
 interface DataTableSortListProps<TData>

@@ -1,0 +1,47 @@
+.ProseMirror h1 {
+  @apply text-4xl font-bold;
+}
+
+.ProseMirror h2 {
+  @apply text-3xl font-semibold;
+}
+
+.ProseMirror h3 {
+  @apply text-2xl font-medium;
+}
+
+.ProseMirror p {
+  @apply my-2;
+}
+
+.ProseMirror {
+  @apply min-h-[200px] px-4 py-3;
+}
+
+.ProseMirror img {
+  @apply max-w-full h-auto rounded-lg my-4 mx-auto;
+
+  &.ProseMirror-selectednode {
+    @apply outline outline-2 outline-offset-2 outline-primary;
+  }
+}
+
+.image-resizer {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  margin: 1rem auto;
+}
+
+.image-resizer img {
+  @apply pointer-events-none select-none m-0;
+}
+
+.image-resizer .resize-handle {
+  @apply absolute bg-primary rounded-md bottom-2/4 top-2/4 -translate-y-1/2 cursor-w-resize w-1 h-6;
+}
+
+.image-resizer.dragging,
+.image-resizer.dragging * {
+  @apply select-none pointer-events-none;
+}
