@@ -28,7 +28,10 @@ export function TaskDialog({ id }: Props) {
   }, [])
 
   return (
-    <DialogContent className="max-w-7xl min-h-[400px] flex" aria-describedby={undefined}>
+    <DialogContent
+      className="max-w-[1400px] min-h-[400px] max-h-[90%] flex overflow-y-hidden"
+      aria-describedby={undefined}
+    >
       {taskQuery.isLoading || columnsQuery.isLoading ? (
         <SkeletonTaskDialog />
       ) : (

@@ -26,9 +26,10 @@ interface EditorProps {
   onUpdate: (value: JSONContent) => void
   saveProps?: ButtonProps
   cancelProps?: ButtonProps
+  className?: string
 }
 
-const configFn = (users: User[]): UseEditorOptions => {
+const configFn = (users: User[], className?: string): UseEditorOptions => {
   return {
     extensions: [
       StarterKit.configure({
@@ -69,7 +70,8 @@ const configFn = (users: User[]): UseEditorOptions => {
     editorProps: {
       attributes: {
         class: cn(
-          "prose dark:prose-invert max-w-none focus:outline-none border rounded-lg p-2 max-h-96 overflow-y-auto"
+          "prose dark:prose-invert max-w-none focus:outline-none border rounded-lg p-2 max-h-96 overflow-y-auto",
+          className
         ),
       },
     },
@@ -83,9 +85,10 @@ export function Editor({
   onUpdate,
   saveProps,
   cancelProps,
+  className,
 }: EditorProps) {
   const editor = useEditor({
-    ...configFn(users),
+    ...configFn(users, className),
     onUpdate: ({ editor }) => {
       onUpdate(editor.getJSON())
     },
@@ -114,13 +117,15 @@ export function Editor({
 export function EditorViewer({
   content,
   users,
+  className,
 }: {
   content: JSONContent | string
   users: User[]
+  className?: string
 }) {
   "use client"
   const editor = useEditor({
-    ...configFn(users),
+    ...configFn(users, className),
     content,
     editable: false,
     immediatelyRender: false,
