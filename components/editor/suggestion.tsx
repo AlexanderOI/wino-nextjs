@@ -22,12 +22,22 @@ const renderSuggestion = () => {
 
       popup = tippy(document.body, {
         getReferenceClientRect: () => props.clientRect?.() || new DOMRect(),
-        appendTo: () => document.body,
+        appendTo: () => document.querySelector("[role='dialog']") || document.body,
         content: component.element,
         showOnCreate: true,
         interactive: true,
         trigger: "manual",
         placement: "bottom-start",
+        onShow(instance) {
+          const content = instance.popper.querySelector(".react-renderer")
+          if (content) {
+            Object.assign((content as HTMLElement).style, {
+              maxHeight: "200px",
+              overflowY: "auto",
+              pointerEvents: "auto",
+            })
+          }
+        },
       })
     },
 

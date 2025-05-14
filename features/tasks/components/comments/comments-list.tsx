@@ -55,13 +55,13 @@ export const CommentsList = ({
           {isOwner && !isEditing && (
             <div className="flex gap-2">
               <Button variant="ghost" size="sm" onClick={() => setIsReplying(true)}>
-                Responder
+                Reply
               </Button>
               <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-                Editar
+                Edit
               </Button>
               <Button variant="ghost" size="sm" onClick={() => onDelete(comment._id)}>
-                Eliminar
+                Delete
               </Button>
             </div>
           )}
@@ -152,13 +152,13 @@ const Reply = ({ comment, users, onDelete, onUpdate, onReply, space }: ReplyProp
                 {isOwner && !isEditing && (
                   <div className="flex gap-2">
                     <Button variant="ghost" size="sm" onClick={() => setIsReplying(true)}>
-                      Responder
+                      Reply
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-                      Editar
+                      Edit
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => onDelete(reply._id)}>
-                      Eliminar
+                      Delete
                     </Button>
                   </div>
                 )}

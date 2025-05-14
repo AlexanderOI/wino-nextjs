@@ -15,12 +15,14 @@ interface CommentEditorProps {
   disabled?: boolean
   isEditing?: boolean
   content?: JSONContent
+  placeholder?: string
 }
 
 export const CommentEditor = ({
   users,
   disabled = false,
   isEditing = false,
+  placeholder = "Write a text...",
   content,
   onSave,
   onCancel,
@@ -39,7 +41,7 @@ export const CommentEditor = ({
       if (!contentInternal) {
         toast({
           title: "Error",
-          description: "El comentario no puede estar vacío",
+          description: "Comment cannot be empty",
           variant: "destructive",
         })
         return
@@ -85,7 +87,7 @@ export const CommentEditor = ({
             if (!disabled) setIsInternalEditing(true)
           }}
         >
-          <EditorViewer content={content || ""} users={users} />
+          <EditorViewer content={content || placeholder} users={users} />
         </div>
       )}
     </>

@@ -29,7 +29,7 @@ export function TaskDialog({ id }: Props) {
 
   return (
     <DialogContent
-      className="max-w-[1400px] min-h-[400px] max-h-[90%] flex overflow-y-hidden"
+      className="max-w-[1400px] min-h-[400px] max-h-[90%] flex"
       aria-describedby={undefined}
     >
       {taskQuery.isLoading || columnsQuery.isLoading ? (

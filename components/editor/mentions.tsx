@@ -63,27 +63,30 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>((props, ref) =>
   }))
 
   return (
-    <Card>
-      <ScrollArea className="flex flex-col gap-2 p-2 h-48">
+    <Card className="z-50 pointer-events-auto">
+      <ScrollArea className="flex flex-col gap-2 p-2 h-48 z-50">
         {items.length ? (
           items.map((item: SuggestionUsers, index: number) => (
             <Button
               className={cn(
-                index === selectedIndex ? "bg-gray-700 rounded" : "",
-                "flex items-center gap-2 p-1 w-full"
+                "flex justify-start gap-2 p-1 w-full",
+                index === selectedIndex && "bg-gray-700 rounded"
               )}
               key={index + item.id}
               onClick={() => {
                 console.log("clicked")
                 selectItem(index)
               }}
+              variant="ghost"
               asChild
             >
-              <Avatar className="w-6 h-6">
-                <AvatarImage src={item.avatar || ""} />
-                <AvatarFallback>{item.name[0] || "N"}</AvatarFallback>
-              </Avatar>
-              {item.name}
+              <div className="flex items-start gap-2 cursor-pointer">
+                <Avatar className="w-6 h-6">
+                  <AvatarImage src={item.avatar || ""} />
+                  <AvatarFallback>{item.name[0] || "N"}</AvatarFallback>
+                </Avatar>
+                {item.name}
+              </div>
             </Button>
           ))
         ) : (
