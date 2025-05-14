@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { JSONContent } from "@tiptap/react"
+import { MessageCircle } from "lucide-react"
 
 import { User } from "@/features/user/interfaces/user.interface"
 import { useComments } from "@/features/tasks/hooks/use-comments"
@@ -9,7 +10,6 @@ import { useComments } from "@/features/tasks/hooks/use-comments"
 import { CreateComment } from "@/features/tasks/interfaces/comment.interface"
 import { CommentsList } from "@/features/tasks/components/comments/comments-list"
 import { CommentEditor } from "@/features/tasks/components/comments/comment-editor"
-import { MessageCircle } from "lucide-react"
 
 interface CommentsListProps {
   taskId: string

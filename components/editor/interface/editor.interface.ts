@@ -10,7 +10,7 @@ export interface SuggestionUsers {
 
 export interface MentionListProps {
   items: SuggestionUsers[]
-  command: (props: { id: string }) => void
+  command: (props: { id: string; name: string }) => void
 }
 
 export interface MentionListRef {

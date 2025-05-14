@@ -12,9 +12,9 @@ import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+import { Comments } from "@/features/tasks/components/comments/comments"
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { useColumnStore } from "@/features/tasks/store/column.store"
-import { Comments } from "../comments/comments"
 
 interface Props {
   sendChanges: (

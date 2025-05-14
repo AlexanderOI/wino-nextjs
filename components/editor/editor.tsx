@@ -3,15 +3,14 @@
 import React, { useEffect } from "react"
 import { EditorContent, useEditor, UseEditorOptions, JSONContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import Mention from "@tiptap/extension-mention"
 import Highlight from "@tiptap/extension-highlight"
 import TextAlign from "@tiptap/extension-text-align"
 
 import { cn } from "@/lib/utils"
 
 import { MenuBar } from "@/components/editor/menu-bar"
-import { SuggestionUsers } from "@/components/editor/suggestion"
 import { CustomImage } from "@/components/editor/extensions/resizable-image"
+import { CustomMention } from "@/components/editor/extensions/mention"
 
 import "@/components/editor/style/style.css"
 
@@ -53,19 +52,7 @@ const configFn = (users: User[], className?: string): UseEditorOptions => {
           class: "rounded-lg",
         },
       }),
-      Mention.configure({
-        HTMLAttributes: {
-          class: "bg-gray-800/90 rounded shadow text-sm",
-        },
-        suggestion: SuggestionUsers(
-          users.map((user) => ({
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            avatar: user.avatar,
-          }))
-        ),
-      }),
+      CustomMention(users),
     ],
     editorProps: {
       attributes: {

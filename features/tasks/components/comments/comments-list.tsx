@@ -127,71 +127,94 @@ const Reply = ({ comment, users, onDelete, onUpdate, onReply, space }: ReplyProp
   if (!session) return null
 
   return (
-    <div className={cn("space-y-2", space && "pl-10")}>
+    <div className={cn("space-y-2", space && "")}>
       {comment?.replies?.map((reply) => {
         const isOwner = session?.user?._id === reply.userId
 
         return (
           <div key={reply._id}>
-            <Card className="pt-4 dark:bg-transparent border-none">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={reply.user?.avatar} />
-                    <AvatarFallback>
-                      {reply.user?.name?.[0]?.toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium">{reply.user?.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {format(new Date(reply.createdAt), "PPP HH:mm")}
-                    </p>
-                  </div>
-                </div>
-                {isOwner && !isEditing && (
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" onClick={() => setIsReplying(true)}>
-                      Reply
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-                      Edit
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => onDelete(reply._id)}>
-                      Delete
-                    </Button>
-                  </div>
+            <div className="flex gap-2">
+              <div
+                className={cn(
+                  "relative w-10 pl-3",
+                  reply.replies && reply.replies.length > 0 ? "min-h-full" : "h-24"
                 )}
+              >
+                <div className="w-[1px] min-h-full border-l" />
+                <div className="absolute top-24 left-0 w-8 h-[1px] ml-3 border-b" />
               </div>
+              <Card className="pt-4 dark:bg-transparent border-none w-full">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={reply.user?.avatar} />
+                      <AvatarFallback>
+                        {reply.user?.name?.[0]?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{reply.user?.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(reply.createdAt), "PPP HH:mm")}
+                      </p>
+                    </div>
+                  </div>
+                  {isOwner && !isEditing && (
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsReplying(true)}
+                      >
+                        Reply
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsEditing(true)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onDelete(reply._id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  )}
+                </div>
 
-              <div className="mt-2">
-                <CommentEditor
-                  content={reply.content}
-                  users={users}
-                  onSave={(content) => {
-                    onUpdate(reply._id, content)
-                    setIsEditing(false)
-                  }}
-                  disabled={!isEditing}
-                  isEditing={isEditing}
-                  onCancel={() => setIsEditing(false)}
-                />
-              </div>
-
-              {isReplying && (
                 <div className="mt-2">
                   <CommentEditor
+                    content={reply.content}
                     users={users}
                     onSave={(content) => {
-                      onReply(content, reply._id)
-                      setIsReplying(false)
+                      onUpdate(reply._id, content)
+                      setIsEditing(false)
                     }}
-                    onCancel={() => setIsReplying(false)}
-                    isEditing={isReplying}
+                    disabled={!isEditing}
+                    isEditing={isEditing}
+                    onCancel={() => setIsEditing(false)}
                   />
                 </div>
-              )}
-            </Card>
+
+                {isReplying && (
+                  <div className="mt-2">
+                    <CommentEditor
+                      users={users}
+                      onSave={(content) => {
+                        onReply(content, reply._id)
+                        setIsReplying(false)
+                      }}
+                      onCancel={() => setIsReplying(false)}
+                      isEditing={isReplying}
+                    />
+                  </div>
+                )}
+              </Card>
+            </div>
 
             {reply.replies && reply.replies.length > 0 && (
               <Reply
