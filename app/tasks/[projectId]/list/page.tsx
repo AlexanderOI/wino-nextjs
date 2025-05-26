@@ -8,54 +8,12 @@ import { Users } from "lucide-react"
 import { TaskTable } from "@/features/tasks/components/list/task-table"
 
 import { getColumnTaskCount } from "@/features/tasks/action/column.action"
-import { getProject } from "@/features/project/action/project.action"
-import { getAllTasks } from "@/features/tasks/action/task.action"
-import { getFormTask } from "@/features/form/actions/form.action"
-import { searchParamsCache, GetTasksSchema } from "@/features/tasks/lib/validations"
+import { searchParamsCache } from "@/features/tasks/lib/validations"
+import { getProjectFormTask, getTaskData } from "@/features/tasks/action/task.action"
 
 interface Props {
   params: Promise<{ projectId: string }>
   searchParams: Promise<{ page: string; perPage: string; sort: string }>
-}
-
-export async function getTaskData(projectId: string, filter: GetTasksSchema) {
-  const {
-    sort,
-    page,
-    perPage,
-    status: columnsId,
-    task: search,
-    createdAt,
-    assignedTo: assignedToId,
-  } = filter
-  const limit = perPage
-  const offset = limit * (page - 1)
-  const fromCreatedAt = createdAt[0] ? new Date(createdAt[0]) : undefined
-  const toCreatedAt = createdAt[1] ? new Date(createdAt[1]) : undefined
-
-  try {
-    const { tasks, total } = await getAllTasks({
-      sort,
-      projectId,
-      limit,
-      offset,
-      columnsId,
-      search,
-      fromCreatedAt,
-      toCreatedAt,
-      assignedToId,
-    })
-    const pageCount = Math.ceil(total / limit)
-    return { tasks, pageCount }
-  } catch (error) {
-    return { tasks: [], pageCount: 0 }
-  }
-}
-
-export async function getProjectFormTask(projectId: string) {
-  const project = await getProject(projectId, { withMembers: true })
-  const formTask = await getFormTask(project.formTaskId)
-  return { project, formTask }
 }
 
 export default async function TasksPage(props: Props) {

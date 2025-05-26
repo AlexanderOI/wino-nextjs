@@ -1,6 +1,9 @@
+import { apiClientServer } from "@/utils/api-client-server"
+import { getFormTask } from "@/features/form/actions/form.action"
+import { getProject } from "@/features/project/action/project.action"
 import { Task } from "@/features/tasks/interfaces/task.interface"
 import { Field } from "@/features/tasks/interfaces/task.interface"
-import { apiClientServer } from "@/utils/api-client-server"
+import { GetTasksSchema } from "@/features/tasks/lib/validations"
 
 export type GetTaskAllParams = {
   sort?: { id: string; desc: boolean }[]
@@ -75,4 +78,44 @@ export const updateFieldTask = async (
 export const deleteFieldTask = async (taskId: string, id: string) => {
   const response = await apiClientServer.delete<Field>(`tasks/${taskId}/field/${id}`)
   return response.data
+}
+
+export async function getTaskData(projectId: string, filter: GetTasksSchema) {
+  const {
+    sort,
+    page,
+    perPage,
+    status: columnsId,
+    task: search,
+    createdAt,
+    assignedTo: assignedToId,
+  } = filter
+  const limit = perPage
+  const offset = limit * (page - 1)
+  const fromCreatedAt = createdAt[0] ? new Date(createdAt[0]) : undefined
+  const toCreatedAt = createdAt[1] ? new Date(createdAt[1]) : undefined
+
+  try {
+    const { tasks, total } = await getAllTasks({
+      sort,
+      projectId,
+      limit,
+      offset,
+      columnsId,
+      search,
+      fromCreatedAt,
+      toCreatedAt,
+      assignedToId,
+    })
+    const pageCount = Math.ceil(total / limit)
+    return { tasks, pageCount }
+  } catch (error) {
+    return { tasks: [], pageCount: 0 }
+  }
+}
+
+export async function getProjectFormTask(projectId: string) {
+  const project = await getProject(projectId, { withMembers: true })
+  const formTask = await getFormTask(project.formTaskId)
+  return { project, formTask }
 }

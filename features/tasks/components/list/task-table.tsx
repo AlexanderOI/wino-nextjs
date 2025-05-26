@@ -20,8 +20,6 @@ import { DataTable } from "@/components/data-table/data-table"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableRowAction, DataTableRowActionMany } from "@/types/data-table"
 
-import { getProjectFormTask, getTaskData } from "@/app/tasks/[projectId]/list/page"
-
 import { TasksTableActionBar } from "@/features/tasks/components/list/task-action-bar"
 import { getTaskTableData } from "@/features/tasks/components/list/task-table-data"
 import { TaskDialog } from "@/features/tasks/components/dialog/task-dialog"
@@ -31,7 +29,11 @@ import {
   ColumnTaskCount,
   getColumnTaskCount,
 } from "@/features/tasks/action/column.action"
-import { deleteTask } from "@/features/tasks/action/task.action"
+import {
+  deleteTask,
+  getProjectFormTask,
+  getTaskData,
+} from "@/features/tasks/action/task.action"
 
 interface Props {
   promises: Promise<
