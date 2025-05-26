@@ -29,6 +29,7 @@ import { Company } from "@/features/company/interfaces/company.interface"
 import { Session } from "next-auth"
 import { USERS_URL } from "@/constants/routes"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { NotificationHeader } from "@/features/notifications/notification-header"
 
 interface Props {
   companiesData: Company[]
@@ -103,6 +104,7 @@ export function HeaderNav({ companiesData, session }: Props) {
         </div>
 
         <div className="flex items-center pr-2">
+          <NotificationHeader />
           <div className="relative ml-3">
             <DropdownMenu>
               <DropdownMenuTrigger className="text-left outline-none">

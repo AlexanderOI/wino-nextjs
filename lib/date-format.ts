@@ -15,3 +15,8 @@ export function formatDateWithoutTimezone(
 
   return dateWithoutTimezone ? format(dateWithoutTimezone, formatString) : "No datetime"
 }
+
+export const formatDateForUrl = (date: Date | undefined) => {
+  if (!date) return undefined
+  return format(date, "yyyy-MM-dd")
+}

@@ -10,5 +10,7 @@ export const config = {
     "/users/:path*",
     "/tasks/:path*",
     "/profile/:path*",
+    "/notifications/:path*",
+    "/forms/:path*",
   ],
 }
