@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 
 import { useNotification } from "@/features/notifications/hooks/use-notification"
 import { NotificationSkeleton } from "@/features/notifications/notification-skeleton"
+import Link from "next/link"
 
 export function NotificationsList() {
   const searchParams = useSearchParams()
@@ -139,17 +140,24 @@ export function NotificationsList() {
       {notifications.length > 0 ? (
         <div className="space-y-3">
           {notifications.map((notification) => (
-            <Card
-              key={notification._id}
-              className={cn(
-                "p-4 transition-colors",
-                !notification.read && "bg-purple-50 hover:bg-purple-50/80"
-              )}
-            >
+            <Card key={notification._id} className="p-4 transition-colors">
               <div className="flex gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-medium">{notification.title}</h3>
+                    <Link
+                      href={notification.link || ""}
+                      className={cn(
+                        "flex items-center gap-2 font-medium cursor-default",
+                        notification.link && "cursor-pointer hover:text-purple-500"
+                      )}
+                    >
+                      {notification.link ? (
+                        <span className="bg-purple-500 size-3 rounded-full" />
+                      ) : (
+                        <span className="bg-gray-500 size-3 rounded-full" />
+                      )}
+                      {notification.title}
+                    </Link>
                     {!notification.read && (
                       <span className="inline-block h-2 w-2 rounded-full bg-purple-500" />
                     )}

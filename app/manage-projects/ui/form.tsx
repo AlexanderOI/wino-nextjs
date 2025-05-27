@@ -1,21 +1,16 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { SelectItem } from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 import { Minus, Plus } from "lucide-react"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { User } from "@/features/user/interfaces/user.interface"
-import { DatePicker } from "@/components/ui/date-picker"
-import { Project } from "@/features/project/interfaces/project.interface"
-import { SelectSimple } from "@/components/common/form/select-simple"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { AxiosError } from "axios"
 import { z } from "zod"
+
+import { apiClient } from "@/utils/api-client"
+
 import {
   Form,
   FormField,
@@ -24,10 +19,20 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form"
-import { useRouter } from "next/navigation"
-import { PROJECTS_URL } from "@/constants/routes"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { SelectItem } from "@/components/ui/select"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { DatePicker } from "@/components/ui/date-picker"
+import { SelectSimple } from "@/components/common/form/select-simple"
 import { toast } from "@/components/ui/use-toast"
-import { apiClient } from "@/utils/api-client"
+
+import { Project } from "@/features/project/interfaces/project.interface"
+import { User } from "@/features/user/interfaces/user.interface"
+
 const statusOptions = ["Pending", "In Progress", "Completed"]
 
 const projectSchema = z.object({
@@ -36,8 +41,8 @@ const projectSchema = z.object({
   status: z.enum(["Pending", "In Progress", "Completed"]),
   startDate: z.date(),
   endDate: z.date(),
-  leaderId: z.string(),
-  client: z.string().min(3),
+  leaderId: z.string().min(1, { message: "Leader is required" }),
+  client: z.string().min(3, { message: "Client is required" }),
 })
 
 interface Props {
@@ -79,14 +84,14 @@ export default function FormProject({ users, project }: Props) {
     try {
       let id = ""
       if (project?._id) {
-        await apiClient.patch(`${PROJECTS_URL}/${project._id}`, values)
+        await apiClient.patch(`/projects/${project._id}`, values)
         id = project._id
       } else {
-        const response = await apiClient.post(PROJECTS_URL, values)
+        const response = await apiClient.post("/projects", values)
         id = response.data._id
       }
 
-      await apiClient.put(`${PROJECTS_URL}/${id}/set-users-team`, {
+      await apiClient.put(`/projects/${id}/set-users-team`, {
         membersId: selectedParticipants.map((participant) => participant._id),
       })
 
@@ -98,7 +103,13 @@ export default function FormProject({ users, project }: Props) {
 
       router.replace(`/manage-projects/edit/${id}`)
     } catch (error) {
-      console.error("Error saving project:", error)
+      if (error instanceof AxiosError) {
+        toast({
+          title: "Error",
+          description: error.response?.data.message,
+          duration: 1000,
+        })
+      }
     }
   })
 
