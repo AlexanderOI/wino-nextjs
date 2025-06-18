@@ -17,6 +17,18 @@ import { Input } from "@/components/ui/input"
 import { useNotification } from "@/features/notifications/hooks/use-notification"
 import { NotificationSkeleton } from "@/features/notifications/notification-skeleton"
 import Link from "next/link"
+import { NotificationResponse } from "./interfaces/notification.interface"
+
+const uniqueNotifications = (notifications: NotificationResponse[]) => {
+  return (
+    notifications
+      .flatMap((page) => page.notifications)
+      .filter(
+        (notification, index, self) =>
+          index === self.findIndex((n) => n._id === notification._id)
+      ) ?? []
+  )
+}
 
 export function NotificationsList() {
   const searchParams = useSearchParams()
@@ -35,7 +47,9 @@ export function NotificationsList() {
 
   const { data } = notificationQuery
   const total = data?.pages[0].total ?? 0
-  const notifications = data?.pages.flatMap((page) => page.notifications) ?? []
+  const notifications = uniqueNotifications(data?.pages ?? [])
+  const uniqueNotificationsCount =
+    data?.pages.flatMap((page) => page.notifications).length ?? 0
   const unreadCount = data?.pages[0].unreadCount ?? 0
 
   const [searchValue, setSearchValue] = useState(initialSearch)
@@ -193,7 +207,7 @@ export function NotificationsList() {
             </Card>
           ))}
 
-          {notifications.length < total && (
+          {uniqueNotificationsCount < total && (
             <div className="flex justify-center pt-4">
               <Button
                 variant="outline"

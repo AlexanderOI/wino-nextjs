@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
+import { apiClient } from "@/utils/api-client"
 
 interface ImageUploadProps {
   editor: Editor
@@ -34,13 +35,11 @@ export function ImageUpload({ editor, uploadImage }: ImageUploadProps) {
       const formData = new FormData()
       formData.append("file", file)
 
-      const response = await fetch("/images/upload", {
-        method: "POST",
-        body: formData,
-      })
-
-      const data = await response.json()
-      addImage(data.url)
+      const response = await apiClient.post<{ url: string }>(
+        "comments/image/upload",
+        formData
+      )
+      addImage(response.data.url)
     } catch (error) {
       toast({
         title: "Error uploading image",

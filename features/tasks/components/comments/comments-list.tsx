@@ -52,17 +52,21 @@ export const CommentsList = ({
               </p>
             </div>
           </div>
-          {isOwner && !isEditing && (
+          {!isEditing && (
             <div className="flex gap-2">
               <Button variant="ghost" size="sm" onClick={() => setIsReplying(true)}>
                 Reply
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-                Edit
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => onDelete(comment._id)}>
-                Delete
-              </Button>
+              {isOwner && (
+                <>
+                  <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
+                    Edit
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => onDelete(comment._id)}>
+                    Delete
+                  </Button>
+                </>
+              )}
             </div>
           )}
         </div>
