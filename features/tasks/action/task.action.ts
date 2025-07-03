@@ -36,7 +36,8 @@ export type GetTaskParams = {
   fields?: boolean
 }
 
-export const getTask = async (id: string, params?: GetTaskParams) => {
+export const getTask = async (id?: string, params?: GetTaskParams) => {
+  if (!id) return null
   const response = await apiClientServer.get<Task>(`tasks/${id}`, { params })
   return response.data
 }

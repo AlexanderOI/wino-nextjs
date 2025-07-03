@@ -7,6 +7,7 @@ import { Project } from "@/features/project/interfaces/project.interface"
 export interface Task {
   _id: string
   name: string
+  code: string
   description: JSONContent
   startDate: Date
   endDate: Date

@@ -4,6 +4,7 @@ import { User } from "@/features/user/interfaces/user.interface"
 export interface Project {
   _id: string
   name: string
+  code: string
   description: string
   leaderId: string
   leader?: User

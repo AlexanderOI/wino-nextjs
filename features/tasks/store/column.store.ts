@@ -11,7 +11,7 @@ interface ColumnStore {
   addColumn: (name: string, color: string) => Promise<void>
   updateColumn: (columnId: string, name?: string, color?: string) => Promise<void>
   deleteColumn: (columnId: string) => Promise<void>
-  addTask: (columnId: string, name: string) => Promise<void>
+  addTask: (columnId: string, name: string, orden: number) => Promise<void>
   updateTask: (columnId: string, taskId: string, newName: string) => Promise<void>
   setOneTask: (columnId: string, task: Task, move?: boolean) => void
   deleteTask: (taskId: string) => Promise<void>
@@ -81,20 +81,39 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
     }
   },
 
-  addTask: async (columnId: string, name: string) => {
-    const order = get().columns.find((col) => col._id === columnId)?.tasks.length ?? 0
+  addTask: async (columnId: string, name: string, order = 0) => {
+    let orderTask = 0
+
+    if (order > 0) {
+      orderTask = order
+    } else {
+      const task = get()
+        .columns.find((col) => col._id === columnId)
+        ?.tasks.sort((a, b) => a.order - b.order)
+      if (task) {
+        orderTask = task[task.length - 1].order + 1
+      }
+    }
+
     const response = await apiClient.post<Task>("/tasks", {
       name,
-      order,
+      order: orderTask,
       columnId,
       projectId: get().projectId,
     })
 
     if (response.status === 201) {
       set((state) => ({
-        columns: state.columns.map((col) =>
-          col._id === columnId ? { ...col, tasks: [...col.tasks, response.data] } : col
-        ),
+        columns: state.columns.map((col) => {
+          if (col._id === columnId) {
+            const tasks = [...col.tasks, { ...response.data }].sort(
+              (a, b) => a.order - b.order
+            )
+
+            return { ...col, tasks }
+          }
+          return col
+        }),
       }))
     }
   },
