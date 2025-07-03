@@ -5,6 +5,7 @@ export interface User {
   userName: string
   email: string
   avatar: string
+  avatarColor: string
   roles: string[]
   rolesId: string[]
   roleType: string

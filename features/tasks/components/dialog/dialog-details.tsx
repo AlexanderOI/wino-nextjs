@@ -6,7 +6,6 @@ import { CircleDot, User2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { SelectItem } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
@@ -14,6 +13,7 @@ import { SelectSimple } from "@/components/common/form/select-simple"
 import { EditableField } from "@/components/common/form/EditableField"
 import { toast } from "@/components/ui/use-toast"
 
+import { UserAvatar } from "@/features/user/components/user-avatar"
 import { FieldTask } from "@/features/tasks/components/form/field-task"
 import { LabelField } from "@/features/tasks/components/form/label-field"
 
@@ -142,13 +142,11 @@ export function DialogTaskDetails({
               asChild
               className={cn(task.assignedTo ? "cursor-default" : "cursor-pointer")}
             >
-              <Avatar
-                className="w-7 h-7 "
+              <UserAvatar
+                className="cursor-pointer"
+                user={task.assignedTo}
                 onClick={() => handleSelectAssignChange(session?.user?._id ?? "", true)}
-              >
-                <AvatarImage src={"/avatar.png"} />
-                <AvatarFallback>{task.assignedTo?.name}</AvatarFallback>
-              </Avatar>
+              />
             </TooltipTrigger>
             <TooltipContent>
               {task.assignedTo ? `Assigned to ${task.assignedTo?.name}` : "Assign me"}

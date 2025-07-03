@@ -5,13 +5,13 @@ import { useSession } from "next-auth/react"
 import { JSONContent } from "@tiptap/react"
 
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
 import { User } from "@/features/user/interfaces/user.interface"
 import { Comment as CommentType } from "@/features/tasks/interfaces/comment.interface"
 import { CommentEditor } from "@/features/tasks/components/comments/comment-editor"
+import { UserAvatar } from "@/features/user/components/user-avatar"
 
 interface CommentProps {
   comment: CommentType
@@ -41,10 +41,7 @@ export const CommentsList = ({
       <Card className="dark:bg-transparent border-none">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={comment.user?.avatar} />
-              <AvatarFallback>{comment.user?.name?.[0]?.toUpperCase()}</AvatarFallback>
-            </Avatar>
+            <UserAvatar user={comment.user as User} className="h-8 w-8" />
             <div>
               <p className="font-medium">{comment.user?.name}</p>
               <p className="text-sm text-muted-foreground">
@@ -150,12 +147,7 @@ const Reply = ({ comment, users, onDelete, onUpdate, onReply, space }: ReplyProp
               <Card className="pt-4 dark:bg-transparent border-none w-full">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={reply.user?.avatar} />
-                      <AvatarFallback>
-                        {reply.user?.name?.[0]?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar user={reply.user as User} className="h-8 w-8" />
                     <div>
                       <p className="font-medium">{reply.user?.name}</p>
                       <p className="text-sm text-muted-foreground">

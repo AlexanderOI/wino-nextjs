@@ -12,7 +12,6 @@ import { TableAction } from "@/components/common/table-action"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 
@@ -21,6 +20,7 @@ import { Project } from "@/features/project/interfaces/project.interface"
 import { Task } from "@/features/tasks/interfaces/task.interface"
 
 import { ColumnTaskCount } from "@/features/tasks/action/column.action"
+import { UserAvatar } from "@/features/user/components/user-avatar"
 
 export const getTaskTableData = (
   columnTaskCount: ColumnTaskCount[],
@@ -128,10 +128,7 @@ export const getTaskTableData = (
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarImage src={row.original.assignedTo?.avatar || ""} />
-            <AvatarFallback>{row.original.assignedTo?.name[0] || "N"}</AvatarFallback>
-          </Avatar>
+          <UserAvatar user={row.original.assignedTo} className="w-6 h-6" />
           <div>
             <div className="font-semibold flex items-center gap-2">
               {row.original.assignedTo?.name || "No assigned"}
@@ -147,10 +144,7 @@ export const getTaskTableData = (
         variant: "multiSelect",
         options: project?.members?.map((member) => ({
           render: (
-            <Avatar className="w-6 h-6">
-              <AvatarImage src={member.avatar || ""} />
-              <AvatarFallback>{member.name[0] || "N"}</AvatarFallback>
-            </Avatar>
+            <UserAvatar user={member} className="w-6 h-6" />
           ),
           label: member.name,
           value: member._id,
