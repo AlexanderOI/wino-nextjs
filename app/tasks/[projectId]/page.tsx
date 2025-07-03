@@ -144,7 +144,7 @@ export default function TasksPage() {
   if (isLoading) return <SkeletonTaskBoard />
 
   return (
-    <div className="h-full overflow-hidden p-6 pt-4">
+    <div className="h-full overflow-x-hidden p-6 pt-4 scrollbar-hidden">
       <div className="flex justify-between items-center mb-4">
         <TypographyH1>Manage your tasks</TypographyH1>
 
@@ -191,7 +191,7 @@ export default function TasksPage() {
           setOverId(null)
         }}
       >
-        <div className="flex space-x-4 overflow-x-auto">
+        <div className="flex space-x-4 overflow-x-auto scrollbar-hidden">
           <SortableContext
             items={columns.map((col) => col._id)}
             strategy={horizontalListSortingStrategy}

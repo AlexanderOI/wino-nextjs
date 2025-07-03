@@ -172,3 +172,11 @@ input:focus {
   width: 20px;
   height: 20px;
 }
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
