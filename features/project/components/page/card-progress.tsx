@@ -1,70 +1,70 @@
+import { TrendingUp } from "lucide-react"
 import { DonutChart } from "@/components/charts/donut-chart"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { TypographyP } from "@/components/ui/typography"
-import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
-import { Task } from "@/features/tasks/interfaces/task.interface"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+
+import { ColumnTaskCount } from "@/features/tasks/actions/column.action"
 
 interface Props {
-  tasks: Task[]
-  columns: ColumnTask[]
+  columns: ColumnTaskCount[]
 }
 
-export function CardProgress({ tasks, columns }: Props) {
-  const tasksGroupedByColumn = columns.reduce((groups, column) => {
-    const columnTasks = tasks.filter((task) => task.column._id === column._id)
-    groups[column.name] = columnTasks
-    return groups
-  }, {} as Record<string, Task[]>)
-
+export function CardProgress({ columns }: Props) {
+  const totalTasks = columns.reduce((acc, column) => acc + column.tasksCount, 0)
   return (
     <Card>
       <CardHeader className="flex gap-2">
-        <CardTitle className="text-lg font-medium text-center w-full">
-          Project Progress
+        <CardTitle className="flex items-center space-x-2">
+          <TrendingUp className="w-5 h-5 text-purple-600" />
+          <span>Project Progress</span>
         </CardTitle>
       </CardHeader>
 
       <CardContent>
         <div className="space-y-4">
           <div>
-            <div className="flex justify-center items-center gap-4 ">
-              {tasks.length > 0 ? (
+            <div className="flex justify-between items-center gap-4 ">
+              {totalTasks > 0 ? (
                 <DonutChart
                   data={columns.map((column) => ({
                     name: column.name,
-
-                    value: tasksGroupedByColumn[column.name].length ?? 0,
+                    value: column.tasksCount,
                     fill: column.color,
                   }))}
-                  centerText={tasks.length.toString()}
+                  centerText={totalTasks.toString()}
                   bottomText="Tasks"
-                  className="m-0 w-5/12 h-full"
+                  className="m-0 w-1/2 h-full"
                 />
               ) : (
                 <div className="flex flex-col gap-4 w-5/12 h-full justify-center items-center">
-                  <TypographyP className="text-sm ">No tasks</TypographyP>
+                  <TypographyP className="text-sm ">No tasks in this project</TypographyP>
                 </div>
               )}
-              <div className="flex flex-col gap-4">
-                {Object.entries(tasksGroupedByColumn).map(([columnName, tasks]) => (
-                  <div key={columnName} className="flex items-center gap-2">
-                    <div
-                      className="w-2 h-2 rounded-full"
+
+              <div className="flex flex-col gap-4 w-1/2">
+                {columns.map((column) => (
+                  <div
+                    key={column.name}
+                    className="flex items-center justify-between p-3 rounded-lg"
+                    style={{ backgroundColor: column.color + "15" }}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: column.color }}
+                      />
+                      <span className="text-sm font-medium">{column.name}</span>
+                    </div>
+                    <Badge
+                      variant="secondary"
                       style={{
-                        backgroundColor: columns.find(
-                          (column) => column.name === columnName
-                        )?.color,
+                        backgroundColor: column.color + "25",
+                        color: column.color,
                       }}
-                    />
-                    <TypographyP className="text-sm">
-                      {columnName} ( {tasks.length} )
-                    </TypographyP>
+                    >
+                      {column.tasksCount}
+                    </Badge>
                   </div>
                 ))}
               </div>
