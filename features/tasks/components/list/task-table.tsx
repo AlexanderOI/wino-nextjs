@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import { notFound, useRouter } from "next/navigation"
 
 import { use, useMemo, useState } from "react"
 import { ListIcon } from "lucide-react"
@@ -28,12 +28,12 @@ import { usePrefetchTask } from "@/features/tasks/hooks/use-prefetch-task"
 import {
   ColumnTaskCount,
   getColumnTaskCount,
-} from "@/features/tasks/action/column.action"
+} from "@/features/tasks/actions/column.action"
 import {
   deleteTask,
   getProjectFormTask,
   getTaskData,
-} from "@/features/tasks/action/task.action"
+} from "@/features/tasks/actions/task.action"
 
 interface Props {
   promises: Promise<
@@ -53,6 +53,8 @@ export const TaskTable = ({ promises }: Props) => {
   const [rowActionMany, setRowActionMany] = useState<DataTableRowActionMany<Task> | null>(
     null
   )
+
+  if (!project || !formTask) return notFound()
 
   const { handleMouseEnter } = usePrefetchTask(project._id)
 

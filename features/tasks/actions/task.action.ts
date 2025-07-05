@@ -1,6 +1,6 @@
 import { apiClientServer } from "@/utils/api-client-server"
 import { getFormTask } from "@/features/form/actions/form.action"
-import { getProject } from "@/features/project/action/project.action"
+import { getProject } from "@/features/project/actions/project.action"
 import { Task } from "@/features/tasks/interfaces/task.interface"
 import { Field } from "@/features/tasks/interfaces/task.interface"
 import { GetTasksSchema } from "@/features/tasks/lib/validations"
@@ -117,6 +117,7 @@ export async function getTaskData(projectId: string, filter: GetTasksSchema) {
 
 export async function getProjectFormTask(projectId: string) {
   const project = await getProject(projectId, { withMembers: true })
+  if (!project) return { project: null, formTask: null }
   const formTask = await getFormTask(project.formTaskId)
   return { project, formTask }
 }

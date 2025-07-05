@@ -7,9 +7,9 @@ import { Users } from "lucide-react"
 
 import { TaskTable } from "@/features/tasks/components/list/task-table"
 
-import { getColumnTaskCount } from "@/features/tasks/action/column.action"
+import { getColumnTaskCount } from "@/features/tasks/actions/column.action"
 import { searchParamsCache } from "@/features/tasks/lib/validations"
-import { getProjectFormTask, getTaskData } from "@/features/tasks/action/task.action"
+import { getProjectFormTask, getTaskData } from "@/features/tasks/actions/task.action"
 
 interface Props {
   params: Promise<{ projectId: string }>

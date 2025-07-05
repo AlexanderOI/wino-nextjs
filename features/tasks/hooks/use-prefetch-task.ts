@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
 
-import { getTask } from "@/features/tasks/action/task.action"
-import { getColumns } from "@/features/tasks/action/column.action"
+import { getTask } from "@/features/tasks/actions/task.action"
+import { getColumns } from "@/features/tasks/actions/column.action"
 import { getByTask } from "@/features/tasks/actions/comment.action"
 
 const STALE_TIME = 1000 * 60 * 5

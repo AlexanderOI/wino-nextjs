@@ -23,7 +23,7 @@ import { User } from "@/features/user/interfaces/user.interface"
 import { useFormTask } from "@/features/tasks/hooks/use-form-task-query"
 import { useColumnStore } from "@/features/tasks/store/column.store"
 import { useTaskStore } from "@/features/tasks/store/task.store"
-import { createFieldTask, updateFieldTask } from "@/features/tasks/action/task.action"
+import { createFieldTask, updateFieldTask } from "@/features/tasks/actions/task.action"
 
 interface Props {
   users: User[]

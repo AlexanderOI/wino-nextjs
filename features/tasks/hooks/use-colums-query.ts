@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { getColumns } from "@/features/tasks/action/column.action"
+import { getColumns } from "@/features/tasks/actions/column.action"
 
 export const useColumnsQuery = (projectId: string) => {
   const columnsQuery = useQuery({

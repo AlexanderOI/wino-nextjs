@@ -19,7 +19,7 @@ import { FormField, FormSchema } from "@/features/form/interfaces/form.interface
 import { Project } from "@/features/project/interfaces/project.interface"
 import { Task } from "@/features/tasks/interfaces/task.interface"
 
-import { ColumnTaskCount } from "@/features/tasks/action/column.action"
+import { ColumnTaskCount } from "@/features/tasks/actions/column.action"
 import { UserAvatar } from "@/features/user/components/user-avatar"
 
 export const getTaskTableData = (
