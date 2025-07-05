@@ -26,7 +26,7 @@ type RootLayoutProps = Readonly<{ children: React.ReactNode }>
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   const cookieStore = await cookies()
-  const isOpenSidebar = cookieStore.get("sidebar:state")?.value === "true"
+  const isOpenSidebar = cookieStore.get("sidebar:state")?.value === "false"
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${firaCode.className} antialiased`}>
@@ -39,7 +39,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                 enableSystem
                 disableTransitionOnChange
               >
-                <SidebarProvider defaultOpen={isOpenSidebar}>
+                <SidebarProvider defaultOpen={!isOpenSidebar}>
                   <TooltipProvider>
                     <NuqsAdapter>
                       <PermissionServer>
