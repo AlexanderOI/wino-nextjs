@@ -203,7 +203,7 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
           if (overTaskIndex === -1) {
             newTasks.push(activeTask)
           } else {
-            newTasks.splice(overTaskIndex, 0, activeTask)
+            newTasks.splice(overTaskIndex, 0, { ...activeTask, columnId: overColumnId })
           }
 
           return {
