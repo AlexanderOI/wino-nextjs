@@ -3,12 +3,12 @@ import { getProject } from "@/features/project/actions/project.action"
 import { getColumnsWithTasks } from "@/features/tasks/actions/column.action"
 import { TasksPageClient } from "@/features/tasks/components/board/page-client"
 
-export default async function TasksPageServer({
-  params,
-}: {
-  params: { projectId: string }
-}) {
-  const projectId = params.projectId
+interface Props {
+  params: Promise<{ projectId: string }>
+}
+
+export default async function TasksPage({ params }: Props) {
+  const { projectId } = await params
 
   const project = await getProject(projectId)
 
