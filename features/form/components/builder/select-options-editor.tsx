@@ -74,7 +74,7 @@ export function SelectOptionsEditor({ fieldId }: SelectOptionsEditorProps) {
 
   return (
     <div className="space-y-2">
-      <Label>Opciones</Label>
+      <Label>Options</Label>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}

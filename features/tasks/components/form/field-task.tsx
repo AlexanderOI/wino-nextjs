@@ -1,6 +1,6 @@
 "use client"
 
-import { memo } from "react"
+import { memo, useMemo } from "react"
 import { format, isValid } from "date-fns"
 
 import { DatePicker } from "@/components/ui/date-picker"
@@ -77,19 +77,7 @@ interface FieldProps {
 export const FieldTask = memo(
   ({ field, handleChange, formData, onClose }: FieldProps) => {
     let value = formData[field._id] || ""
-    let displayValue = value || field.placeholder
-
-    if (field.type === "date" || field.type === "datetime") {
-      value = value ? new Date(value.toString()) : ""
-      displayValue = isValid(value)
-        ? format(value, field.type === "date" ? "PPP" : "PPP HH:mm")
-        : field.placeholder
-    }
-
-    if (field.type === "select") {
-      const option = field.options?.find((opt) => opt._id === value)
-      displayValue = option?.value || field.placeholder
-    }
+    const displayValue = useMemo(() => getDisplayValue(field, value), [field, value])
 
     return (
       <EditableField
@@ -107,3 +95,18 @@ export const FieldTask = memo(
     )
   }
 )
+
+const getDisplayValue = (field: FormField, value: string | number | Date) => {
+  if (field.type.includes("date")) {
+    return isValid(value)
+      ? format(value, field.type === "date" ? "PPP" : "PPP HH:mm")
+      : field.placeholder
+  }
+
+  if (field.type === "select") {
+    const option = field.options?.find((opt) => opt._id === value)
+    return option?.value || field.placeholder
+  }
+
+  return value.toString() || field.placeholder
+}

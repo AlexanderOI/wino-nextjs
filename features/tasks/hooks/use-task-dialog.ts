@@ -10,12 +10,14 @@ import { useProjectStore } from "@/features/project/store/project.store"
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { useColumnsQuery } from "@/features/tasks/hooks/use-colums-query"
 import { useTaskQuery } from "@/features/tasks/hooks/use-task-query"
+import { useFormTask } from "@/features/tasks/hooks/use-form-task-query"
 
 export function useTaskDialog(id: string) {
-  const projectId = useProjectStore((state) => state.project?._id || "")
+  const project = useProjectStore((state) => state.project)
 
   const { taskQuery } = useTaskQuery(id, { fields: true })
-  const { columnsQuery } = useColumnsQuery(projectId)
+  const { columnsQuery } = useColumnsQuery(project?._id || "")
+  const { formTaskQuery } = useFormTask(project?.formTaskId || "")
 
   const setTask = useTaskStore((state) => state.setTask)
   const setFormData = useTaskStore((state) => state.setFormData)
@@ -74,6 +76,7 @@ export function useTaskDialog(id: string) {
   return {
     taskQuery,
     columnsQuery,
+    formTaskQuery,
     sendChanges,
   }
 }

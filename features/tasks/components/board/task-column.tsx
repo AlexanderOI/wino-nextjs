@@ -1,27 +1,42 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import TaskItem from "./task-item"
-import { Input } from "@/components/ui/input"
 import { Plus } from "lucide-react"
+
 import { cn } from "@/lib/utils"
-import { useColumnStore } from "../../store/column.store"
-import { ColumnData } from "@/features/tasks/interfaces/column.interface"
-import ColorPicker from "@/components/ui/color-picker"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
 import { canPermission } from "@/features/permission/utils/can-permission"
 import { PermissionClient } from "@/features/permission/permission-client"
-import { useProjectStore } from "@/features/project/store/project.store"
+
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
+import { ColorPicker } from "@/components/ui/color-picker"
+
+import { ColumnData } from "@/features/tasks/interfaces/column.interface"
+import { TaskItem } from "@/features/tasks/components/board/task-item"
+import { useProjectStore } from "@/features/project/store/project.store"
+import { useColumnStore } from "@/features/tasks/store/column.store"
+import { Task } from "../../interfaces/task.interface"
+import { TaskPreview } from "./task-preview"
 
 interface TaskColumnProps {
   column: ColumnData
+  dragOverInfo: {
+    overColumnId: string | null
+    insertPosition: number
+  }
+  activeTask: Task | null
+  isBeingDraggedOver: boolean
 }
 
-export default function TaskColumn({ column }: TaskColumnProps) {
+export function TaskColumn({
+  column,
+  dragOverInfo,
+  activeTask,
+  isBeingDraggedOver,
+}: TaskColumnProps) {
   const { updateColumn, addTask, updateTask, deleteTask } = useColumnStore()
   const project = useProjectStore((state) => state.project)
 
@@ -31,19 +46,15 @@ export default function TaskColumn({ column }: TaskColumnProps) {
   const [newTaskContent, setNewTaskContent] = useState("")
   const newTaskInputRef = useRef<HTMLTextAreaElement>(null)
 
-  const { isOver, setNodeRef } = useDroppable({
-    id: column._id,
-  })
-
   const handleTitleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     updateColumn(column._id, editedColumn.name, editedColumn.color)
     setIsEditingTitle(false)
   }
 
-  const handleAddTask = (order: number) => {
+  const handleAddTask = (insertAfterTaskId?: string) => {
     if (newTaskContent.trim()) {
-      addTask(column._id, newTaskContent.trim(), order)
+      addTask(column._id, newTaskContent.trim(), insertAfterTaskId)
       setNewTaskContent("")
     }
     setIsAddingTask(false)
@@ -78,13 +89,24 @@ export default function TaskColumn({ column }: TaskColumnProps) {
     }
   }, [isAddingTask])
 
+  const DropIndicator = ({ position }: { position: number }) => {
+    const shouldShow = isBeingDraggedOver && dragOverInfo.insertPosition === position
+
+    if (!shouldShow) return null
+
+    return activeTask && activeTask.columnId !== column._id ? (
+      <TaskPreview task={activeTask} project={project} className="mt-1" />
+    ) : null
+  }
+
   return (
     <div
       className={cn(
-        "p-4 rounded-lg bg-dark-800 border transition-colors",
-        isOver ? "bg-purple-900/20" : ""
+        "p-4 rounded-lg bg-dark-800 border transition-all duration-200",
+        isBeingDraggedOver
+          ? "bg-purple-900/30 border-purple-500/50 shadow-lg shadow-purple-500/20"
+          : "border-gray-700"
       )}
-      ref={setNodeRef}
     >
       <div className="flex items-center">
         <ColorPicker
@@ -113,12 +135,14 @@ export default function TaskColumn({ column }: TaskColumnProps) {
           </h2>
         )}
       </div>
-      <div className="min-h-[100px] ">
+      <div className="min-h-[100px]">
         <SortableContext
           items={column.tasks.map((task) => task._id)}
           strategy={verticalListSortingStrategy}
         >
-          {column.tasks.map((task) => (
+          <DropIndicator position={0} />
+
+          {column.tasks.map((task, index) => (
             <div key={task._id}>
               <TaskItem
                 task={task}
@@ -127,9 +151,11 @@ export default function TaskColumn({ column }: TaskColumnProps) {
                 deleteTask={deleteTask}
               />
 
+              <DropIndicator position={index + 1} />
+
               <AddTaskItem
+                insertAfterTaskId={task._id}
                 handleAddTask={handleAddTask}
-                order={task.order}
                 newTaskContent={newTaskContent}
                 setNewTaskContent={setNewTaskContent}
               />
@@ -137,11 +163,14 @@ export default function TaskColumn({ column }: TaskColumnProps) {
           ))}
         </SortableContext>
       </div>
+
+      {column.tasks.length === 0 && <DropIndicator position={0} />}
+
       {isAddingTask ? (
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            handleAddTask(0)
+            handleAddTask()
           }}
           className="mt-2"
         >
@@ -150,10 +179,10 @@ export default function TaskColumn({ column }: TaskColumnProps) {
             className="bg-purple-deep p-3 border-gray-500 h-auto resize-none outline-none"
             value={newTaskContent}
             onChange={(e) => setNewTaskContent(e.target.value)}
-            onBlur={() => handleAddTask(0)}
+            onBlur={() => handleAddTask()}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                handleAddTask(0)
+                handleAddTask()
               }
             }}
             placeholder="Add new task"
@@ -175,15 +204,15 @@ export default function TaskColumn({ column }: TaskColumnProps) {
 }
 
 interface AddTaskItemProps {
-  handleAddTask: (orden: number) => void
-  order: number
+  insertAfterTaskId?: string
+  handleAddTask: (insertAfterTaskId?: string) => void
   newTaskContent: string
   setNewTaskContent: (value: string) => void
 }
 
 const AddTaskItem = ({
+  insertAfterTaskId,
   handleAddTask,
-  order,
   newTaskContent,
   setNewTaskContent,
 }: AddTaskItemProps) => {
@@ -191,7 +220,7 @@ const AddTaskItem = ({
   const [isAddingTask, setIsAddingTask] = useState(false)
 
   const handleSubmitAddTask = () => {
-    handleAddTask(order)
+    handleAddTask(insertAfterTaskId)
     setIsAddingTask(false)
   }
 

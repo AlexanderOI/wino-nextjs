@@ -8,14 +8,14 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
 const presetColors = [
-  "#FF0000", // Rojo
-  "#00FF00", // Verde
-  "#0000FF", // Azul
-  "#FFFF00", // Amarillo
-  "#FF00FF", // Magenta
-  "#00FFFF", // Cian
-  "#FFA500", // Naranja
-  "#800080", // Púrpura
+  "#FF0000",
+  "#00FF00",
+  "#0000FF",
+  "#FFFF00",
+  "#FF00FF",
+  "#00FFFF",
+  "#FFA500",
+  "#800080",
 ]
 
 interface ColorPickerProps {
@@ -24,7 +24,7 @@ interface ColorPickerProps {
   className?: string
 }
 
-export default function ColorPicker({
+export function ColorPicker({
   value = "#33254a",
   onChange,
   className,

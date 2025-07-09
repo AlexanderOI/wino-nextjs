@@ -5,6 +5,7 @@ export interface ColumnTask {
   name: string
   color?: string
   order?: number
+  completed: boolean
   projectId?: string
   isActive?: boolean
 }

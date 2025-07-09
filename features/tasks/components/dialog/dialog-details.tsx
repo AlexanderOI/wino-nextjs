@@ -18,9 +18,9 @@ import { FieldTask } from "@/features/tasks/components/form/field-task"
 import { LabelField } from "@/features/tasks/components/form/label-field"
 
 import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
+import { FormSchema } from "@/features/form/interfaces/form.interface"
 import { User } from "@/features/user/interfaces/user.interface"
 
-import { useFormTask } from "@/features/tasks/hooks/use-form-task-query"
 import { useColumnStore } from "@/features/tasks/store/column.store"
 import { useTaskStore } from "@/features/tasks/store/task.store"
 import { createFieldTask, updateFieldTask } from "@/features/tasks/actions/task.action"
@@ -28,6 +28,7 @@ import { createFieldTask, updateFieldTask } from "@/features/tasks/actions/task.
 interface Props {
   users: User[]
   columns: ColumnTask[]
+  formTask?: FormSchema | null
   sendChanges: (
     name: string,
     wasChanged: boolean,
@@ -39,12 +40,12 @@ interface Props {
 export function DialogTaskDetails({
   users,
   columns,
+  formTask,
   sendChanges,
   hasPermissionEdit,
 }: Props) {
   const { data: session } = useSession()
 
-  const { formTaskQuery } = useFormTask()
   const task = useTaskStore((state) => state.task)
   const updateTaskField = useTaskStore((state) => state.updateTaskField)
   const setOneTask = useColumnStore((state) => state.setOneTask)
@@ -175,17 +176,18 @@ export function DialogTaskDetails({
         </div>
       </DetailItemContainer>
 
-      {formTaskQuery.data?.fields?.map((field) => (
-        <DetailItemContainer key={field._id}>
-          <LabelField field={field} />
-          <FieldTask
-            field={field}
-            handleChange={handleFieldChange}
-            formData={formData ?? {}}
-            onClose={(name, wasChanged) => saveFormTask(name, wasChanged)}
-          />
-        </DetailItemContainer>
-      ))}
+      {formTask &&
+        formTask.fields?.map((field) => (
+          <DetailItemContainer key={field._id}>
+            <LabelField field={field} />
+            <FieldTask
+              field={field}
+              handleChange={handleFieldChange}
+              formData={formData ?? {}}
+              onClose={(name, wasChanged) => saveFormTask(name, wasChanged)}
+            />
+          </DetailItemContainer>
+        ))}
     </div>
   )
 }

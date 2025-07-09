@@ -75,8 +75,8 @@ export function DialogTaskContent({ sendChanges, hasPermissionEdit, users }: Pro
   }
 
   return (
-    <div className="w-7/12 pr-4  overflow-y-auto">
-      <DialogHeader className="mb-5 sticky top-0 bg-background z-10">
+    <div className="w-7/12 pr-4 overflow-y-auto">
+      <DialogHeader className="mb-5 sticky top-1 bg-background z-10">
         <DialogTitle className="flex items-center gap-2">
           <div className="flex flex-row gap-2">
             <CircleDot className="w-4 h-4 text-purple-500" />

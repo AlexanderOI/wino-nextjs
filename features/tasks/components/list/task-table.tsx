@@ -54,7 +54,7 @@ export const TaskTable = ({ promises }: Props) => {
     null
   )
 
-  if (!project || !formTask) return notFound()
+  if (!project) return notFound()
 
   const { handleMouseEnter } = usePrefetchTask(project._id)
 

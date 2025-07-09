@@ -1,8 +1,8 @@
 import { FileText } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card"
 
 import { Project } from "@/features/project/interfaces/project.interface"
+import { UserAvatar } from "@/features/user/components/user-avatar"
 
 interface Props {
   project: Project
@@ -24,19 +24,15 @@ export function CardDetails({ project }: Props) {
             {project.description || "No description"}
           </p>
         </div>
-        <div>
-          <h4 className="text-sm font-medium mb-3">Project Lead</h4>
-          <div className="flex items-center gap-2">
-            <Avatar>
-              <AvatarImage src={project.leader?.avatar || ""} />
-              <AvatarFallback>{project.leader?.name[0] || "No leader"}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-medium">{project.leader?.name || "No leader"}</p>
-              <p className="text-sm text-muted-foreground">
-                {project.leader?.roleType || "No role"}
-              </p>
-            </div>
+        <div className="flex items-center space-x-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+          <UserAvatar user={project.leader} className="w-10 h-10" />
+          <div>
+            <p className="font-medium text-slate-900 dark:text-white">
+              {project.leader?.name || "No leader"}
+            </p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              {project.leader?.roleType || "No role"}
+            </p>
           </div>
         </div>
       </CardContent>

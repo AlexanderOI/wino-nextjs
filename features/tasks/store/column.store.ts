@@ -7,15 +7,20 @@ interface ColumnStore {
   columns: ColumnData[]
   projectId: string
   setColumns: (columns: ColumnData[]) => void
-  fetchColumns: (projectId: string) => Promise<boolean>
+  setProjectId: (projectId: string) => void
   addColumn: (name: string, color: string) => Promise<void>
   updateColumn: (columnId: string, name?: string, color?: string) => Promise<void>
   deleteColumn: (columnId: string) => Promise<void>
-  addTask: (columnId: string, name: string, orden: number) => Promise<void>
+  addTask: (columnId: string, name: string, insertAfterTaskId?: string) => Promise<void>
   updateTask: (columnId: string, taskId: string, newName: string) => Promise<void>
   setOneTask: (columnId: string, task: Task, move?: boolean) => void
   deleteTask: (taskId: string) => Promise<void>
-  reorderTasks: (columnId: string, tasks: Task[]) => Promise<void>
+  reorderTasks: (
+    columnId: string,
+    newTasks: Task[],
+    taskId: string,
+    insertAfterTaskId?: string
+  ) => Promise<void>
   moveTask: (
     activeTaskId: string,
     overTaskId: string,
@@ -30,28 +35,23 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
   columns: [],
   projectId: "",
   setColumns: (columns) => set({ columns }),
-
-  fetchColumns: async (projectId: string) => {
-    try {
-      const response = await apiClient.get(`/columns/project/${projectId}?withTasks=true`)
-      set({ projectId })
-      set({ columns: response.data })
-      return true
-    } catch (error) {
-      console.error(error)
-      return false
-    }
-  },
-
+  setProjectId: (projectId) => set({ projectId }),
   addColumn: async (name: string, color: string) => {
     const response = await apiClient.post<ColumnData>(
       `/columns/project/${get().projectId}`,
       { name, color }
     )
     if (response.status === 201) {
-      set((state) => ({
-        columns: [...state.columns, { ...response.data, tasks: [] }],
-      }))
+      set((state) => {
+        const completedColumns = state.columns.find((col) => col.completed === true)
+        const otherColumns = state.columns.filter((col) => col.completed === false)
+        const newColumns = [
+          ...otherColumns,
+          { ...response.data, tasks: [] },
+          ...(completedColumns ? [completedColumns] : []),
+        ]
+        return { columns: newColumns }
+      })
     }
   },
 
@@ -81,26 +81,19 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
     }
   },
 
-  addTask: async (columnId: string, name: string, order = 0) => {
-    let orderTask = 0
+  addTask: async (columnId: string, name: string, insertAfterTaskId?: string) => {
+    const url = insertAfterTaskId ? "/tasks/position" : "/tasks"
+    const params = insertAfterTaskId ? { insertAfterTaskId } : {}
 
-    if (order > 0) {
-      orderTask = order
-    } else {
-      const task = get()
-        .columns.find((col) => col._id === columnId)
-        ?.tasks.sort((a, b) => a.order - b.order)
-      if (task) {
-        orderTask = task[task.length - 1].order + 1
-      }
-    }
-
-    const response = await apiClient.post<Task>("/tasks", {
-      name,
-      order: orderTask,
-      columnId,
-      projectId: get().projectId,
-    })
+    const response = await apiClient.post<Task>(
+      url,
+      {
+        name,
+        columnId,
+        projectId: get().projectId,
+      },
+      { params }
+    )
 
     if (response.status === 201) {
       set((state) => ({
@@ -152,12 +145,15 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
     if (move) get().moveTask(task._id, task._id, task.columnId, newColumnId, task)
   },
 
-  reorderTasks: async (columnId: string, newTasks: Task[]) => {
-    const newOrder = newTasks.map((task, index) => ({
-      id: task._id,
-      order: index,
-    }))
-    apiClient.put("/tasks/reorder", newOrder)
+  reorderTasks: async (
+    columnId: string,
+    newTasks: Task[],
+    taskId: string,
+    insertAfterTaskId?: string
+  ) => {
+    apiClient.put(`/tasks/${taskId}/move-to-position`, {
+      insertAfterTaskId: insertAfterTaskId,
+    })
 
     set((state) => ({
       columns: state.columns.map((col) =>
@@ -195,10 +191,13 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
         }
         if (col._id === overColumnId) {
           const overTaskIndex = col.tasks.findIndex((task) => task._id === overTaskId)
+          const insertAfterTaskId =
+            activeTaskId === overTaskId ? overTaskId : col.tasks[overTaskIndex - 1]?._id
           const newTasks = [...col.tasks]
 
-          apiClient.patch(`/tasks/${activeTask._id}`, {
-            columnId: overColumnId,
+          apiClient.put(`/tasks/${activeTask._id}/move-to-column`, {
+            newColumnId: overColumnId,
+            insertAfterTaskId: insertAfterTaskId,
           })
 
           if (overTaskIndex === -1) {
@@ -206,13 +205,6 @@ export const useColumnStore = create<ColumnStore>((set, get) => ({
           } else {
             newTasks.splice(overTaskIndex, 0, activeTask)
           }
-
-          const newOrder = newTasks.map((task, index) => ({
-            id: task._id,
-            order: index,
-          }))
-
-          apiClient.put("/tasks/reorder", newOrder)
 
           return {
             ...col,

@@ -3,28 +3,30 @@
 import { useState } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { cn } from "@/lib/utils"
 import { Pencil, Trash2 } from "lucide-react"
-import { useTaskStore } from "@/features/tasks/store/task.store"
-import { Project } from "@/features/project/interfaces/project.interface"
-import { Task } from "@/features/tasks/interfaces/task.interface"
+
+import { cn } from "@/lib/utils"
+import { canPermission } from "@/features/permission/utils/can-permission"
+import { PERMISSIONS } from "@/features/permission/constants/permissions"
+
 import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogTrigger,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { canPermission } from "@/features/permission/utils/can-permission"
-import { PERMISSIONS } from "@/features/permission/constants/permissions"
-import { UserAvatar } from "@/features/user/components/user-avatar"
 import { Textarea } from "@/components/ui/textarea"
 
+import { UserAvatar } from "@/features/user/components/user-avatar"
 import { usePrefetchTask } from "@/features/tasks/hooks/use-prefetch-task"
+import { Project } from "@/features/project/interfaces/project.interface"
+import { Task } from "@/features/tasks/interfaces/task.interface"
+import { useTaskStore } from "@/features/tasks/store/task.store"
 
 interface TaskItemProps {
   task: Task
@@ -33,12 +35,7 @@ interface TaskItemProps {
   deleteTask: (taskId: string) => void
 }
 
-export default function TaskItem({
-  task,
-  project,
-  updateTask,
-  deleteTask,
-}: TaskItemProps) {
+export function TaskItem({ task, project, updateTask, deleteTask }: TaskItemProps) {
   const { handleMouseEnter } = usePrefetchTask(project?._id || "")
   const setTask = useTaskStore((state) => state.setTask)
   const setIsDialogOpen = useTaskStore((state) => state.setIsDialogOpen)
@@ -52,6 +49,7 @@ export default function TaskItem({
       id: task._id,
       data: {
         type: "Task",
+        task: task,
       },
     })
 
@@ -129,7 +127,7 @@ export default function TaskItem({
                 onClick={handleClickDialog}
                 className="p-0 m-0 pr-7 text-sm text-primary underline-offset-4 hover:underline cursor-pointer"
               >
-                {task.name}{" "}
+                {task.name}
                 <Pencil
                   size={16}
                   className="text-gray-400 hidden group-hover:inline-block cursor-pointer hover:text-gray-500"
@@ -138,12 +136,12 @@ export default function TaskItem({
               </p>
             )}
 
-              <DeleteTaskDialog
-                isDialogDeleteOpen={isDialogDeleteOpen}
-                handleOpenDialog={handleOpenDialog}
-                deleteTask={deleteTask}
-                task={task}
-              />
+            <DeleteTaskDialog
+              isDialogDeleteOpen={isDialogDeleteOpen}
+              handleOpenDialog={handleOpenDialog}
+              deleteTask={deleteTask}
+              task={task}
+            />
           </div>
 
           <div className="flex items-center justify-between gap-2">

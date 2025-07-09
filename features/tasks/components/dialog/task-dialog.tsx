@@ -19,20 +19,25 @@ interface Props {
 }
 
 export function TaskDialog({ id }: Props) {
-  const { taskQuery, columnsQuery, sendChanges } = useTaskDialog(id)
+  const { taskQuery, columnsQuery, formTaskQuery, sendChanges } = useTaskDialog(id)
 
   const [canEditTask, setCanEditTask] = useState(false)
 
   useEffect(() => {
+    console.log("init", new Date().toISOString())
     canPermission([PERMISSIONS.EDIT_TASK]).then(setCanEditTask)
   }, [])
+
+  if (!taskQuery.isLoading && !columnsQuery.isLoading && !formTaskQuery.isLoading) {
+    console.log("loaded", new Date().toISOString())
+  }
 
   return (
     <DialogContent
       className="max-w-[1400px] min-h-[400px] max-h-[90%] flex"
       aria-describedby={undefined}
     >
-      {taskQuery.isLoading || columnsQuery.isLoading ? (
+      {taskQuery.isLoading ? (
         <SkeletonTaskDialog />
       ) : (
         <>
@@ -46,6 +51,7 @@ export function TaskDialog({ id }: Props) {
             users={taskQuery.data?.project?.members ?? []}
             columns={columnsQuery.data ?? []}
             hasPermissionEdit={canEditTask}
+            formTask={formTaskQuery.data}
           />
         </>
       )}

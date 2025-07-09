@@ -1,6 +1,6 @@
 "use server"
 
-import { ColumnTask } from "@/features/tasks/interfaces/column.interface"
+import { ColumnData, ColumnTask } from "@/features/tasks/interfaces/column.interface"
 import { apiClientServer } from "@/utils/api-client-server"
 
 export const getColumns = async (projectId: string) => {
@@ -24,6 +24,18 @@ export const getColumnTaskCount = async (params?: GetColumnTaskCountParams) => {
     )
     return response.data
   } catch (error) {
+    return []
+  }
+}
+
+export const getColumnsWithTasks = async (id: string) => {
+  try {
+    const response = await apiClientServer.get<ColumnData[]>(
+      `/columns/project/${id}?withTasks=true`
+    )
+    return response.data
+  } catch (error) {
+    console.error(error)
     return []
   }
 }

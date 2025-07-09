@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { useProjectStore } from "@/features/project/store/project.store"
 import { getFormTask } from "@/features/form/actions/form.action"
 
-export const useFormTask = () => {
-  const project = useProjectStore((state) => state.project)
+export const useFormTask = (formTaskId: string) => {
   const formTaskQuery = useQuery({
-    queryKey: ["formTask", project?.formTaskId],
-    queryFn: () => getFormTask(project?.formTaskId ?? ""),
+    queryKey: ["formTask", formTaskId],
+    queryFn: () => getFormTask(formTaskId),
     staleTime: 300000,
   })
 
