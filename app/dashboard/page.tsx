@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic"
+export const revalidate = 0
 
 import { BarChart3, ClipboardList } from "lucide-react"
 import { CardTitle } from "@/components/ui/card"
