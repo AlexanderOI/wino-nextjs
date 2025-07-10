@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useDroppable } from "@dnd-kit/core"
-import { Plus } from "lucide-react"
+import { ArrowRight, Plus } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
@@ -21,6 +21,8 @@ import { useProjectStore } from "@/features/project/store/project.store"
 import { useColumnStore } from "@/features/tasks/store/column.store"
 import { Task } from "../../interfaces/task.interface"
 import { TaskPreview } from "./task-preview"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 interface TaskColumnProps {
   column: ColumnData
@@ -200,12 +202,21 @@ export function TaskColumn({
         <PermissionClient permissions={[PERMISSIONS.CREATE_TASK]}>
           <button
             onClick={() => setIsAddingTask(true)}
-            className="mt-2 flex items-center text-gray-600 hover:text-gray-800"
+            className="mt-2 flex items-center justify-center w-full text-gray-600 hover:text-gray-800"
           >
             <Plus size={20} />
             <span className="ml-1">Add new task</span>
           </button>
         </PermissionClient>
+      )}
+
+      {column.completed && (
+        <Link
+          href={`/tasks/${project?._id}/list?status=${column._id}`}
+          className="mt-2 flex items-center justify-center gap-1 text-sm text-gray-400 hover:text-white transition-colors text-center"
+        >
+          View all in list <ArrowRight className="w-4 h-4" />
+        </Link>
       )}
     </div>
   )
