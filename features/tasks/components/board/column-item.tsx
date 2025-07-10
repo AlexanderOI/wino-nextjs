@@ -60,33 +60,35 @@ export function ColumnItem({
 
   return (
     <div ref={setNodeRef} style={style} className="relative flex-shrink-0 w-[280px]">
-      <PermissionClient permissions={[PERMISSIONS.DELETE_COLUMN]}>
-        <Dialog>
-          <DialogTrigger asChild>
-            <button className="absolute right-2 top-4 z-10 p-1 rounded-full hover:bg-gray-700">
-              <BookmarkX size={20} />
-            </button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete Column</DialogTitle>
-            </DialogHeader>
-            <DialogDescription>
-              <p>Are you sure you want to delete this column?</p>
-              <p>This action is irreversible</p>
-              <p>All tasks in this column will be deleted.</p>
-            </DialogDescription>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogClose>
-              <Button variant="destructive" onClick={() => deleteColumn(column._id)}>
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </PermissionClient>
+      {!column.completed && (
+        <PermissionClient permissions={[PERMISSIONS.DELETE_COLUMN]}>
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="absolute right-2 top-4 z-10 p-1 rounded-full hover:bg-gray-700">
+                <BookmarkX size={20} />
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Delete Column</DialogTitle>
+              </DialogHeader>
+              <DialogDescription>
+                <p>Are you sure you want to delete this column?</p>
+                <p>This action is irreversible</p>
+                <p>All tasks in this column will be deleted.</p>
+              </DialogDescription>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogClose>
+                <Button variant="destructive" onClick={() => deleteColumn(column._id)}>
+                  Delete
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </PermissionClient>
+      )}
 
       <TaskColumn
         column={column}

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { useDroppable } from "@dnd-kit/core"
 import { Plus } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -45,6 +46,14 @@ export function TaskColumn({
   const [isAddingTask, setIsAddingTask] = useState(false)
   const [newTaskContent, setNewTaskContent] = useState("")
   const newTaskInputRef = useRef<HTMLTextAreaElement>(null)
+
+  const { setNodeRef: setDroppableRef } = useDroppable({
+    id: column._id,
+    data: {
+      type: "column",
+      column,
+    },
+  })
 
   const handleTitleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -101,6 +110,7 @@ export function TaskColumn({
 
   return (
     <div
+      ref={setDroppableRef}
       className={cn(
         "p-4 rounded-lg bg-dark-800 border transition-all duration-200",
         isBeingDraggedOver
@@ -163,8 +173,6 @@ export function TaskColumn({
           ))}
         </SortableContext>
       </div>
-
-      {column.tasks.length === 0 && <DropIndicator position={0} />}
 
       {isAddingTask ? (
         <form
