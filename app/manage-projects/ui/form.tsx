@@ -37,6 +37,7 @@ const statusOptions = ["Pending", "In Progress", "Completed"]
 
 const projectSchema = z.object({
   name: z.string().min(5),
+  code: z.string().min(3),
   description: z.string().min(10),
   status: z.enum(["Pending", "In Progress", "Completed"]),
   startDate: z.date(),
@@ -71,6 +72,7 @@ export default function FormProject({ users, project }: Props) {
     resolver: zodResolver(projectSchema),
     defaultValues: {
       name: project?.name || "",
+      code: project?.code || "",
       description: project?.description || "",
       leaderId: project?.leaderId || "",
       status: project?.status || "Pending",
@@ -91,7 +93,7 @@ export default function FormProject({ users, project }: Props) {
         id = response.data._id
       }
 
-      await apiClient.put(`/projects/${id}/set-users-team`, {
+      apiClient.put(`/projects/${id}/set-users-team`, {
         membersId: selectedParticipants.map((participant) => participant._id),
       })
 
@@ -104,6 +106,12 @@ export default function FormProject({ users, project }: Props) {
       router.replace(`/manage-projects/edit/${id}`)
     } catch (error) {
       if (error instanceof AxiosError) {
+        if (error.response?.data.code === "code_already_exists") {
+          form.setError("code", {
+            message: "Project code already exists",
+          })
+          return
+        }
         toast({
           title: "Error",
           description: error.response?.data.message,
@@ -122,7 +130,7 @@ export default function FormProject({ users, project }: Props) {
               <h3 className="text-lg font-semibold">Basic Information</h3>
 
               <div className="grid gap-4">
-                <div className="grid sm:grid-cols-3 gap-4">
+                <div className="grid sm:grid-cols-4 gap-4">
                   <FormField
                     name="name"
                     control={form.control}
@@ -134,6 +142,28 @@ export default function FormProject({ users, project }: Props) {
                             type="text"
                             placeholder="Enter Project Name"
                             {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="code"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="sm:col-span-1">
+                        <FormLabel>Project Code</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Enter Project Code"
+                            {...field}
+                            value={field.value}
+                            onChange={(e) =>
+                              field.onChange(e.target.value.toLocaleUpperCase())
+                            }
                           />
                         </FormControl>
                         <FormMessage />
