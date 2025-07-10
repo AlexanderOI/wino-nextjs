@@ -3,7 +3,6 @@ import { subDays } from "date-fns"
 import { getSession } from "@/utils/get-session"
 import { apiClientServer } from "@/utils/api-client-server"
 import { User } from "@/features/user/interfaces/user.interface"
-import { Task } from "@/features/tasks/interfaces/task.interface"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { UserAvatar } from "@/features/profile/user-avatar"
@@ -12,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 
 import EditDialog from "@/features/profile/edit-dialog"
 import { USERS_URL } from "@/constants/routes"
+import { getAllTasks } from "@/features/tasks/actions/task.action"
 
 export default async function ProfilePage() {
   const session = await getSession()
@@ -19,26 +19,12 @@ export default async function ProfilePage() {
 
   const response = await apiClientServer.get<User>(`${USERS_URL}/${user?._id}`)
   const userData = response.data
-
-  const responseTasks = await apiClientServer.get<Task[]>(`tasks`, {
-    params: {
-      assignedToId: userData?._id,
-      toUpdatedAt: new Date().toISOString(),
-      fromUpdatedAt: subDays(new Date(), 30).toISOString(),
-    },
+  const responseTasks = await getAllTasks({
+    assignedToId: [userData?._id],
+    toUpdatedAt: new Date().toISOString(),
+    fromUpdatedAt: subDays(new Date(), 30).toISOString(),
   })
-
-  const tasks = responseTasks.data
-
-  const columns = [
-    ...new Map(tasks?.map((task) => [task.column._id, task.column])).values(),
-  ]
-
-  const tasksGroupedByColumn = columns?.reduce((groups, column) => {
-    const columnTasks = tasks?.filter((task) => task.column._id === column._id)
-    groups[column.name] = columnTasks
-    return groups
-  }, {} as Record<string, Task[] | undefined>)
+  const tasks = responseTasks.tasks
 
   return (
     <div className="min-h-screen  text-gray-100 p-6">
@@ -94,24 +80,28 @@ export default async function ProfilePage() {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm font-medium">My tasks</CardTitle>
+                <CardTitle className="text-center w-full">My tasks</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {tasks?.length > 0 ? (
-                    columns?.map((column) => (
-                      <div key={column._id} className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className="w-3 h-3 rounded-full"
-                            style={{ backgroundColor: column.color }}
-                          />
+                <div className="space-y-3">
+                  {tasks.length > 0 ? (
+                    tasks?.map((task) => (
+                      <div
+                        key={task._id}
+                        className="flex justify-between items-center p-3 rounded-md w-full"
+                        style={{ backgroundColor: task.column.color + "15" }}
+                      >
+                        <div className="flex flex-col gap-2 w-full">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: task.column.color }}
+                            />
 
-                          <span className="text-sm">{column.name}</span>
+                            <span className="text-base truncate w-full">{task.name}</span>
+                          </div>
+                          <span className="text-xs">{task.project.name}</span>
                         </div>
-                        <Badge variant="purple">
-                          {tasksGroupedByColumn?.[column.name]?.length}
-                        </Badge>
                       </div>
                     ))
                   ) : (

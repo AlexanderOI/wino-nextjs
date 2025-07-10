@@ -2,14 +2,14 @@
 
 import { useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 import { Button } from "@/components/ui/button"
 import { TypographyH2 } from "@/components/ui/typography"
-import { ProjectWithTasks } from "../page"
-import { Task } from "@/features/tasks/interfaces/task.interface"
 import { DonutChart } from "@/components/charts/donut-chart"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+
+import { CardRecentActivity } from "@/features/project/components/page/card-recent-activity"
+import { ProjectWithTasks } from "@/app/dashboard/page"
 
 interface Props {
   projects?: ProjectWithTasks[]
@@ -33,17 +33,7 @@ export default function ProjectsDashboard({ projects }: Props) {
     )
   }
 
-  const tasks = currentProject?.tasks
-
-  const columns = [
-    ...new Map(tasks?.map((task) => [task.column._id, task.column])).values(),
-  ]
-
-  const tasksGroupedByColumn = columns.reduce((groups, column) => {
-    const columnTasks = tasks?.filter((task) => task.column._id === column._id)
-    groups[column.name] = columnTasks
-    return groups
-  }, {} as Record<string, Task[] | undefined>)
+  const tasks = currentProject?.columnsTasks
 
   return (
     <>
@@ -76,12 +66,14 @@ export default function ProjectsDashboard({ projects }: Props) {
             {tasks && tasks.length > 0 ? (
               <>
                 <DonutChart
-                  data={columns.map((column) => ({
+                  data={currentProject?.columnsTasks.map((column) => ({
                     name: column.name,
-                    value: tasksGroupedByColumn?.[column.name]?.length ?? 0,
+                    value: column.tasksCount,
                     fill: column.color,
                   }))}
-                  centerText={tasks.length.toString()}
+                  centerText={currentProject?.columnsTasks
+                    .reduce((acc, column) => acc + column.tasksCount, 0)
+                    .toString()}
                   bottomText="Tasks"
                 />
 
@@ -103,38 +95,7 @@ export default function ProjectsDashboard({ projects }: Props) {
           </CardContent>
         </Card>
 
-        <Card className="bg-[#1c1f2d] border-0">
-          <CardHeader className="flex flex-col items-center pb-0">
-            <TypographyH2>Recent activities</TypographyH2>
-          </CardHeader>
-
-          <CardContent className="space-y-4">
-            <ScrollArea className="h-[300px]">
-              <div className="space-y-4">
-                {currentProject && currentProject?.activities.length > 0 ? (
-                  currentProject?.activities.map((activity, index) => (
-                    <div key={index} className="flex flex-col items-start">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: activity.column.color }}
-                        />
-
-                        <p className="text-sm">{activity.task.name}</p>
-                      </div>
-
-                      <p className="text-xs text-muted-foreground">{activity.text}</p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center text-sm text-muted-foreground">
-                    No activities yet
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
+        <CardRecentActivity activities={currentProject?.activities || []} />
       </div>
     </>
   )

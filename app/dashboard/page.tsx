@@ -6,15 +6,18 @@ import { CardHeader } from "@/components/ui/card"
 import { CardContent } from "@/components/ui/card"
 import { Card } from "@/components/ui/card"
 import { TypographyP, TypographyH1 } from "@/components/ui/typography"
-import { Task } from "@/features/tasks/interfaces/task.interface"
 import { apiClientServer } from "@/utils/api-client-server"
 import ProjectsDashboard from "@/app/dashboard/ui/projects"
-import { TASKS_URL } from "@/constants/routes"
 import { Project } from "@/features/project/interfaces/project.interface"
 import { Activity } from "@/features/tasks/interfaces/activity.interface"
+import {
+  ColumnTaskCount,
+  getColumnTaskCount,
+} from "@/features/tasks/actions/column.action"
+import { getRecentActivities } from "@/features/tasks/actions/activity.action"
 
 export interface ProjectWithTasks extends Project {
-  tasks: Task[]
+  columnsTasks: ColumnTaskCount[]
   activities: Activity[]
 }
 
@@ -27,17 +30,15 @@ export default async function Dashboard() {
     projects = projectsResponse.data
 
     let taskPromise = projects.map(async (project) => {
-      const [tasksResponse, resentActivitiesResponse] = await Promise.all([
-        apiClientServer.get<Task[]>(`${TASKS_URL}/project/${project._id}`),
-        apiClientServer.get<Activity[]>(`tasks/activity`, {
-          params: { projectId: project._id },
-        }),
+      const [columns, resentActivitiesResponse] = await Promise.all([
+        getColumnTaskCount({ projectId: project._id }),
+        getRecentActivities({ projectId: project._id }),
       ])
 
-      totalTasks += tasksResponse.data.length
+      totalTasks += columns.length
 
-      project.tasks = tasksResponse.data
-      project.activities = resentActivitiesResponse.data
+      project.activities = resentActivitiesResponse
+      project.columnsTasks = columns
     })
 
     await Promise.all(taskPromise)
@@ -46,18 +47,16 @@ export default async function Dashboard() {
     return <div>Error loading projects</div>
   }
 
-  const columnCounts = projects.reduce((acc, project) => {
-    project.tasks?.forEach((task) => {
-      const columnName = task.column.name
-      acc[columnName] = (acc[columnName] || 0) + 1
-    })
+  let columnsTotal = projects.map((project) => project.columnsTasks).flat()
+  columnsTotal = columnsTotal.reduce((acc, column) => {
+    const existingColumn = acc.find((c) => c.name === column.name)
+    if (existingColumn) {
+      existingColumn.tasksCount += column.tasksCount
+    } else {
+      acc.push(column)
+    }
     return acc
-  }, {} as Record<string, number>)
-
-  const columns = Object.entries(columnCounts).map(([name, count]) => ({
-    name,
-    count,
-  }))
+  }, [] as ColumnTaskCount[])
 
   return (
     <div className="flex min-h-screen">
@@ -83,7 +82,7 @@ export default async function Dashboard() {
               </CardContent>
             </Card>
 
-            {columns.map((column, index) => (
+            {columnsTotal.map((column, index) => (
               <Card key={index} className="bg-[#1c1f2d] border-0">
                 <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                   <CardTitle className="text-sm font-medium text-gray-400">
@@ -92,7 +91,7 @@ export default async function Dashboard() {
                   <ClipboardList className="w-4 h-4 text-purple-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">{column.count}</div>
+                  <div className="text-2xl font-bold text-white">{column.tasksCount}</div>
                 </CardContent>
               </Card>
             ))}

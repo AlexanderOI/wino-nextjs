@@ -13,7 +13,7 @@ export function CardRecentActivity({ activities }: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center space-x-2">
+        <CardTitle className="flex items-center space-x-1">
           <ActivityIcon className="w-5 h-5 text-green-600" />
           <span>Recent Activity</span>
         </CardTitle>
@@ -24,14 +24,14 @@ export function CardRecentActivity({ activities }: Props) {
             {activities.map((activity) => (
               <div
                 key={activity._id}
-                className="flex items-start space-x-4 p-4 rounded-lg border-l-4"
+                className="flex items-start space-x-4 p-1 px-2 rounded-lg border-l-4"
                 style={{
                   borderLeftColor: activity.column?.color || "#f59e0b",
                   background: activity.column?.color + "15",
                 }}
               >
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: activity.column?.color || "#f59e0b" }}
                 >
                   <div className="w-4 h-4 rounded-full bg-white/30" />
@@ -40,10 +40,10 @@ export function CardRecentActivity({ activities }: Props) {
                   <p className="font-medium text-slate-900 dark:text-white">
                     {activity.task?.name}
                   </p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
                     {activity.text}
                   </p>
-                  <div className="flex items-center space-x-2 mt-2">
+                  <div className="flex items-center space-x-2">
                     <Clock className="w-3 h-3 text-slate-400" />
                     <span className="text-xs text-slate-500">
                       {formatDistanceToNow(activity.createdAt, {
