@@ -10,6 +10,7 @@ import { TaskTable } from "@/features/tasks/components/list/task-table"
 import { getColumnTaskCount } from "@/features/tasks/actions/column.action"
 import { searchParamsCache } from "@/features/tasks/lib/validations"
 import { getProjectFormTask, getTaskData } from "@/features/tasks/actions/task.action"
+import TasksPageLoading from "./loading"
 
 interface Props {
   params: Promise<{ projectId: string }>
@@ -42,7 +43,7 @@ export default async function TasksPage(props: Props) {
           </div>
         </div>
 
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<TasksPageLoading />}>
           <TaskTable promises={promises} />
         </Suspense>
       </div>
