@@ -19,9 +19,9 @@ and project progress tracking with a modern and efficient interface.
 - [Next.js](https://nextjs.org/) - React Framework
 - [TypeScript](https://www.typescriptlang.org/) - Programming Language
 - [Tailwind CSS](https://tailwindcss.com/) - CSS Framework
-- [Radix UI](https://www.radix-ui.com/) - Primitive Components
+- [Shadcn UI](https://ui.shadcn.com/) - UI Components
 - [Zustand](https://zustand-demo.pmnd.rs/) - State Management
-- [React Query](https://tanstack.com/query/latest) - Server State Management
+- [Tanstack Query](https://tanstack.com/query/latest) - Fetching, Caching, and Updating Data
 - [NextAuth.js](https://next-auth.js.org/) - Authentication
 - [React Hook Form](https://react-hook-form.com/) - Form Handling
 - [Zod](https://zod.dev/) - Schema Validation

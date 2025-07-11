@@ -1,9 +1,11 @@
+import { UserAuth } from "@/types/next-auth"
+import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User } from "@/features/user/interfaces/user.interface"
-import { cn } from "@/lib/utils"
+import { CompanyOwner } from "@/features/company/interfaces/company.interface"
 
 interface UserAvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
-  user?: User
+  user?: User | UserAuth | CompanyOwner
   classNameFallback?: string
 }
 

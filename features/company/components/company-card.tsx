@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
   MoreHorizontal,
@@ -26,11 +25,13 @@ import {
   Check,
   X,
 } from "lucide-react"
-import { Company } from "@/features/company/interfaces/company.interface"
 import { format } from "date-fns"
-import { Project } from "@/features/project/interfaces/project.interface"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
 import { PermissionClient } from "@/features/permission/permission-client"
+import { Company } from "@/features/company/interfaces/company.interface"
+import { Project } from "@/features/project/interfaces/project.interface"
+import { ModalAction } from "@/features/company/components/company-data"
+import { UserAvatar } from "@/features/user/components/user-avatar"
 
 interface CompanyWithProjects extends Company {
   projects: Project[]
@@ -39,25 +40,17 @@ interface CompanyWithProjects extends Company {
 interface CompanyCardProps {
   company: CompanyWithProjects
   isWorkFor?: boolean
-  handleOpenCompanyDialog: (id: string) => void
-  handleDelete: (id: string) => void
-  handleManageUsers: (company: Company) => Promise<void>
-  handleManageProjects: (company: Company) => Promise<void>
-  handleAcceptInvite: (id: string) => void
-  handleLeaveCompany: (id: string) => void
-  handleRejectInvite: (id: string) => void
+  handleManageUsers: (company: Company) => void
+  handleManageProjects: (company: Company) => void
+  setModalAction: (action: ModalAction<Company>) => void
 }
 
 export function CompanyCard({
   company,
   isWorkFor = false,
-  handleOpenCompanyDialog,
-  handleDelete,
   handleManageUsers,
   handleManageProjects,
-  handleAcceptInvite,
-  handleLeaveCompany,
-  handleRejectInvite,
+  setModalAction,
 }: CompanyCardProps) {
   return (
     <Card className="bg-[#1a1d27] border-[#2a2d37] relative">
@@ -69,10 +62,7 @@ export function CompanyCard({
       )}
       <CardHeader className="flex flex-row items-start justify-between">
         <div className="flex gap-4">
-          <Avatar className="h-12 w-12">
-            {/* <AvatarImage src={""} /> */}
-            <AvatarFallback>{company.name[0]}</AvatarFallback>
-          </Avatar>
+          <UserAvatar user={company.owner} className="h-12 w-12" />
           <div>
             <CardTitle className="text-xl flex items-center gap-2">
               {company.name}
@@ -98,7 +88,7 @@ export function CompanyCard({
             <PermissionClient permissions={[PERMISSIONS.EDIT_COMPANY]}>
               <DropdownMenuItem
                 className="flex items-center"
-                onClick={() => handleOpenCompanyDialog(company._id)}
+                onClick={() => setModalAction({ type: "edit", data: company })}
               >
                 <Pencil className="w-4 h-4 mr-2" />
                 Edit Company
@@ -131,7 +121,7 @@ export function CompanyCard({
               <PermissionClient permissions={[PERMISSIONS.DELETE_COMPANY]}>
                 <DropdownMenuItem
                   className="flex items-center text-red-400"
-                  onClick={() => handleDelete(company._id)}
+                  onClick={() => setModalAction({ type: "delete", data: company })}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete Company
@@ -143,7 +133,7 @@ export function CompanyCard({
               <PermissionClient permissions={[PERMISSIONS.DELETE_COMPANY]}>
                 <DropdownMenuItem
                   className="flex items-center text-red-400"
-                  onClick={() => handleLeaveCompany(company._id)}
+                  onClick={() => setModalAction({ type: "leave-company", data: company })}
                 >
                   <Share2 className="w-4 h-4 mr-2" />
                   Leave Company
@@ -181,7 +171,7 @@ export function CompanyCard({
             <Button
               variant="purple"
               size="icon"
-              onClick={() => handleAcceptInvite(company._id)}
+              onClick={() => setModalAction({ type: "accept-invite", data: company })}
             >
               <Check className="w-4 h-4" />
             </Button>
@@ -189,7 +179,7 @@ export function CompanyCard({
             <Button
               variant="destructive"
               size="icon"
-              onClick={() => handleRejectInvite(company._id)}
+              onClick={() => setModalAction({ type: "reject-invite", data: company })}
             >
               <X className="w-4 h-4" />
             </Button>

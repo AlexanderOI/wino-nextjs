@@ -28,8 +28,8 @@ import { refreshToken } from "@/features/auth/actions/auth-actions"
 import { Company } from "@/features/company/interfaces/company.interface"
 import { Session } from "next-auth"
 import { USERS_URL } from "@/constants/routes"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NotificationHeader } from "@/features/notifications/notification-header"
+import { UserAvatar } from "@/features/user/components/user-avatar"
 
 interface Props {
   companiesData: Company[]
@@ -109,10 +109,7 @@ export function HeaderNav({ companiesData, session }: Props) {
             <DropdownMenu>
               <DropdownMenuTrigger className="text-left outline-none">
                 <div className="flex items-center gap-2 text-sm cursor-pointer hover:bg-purple-deep rounded-md py-1 px-2">
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src={session?.user.avatar} />
-                    <AvatarFallback>{session?.user.name?.charAt(0)}</AvatarFallback>
-                  </Avatar>
+                  <UserAvatar user={session?.user} className="h-8 w-8" />
 
                   <div className="flex flex-col">
                     <span>{session?.user.name}</span>

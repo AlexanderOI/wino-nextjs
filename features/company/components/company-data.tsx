@@ -31,49 +31,29 @@ interface CompanyDataProps {
   companiesIWorkFor: CompanyWithProjects[]
 }
 
+export type ModalAction<T> = {
+  type:
+    | "edit"
+    | "delete"
+    | "accept-invite"
+    | "leave-company"
+    | "reject-invite"
+    | "manage-users"
+    | "manage-projects"
+  data: T
+}
+
 export function CompanyData({ myCompanies, companiesIWorkFor }: CompanyDataProps) {
   const router = useRouter()
-
   const { data: session } = useSession()
   const { refreshUserToken } = useRefreshToken()
+  const [modalAction, setModalAction] = useState<ModalAction<Company> | null>(null)
 
   const removeCompany = useCompanyStore((state) => state.removeCompany)
   const setCurrentCompany = useCompanyStore((state) => state.setCurrentCompany)
 
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string | undefined>()
-  const [editCompanyDialog, setEditCompanyDialog] = useState(false)
-  const [deleteCompanyDialog, setDeleteCompanyDialog] = useState(false)
-  const [acceptInviteDialog, setAcceptInviteDialog] = useState(false)
-  const [leaveCompanyDialog, setLeaveCompanyDialog] = useState(false)
-  const [rejectInviteDialog, setRejectInviteDialog] = useState(false)
-
-  const handleOpenCompanyDialog = (id: string) => {
-    setSelectedCompanyId(id)
-    setEditCompanyDialog(true)
-  }
-
-  const handleDelete = (id: string) => {
-    setSelectedCompanyId(id)
-    setDeleteCompanyDialog(true)
-  }
-
-  const handleAcceptInvite = (id: string) => {
-    setSelectedCompanyId(id)
-    setAcceptInviteDialog(true)
-  }
-
-  const handleLeaveCompany = (id: string) => {
-    setSelectedCompanyId(id)
-    setLeaveCompanyDialog(true)
-  }
-
-  const handleRejectInvite = (id: string) => {
-    setSelectedCompanyId(id)
-    setRejectInviteDialog(true)
-  }
-
   const onAcceptInvite = async () => {
-    await apiClient.post(`users/invited-user/accept/${selectedCompanyId}`)
+    await apiClient.post(`users/invited-user/accept/${modalAction?.data?._id}`)
     router.refresh()
     toast({
       title: "Invite accepted",
@@ -83,7 +63,7 @@ export function CompanyData({ myCompanies, companiesIWorkFor }: CompanyDataProps
   }
 
   const onRejectInvite = async () => {
-    await apiClient.post(`users/invited-user/reject/${selectedCompanyId}`)
+    await apiClient.post(`users/invited-user/reject/${modalAction?.data?._id}`)
     router.refresh()
     toast({
       title: "Invite rejected",
@@ -93,7 +73,7 @@ export function CompanyData({ myCompanies, companiesIWorkFor }: CompanyDataProps
   }
 
   const onLeaveCompany = async () => {
-    await apiClient.post(`users/invited-user/leave/${selectedCompanyId}`)
+    await apiClient.post(`users/invited-user/leave/${modalAction?.data?._id}`)
     router.refresh()
     toast({
       title: "Company left",
@@ -103,11 +83,11 @@ export function CompanyData({ myCompanies, companiesIWorkFor }: CompanyDataProps
   }
 
   const onDeleteCompany = async () => {
-    if (session?.user.companyId === selectedCompanyId) {
+    if (session?.user.companyId === modalAction?.data?._id) {
       setCurrentCompany(myCompanies[0])
       await refreshUserToken(myCompanies[0])
     }
-    removeCompany(selectedCompanyId ?? "")
+    removeCompany(modalAction?.data?._id ?? "")
   }
 
   const handleManageUsers = async (company: Company) => {
@@ -153,13 +133,9 @@ export function CompanyData({ myCompanies, companiesIWorkFor }: CompanyDataProps
               <CompanyCard
                 key={index}
                 company={company}
-                handleOpenCompanyDialog={handleOpenCompanyDialog}
-                handleDelete={handleDelete}
                 handleManageUsers={handleManageUsers}
                 handleManageProjects={handleManageProjects}
-                handleAcceptInvite={handleAcceptInvite}
-                handleLeaveCompany={handleLeaveCompany}
-                handleRejectInvite={handleRejectInvite}
+                setModalAction={setModalAction}
               />
             ))}
           </div>
@@ -173,13 +149,9 @@ export function CompanyData({ myCompanies, companiesIWorkFor }: CompanyDataProps
                   key={index}
                   company={company}
                   isWorkFor={true}
-                  handleOpenCompanyDialog={handleOpenCompanyDialog}
-                  handleDelete={handleDelete}
                   handleManageUsers={handleManageUsers}
                   handleManageProjects={handleManageProjects}
-                  handleAcceptInvite={handleAcceptInvite}
-                  handleLeaveCompany={handleLeaveCompany}
-                  handleRejectInvite={handleRejectInvite}
+                  setModalAction={setModalAction}
                 />
               ))
             ) : (
@@ -192,15 +164,15 @@ export function CompanyData({ myCompanies, companiesIWorkFor }: CompanyDataProps
       </Tabs>
 
       <DialogData
-        isOpen={editCompanyDialog}
-        onOpenChange={setEditCompanyDialog}
-        content={<DialogCompany id={selectedCompanyId} />}
+        isOpen={modalAction?.type === "edit"}
+        onOpenChange={() => setModalAction(null)}
+        content={<DialogCompany id={modalAction?.data?._id || ""} />}
       />
 
       <DialogDelete
-        isOpen={deleteCompanyDialog}
-        onOpenChange={setDeleteCompanyDialog}
-        id={selectedCompanyId ?? ""}
+        isOpen={modalAction?.type === "delete"}
+        onOpenChange={() => setModalAction(null)}
+        id={modalAction?.data?._id || ""}
         url="/company"
         title="Delete Company"
         description="Are you sure you want to delete this company?"
@@ -208,24 +180,24 @@ export function CompanyData({ myCompanies, companiesIWorkFor }: CompanyDataProps
       />
 
       <DialogConfirm
-        isOpen={acceptInviteDialog}
-        onOpenChange={setAcceptInviteDialog}
+        isOpen={modalAction?.type === "accept-invite"}
+        onOpenChange={() => setModalAction(null)}
         title="Accept Invite"
         description="Are you sure you want to accept this invite?"
         onConfirm={onAcceptInvite}
       />
 
       <DialogConfirm
-        isOpen={leaveCompanyDialog}
-        onOpenChange={setLeaveCompanyDialog}
+        isOpen={modalAction?.type === "leave-company"}
+        onOpenChange={() => setModalAction(null)}
         title="Leave Company"
         description="Are you sure you want to leave this company?"
         onConfirm={onLeaveCompany}
       />
 
       <DialogConfirm
-        isOpen={rejectInviteDialog}
-        onOpenChange={setRejectInviteDialog}
+        isOpen={modalAction?.type === "reject-invite"}
+        onOpenChange={() => setModalAction(null)}
         title="Reject Invite"
         description="Are you sure you want to reject this invite?"
         onConfirm={onRejectInvite}

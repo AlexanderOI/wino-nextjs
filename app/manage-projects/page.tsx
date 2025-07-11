@@ -5,19 +5,19 @@ import { Clock, Plus } from "lucide-react"
 
 import { apiClientServer } from "@/utils/api-client-server"
 import { Project } from "@/features/project/interfaces/project.interface"
-import { Task } from "@/features/tasks/interfaces/task.interface"
-import { PROJECTS_URL, TASKS_URL } from "@/constants/routes"
+import { PROJECTS_URL } from "@/constants/routes"
 
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { TypographyH1 } from "@/components/ui/typography"
 import { Badge } from "@/components/ui/badge"
 import { DropdownAction } from "./ui/dropdown-action"
 
 import { PermissionServer } from "@/features/permission/permission-server"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
+import { getColumnTaskCount } from "@/features/tasks/actions/column.action"
+import { UserAvatar } from "@/features/user/components/user-avatar"
 
 export default async function ManageProjects() {
   const response = await apiClientServer.get<Project[]>(PROJECTS_URL)
@@ -59,21 +59,7 @@ export default async function ManageProjects() {
 }
 
 async function ProjectCard({ project }: { project: Project }) {
-  const tasksResponse = await apiClientServer.get<Task[]>(
-    `${TASKS_URL}/project/${project._id}`
-  )
-  const tasks = tasksResponse.data
-  const taskCount = tasks.length
-
-  const columns = [
-    ...new Map(tasks.map((task) => [task.column._id, task.column])).values(),
-  ]
-
-  const tasksGroupedByColumn = columns.reduce((groups, column) => {
-    const columnTasks = tasks.filter((task) => task.column._id === column._id)
-    groups[column.name] = columnTasks
-    return groups
-  }, {} as Record<string, Task[]>)
+  const columns = await getColumnTaskCount({ projectId: project._id })
 
   return (
     <Card className="group">
@@ -104,25 +90,27 @@ async function ProjectCard({ project }: { project: Project }) {
 
           <div className="mt-6 space-y-2">
             <div className="bg-secondary rounded-full overflow-hidden flex w-full h-2">
-              {Object.entries(tasksGroupedByColumn).map(([columnName, tasks]) => (
-                <Tooltip delayDuration={100} key={columnName}>
+              {columns.map((column) => (
+                <Tooltip delayDuration={100} key={column.name}>
                   <TooltipTrigger asChild>
                     <div
                       style={{
-                        backgroundColor: tasks[0].column.color,
-                        width: `${(tasks.length / taskCount) * 100}%`,
+                        backgroundColor: column.color,
+                        width: `${(column.tasksCount / column.tasksCount) * 100}%`,
                       }}
                     ></div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    {tasks.length} Tasks - {columnName}
+                    {column.tasksCount} Tasks - {column.name}
                   </TooltipContent>
                 </Tooltip>
               ))}
             </div>
 
             <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span>{taskCount} Tasks</span>
+              <span>
+                {columns.reduce((acc, column) => acc + column.tasksCount, 0)} Tasks
+              </span>
             </div>
           </div>
 
@@ -135,18 +123,32 @@ async function ProjectCard({ project }: { project: Project }) {
               </span>
             </div>
 
-            <div className="flex -space-x-2 h-7">
-              {project.members?.slice(0, 3).map((member, i) => (
-                <Tooltip key={i} delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    <Avatar key={i} className="w-7 h-7">
-                      <AvatarImage src={member.avatar} />
-                      <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
+            <div className="flex -space-x-2">
+              {project.members?.slice(0, 5).map((member) => (
+                <Tooltip key={member._id} delayDuration={0}>
+                  <TooltipTrigger>
+                    <UserAvatar key={member._id} user={member} />
                   </TooltipTrigger>
-                  <TooltipContent>{member.name}</TooltipContent>
+                  <TooltipContent>
+                    <p className="text-sm font-medium">{member.name}</p>
+                    <p className="text-xs text-muted-foreground">{member.email}</p>
+                  </TooltipContent>
                 </Tooltip>
               ))}
+              <Tooltip>
+                <TooltipTrigger>
+                  <Link href={`/manage-projects/edit/${project._id}`}>
+                    <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 border-2 border-white dark:border-slate-800 flex items-center justify-center">
+                      <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                        +{project.members?.length ? project.members.length - 4 : 0}
+                      </span>
+                    </div>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm font-medium">View all team members</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>

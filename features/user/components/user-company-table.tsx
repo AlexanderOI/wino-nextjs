@@ -27,7 +27,6 @@ import { DialogDelete } from "@/components/common/dialog/dialog-delete"
 import { DataTable } from "@/components/ui/datatable/DataTable"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
@@ -36,59 +35,35 @@ import { toast } from "@/components/ui/use-toast"
 import { DialogChangeRole } from "@/features/user/components/dialog/dialog-change-role"
 import { DialogEditUser } from "@/features/user/components/dialog/dialog-edit-user"
 import { DialogChangePassword } from "@/features/user/components/dialog/dialog-change-password"
+import { UserAvatar } from "@/features/user/components/user-avatar"
 
 interface Props {
   usersCompany: User[]
   usersGuests: User[]
 }
 
+type ModalAction<T> = {
+  type:
+    | "edit"
+    | "delete"
+    | "change-role"
+    | "change-password"
+    | "toggle-active"
+    | "cancel-invitation"
+  data: T
+}
+
 export const UserCompanyTable = ({ usersCompany, usersGuests }: Props) => {
   const router = useRouter()
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [isChangeRoleModalOpen, setIsChangeRoleModalOpen] = useState(false)
-  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false)
-  const [isToggleActiveModalOpen, setIsToggleActiveModalOpen] = useState(false)
-  const [isCancelInvitationModalOpen, setIsCancelInvitationModalOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<User>(usersCompany[0])
-
-  const handleEdit = (user: User) => {
-    setSelectedUser(user)
-    setIsEditModalOpen(true)
-  }
-
-  const handleDelete = (user: User) => {
-    setSelectedUser(user)
-    setIsDeleteModalOpen(true)
-  }
-
-  const handleChangeRole = (user: User) => {
-    setSelectedUser(user)
-    setIsChangeRoleModalOpen(true)
-  }
-
-  const handleChangePassword = (user: User) => {
-    setSelectedUser(user)
-    setIsChangePasswordModalOpen(true)
-  }
-
-  const handleToggleActive = (user: User) => {
-    setSelectedUser(user)
-    setIsToggleActiveModalOpen(true)
-  }
-
-  const handleCancelInvitation = (user: User) => {
-    setSelectedUser(user)
-    setIsCancelInvitationModalOpen(true)
-  }
+  const [modalAction, setModalAction] = useState<ModalAction<User> | null>(null)
 
   const [filterText, setFilterText] = useState("")
 
   const handleToggleActiveConfirm = async () => {
     try {
-      const isActive = selectedUser?.isActive
+      const isActive = modalAction?.data?.isActive
 
-      await apiClient.patch(`/users/${selectedUser?._id}`, {
+      await apiClient.patch(`/users/${modalAction?.data?._id}`, {
         isActive: !isActive,
       })
 
@@ -147,14 +122,7 @@ export const UserCompanyTable = ({ usersCompany, usersGuests }: Props) => {
         <TabsContent value="company" className="mt-6">
           <Card>
             <DataTable
-              columns={Columns(
-                handleEdit,
-                handleDelete,
-                handleChangeRole,
-                handleChangePassword,
-                handleToggleActive,
-                handleCancelInvitation
-              )}
+              columns={Columns(setModalAction)}
               data={usersCompany}
               options={{
                 inputSearch: false,
@@ -166,14 +134,7 @@ export const UserCompanyTable = ({ usersCompany, usersGuests }: Props) => {
         <TabsContent value="guests" className="mt-6">
           <Card>
             <DataTable
-              columns={Columns(
-                handleEdit,
-                handleDelete,
-                handleChangeRole,
-                handleChangePassword,
-                handleToggleActive,
-                handleCancelInvitation
-              )}
+              columns={Columns(setModalAction)}
               data={usersGuests}
               options={{
                 inputSearch: false,
@@ -185,47 +146,47 @@ export const UserCompanyTable = ({ usersCompany, usersGuests }: Props) => {
       </Tabs>
 
       <DialogData
-        isOpen={isEditModalOpen}
-        onOpenChange={setIsEditModalOpen}
-        content={<DialogEditUser id={selectedUser?._id} />}
+        isOpen={modalAction?.type === "edit"}
+        onOpenChange={() => setModalAction(null)}
+        content={<DialogEditUser id={modalAction?.data?._id || ""} />}
       />
 
       <DialogData
-        isOpen={isChangeRoleModalOpen}
-        onOpenChange={setIsChangeRoleModalOpen}
-        content={<DialogChangeRole id={selectedUser?._id} />}
+        isOpen={modalAction?.type === "change-role"}
+        onOpenChange={() => setModalAction(null)}
+        content={<DialogChangeRole id={modalAction?.data?._id || ""} />}
       />
 
       <DialogData
-        isOpen={isChangePasswordModalOpen}
-        onOpenChange={setIsChangePasswordModalOpen}
-        content={<DialogChangePassword id={selectedUser?._id} />}
+        isOpen={modalAction?.type === "change-password"}
+        onOpenChange={() => setModalAction(null)}
+        content={<DialogChangePassword id={modalAction?.data?._id || ""} />}
       />
 
       <DialogDelete
-        id={selectedUser?._id}
+        id={modalAction?.data?._id || ""}
         url="/users"
-        isOpen={isDeleteModalOpen}
-        onOpenChange={setIsDeleteModalOpen}
+        isOpen={modalAction?.type === "delete"}
+        onOpenChange={() => setModalAction(null)}
         title="Delete User"
         description="Are you sure you want to delete this user?"
       />
 
       <DialogConfirm
-        isOpen={isToggleActiveModalOpen}
-        onOpenChange={setIsToggleActiveModalOpen}
+        isOpen={modalAction?.type === "toggle-active"}
+        onOpenChange={() => setModalAction(null)}
         onConfirm={handleToggleActiveConfirm}
-        title={`${selectedUser?.isActive ? "Disable" : "Enable"} User`}
+        title={`${modalAction?.data?.isActive ? "Disable" : "Enable"} User`}
         description={`Are you sure you want to ${
-          selectedUser?.isActive ? "disable" : "enable"
+          modalAction?.data?.isActive ? "disable" : "enable"
         } the user?`}
       />
 
       <DialogDelete
-        id={selectedUser?._id}
+        id={modalAction?.data?._id || ""}
         url="/users"
-        isOpen={isCancelInvitationModalOpen}
-        onOpenChange={setIsCancelInvitationModalOpen}
+        isOpen={modalAction?.type === "cancel-invitation"}
+        onOpenChange={() => setModalAction(null)}
         title="Cancel Invitation"
         description="Are you sure you want to cancel this invitation?"
         buttonText="Cancel Invitation"
@@ -233,21 +194,14 @@ export const UserCompanyTable = ({ usersCompany, usersGuests }: Props) => {
           title: "Invitation Cancelled",
           description: "The invitation has been cancelled successfully",
           variant: "default",
-          id: selectedUser?._id,
+          id: modalAction?.data?._id || "",
         }}
       />
     </>
   )
 }
 
-const Columns = (
-  handleEdit: (user: User) => void,
-  handleDelete: (user: User) => void,
-  handleChangeRole: (user: User) => void,
-  handleChangePassword: (user: User) => void,
-  handleToggleActive: (user: User) => void,
-  handleCancelInvitation: (user: User) => void
-) => {
+const Columns = (setModalAction: (action: ModalAction<User>) => void) => {
   const columns: ColumnDef<User>[] = [
     {
       id: "user",
@@ -255,10 +209,8 @@ const Columns = (
       header: () => <div className="text-center">User</div>,
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarImage src={row.original.avatar} />
-            <AvatarFallback>{row.original.name[0]}</AvatarFallback>
-          </Avatar>
+          <UserAvatar user={row.original} className="h-10 w-10" />
+
           <div>
             <div className="font-semibold flex items-center gap-2">
               {row.original.name}
@@ -329,17 +281,25 @@ const Columns = (
         <TableAction>
           {!row.original.invitePending && (
             <>
-              <DropdownMenuItem onClick={() => handleEdit(row.original)}>
+              <DropdownMenuItem
+                onClick={() => setModalAction({ type: "edit", data: row.original })}
+              >
                 <UserCog className="w-4 h-4 mr-2" />
                 Edit User
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleChangeRole(row.original)}>
+              <DropdownMenuItem
+                onClick={() =>
+                  setModalAction({ type: "change-role", data: row.original })
+                }
+              >
                 <Shield className="w-4 h-4 mr-2" />
                 Change Role
               </DropdownMenuItem>
               <DropdownMenuItem
                 disabled={row.original.isInvited}
-                onClick={() => handleChangePassword(row.original)}
+                onClick={() =>
+                  setModalAction({ type: "change-password", data: row.original })
+                }
               >
                 <Lock className="w-4 h-4 mr-2" />
                 Change Password
@@ -347,14 +307,16 @@ const Columns = (
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className={cn(row.original.isActive ? "text-red-400" : "text-green-400")}
-                onClick={() => handleToggleActive(row.original)}
+                onClick={() =>
+                  setModalAction({ type: "toggle-active", data: row.original })
+                }
               >
                 <UserX className="w-4 h-4 mr-2" />
                 {row.original.isActive ? "Disable User" : "Enable User"}
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-400"
-                onClick={() => handleDelete(row.original)}
+                onClick={() => setModalAction({ type: "delete", data: row.original })}
               >
                 <Trash className="w-4 h-4 mr-2" />
                 Delete User
@@ -365,7 +327,9 @@ const Columns = (
           {row.original.isInvited && row.original.invitePending && (
             <DropdownMenuItem
               className="text-red-400"
-              onClick={() => handleCancelInvitation(row.original)}
+              onClick={() =>
+                setModalAction({ type: "cancel-invitation", data: row.original })
+              }
             >
               <UserX className="w-4 h-4 mr-2" />
               Cancel Invitation

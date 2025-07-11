@@ -19,7 +19,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -32,6 +31,7 @@ import { toast } from "@/components/ui/use-toast"
 
 import { Project } from "@/features/project/interfaces/project.interface"
 import { User } from "@/features/user/interfaces/user.interface"
+import { UserAvatar } from "@/features/user/components/user-avatar"
 
 const statusOptions = ["Pending", "In Progress", "Completed"]
 
@@ -256,7 +256,6 @@ export default function FormProject({ users, project }: Props) {
               </div>
             </div>
 
-            {/* Project Dates */}
             <div className="space-y-4 mt-4">
               <h3 className="text-lg font-semibold">Project Timeline</h3>
 
@@ -302,13 +301,11 @@ export default function FormProject({ users, project }: Props) {
           </form>
         </Form>
 
-        {/* Participants */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Project Participants</h3>
           </div>
 
-          {/* Selected Participants */}
           <div className="grid sm:grid-cols-2 gap-4">
             <ScrollArea className="h-[300px] w-full rounded-md border">
               <div className="p-4 space-y-4">
@@ -346,7 +343,6 @@ export default function FormProject({ users, project }: Props) {
               </div>
             </ScrollArea>
 
-            {/* Search and Filter Participants */}
             <ScrollArea className="h-[300px] w-full rounded-md border">
               <div className="p-4 space-y-4">
                 <Input
@@ -400,11 +396,7 @@ const ParticipantCard = ({ participant }: { participant: User }) => {
   return (
     <div key={participant._id} className="flex items-center justify-between gap-2">
       <div className="flex items-center gap-2">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={`${participant.avatar ?? ""}`} />
-
-          <AvatarFallback>{participant.name[0]}</AvatarFallback>
-        </Avatar>
+        <UserAvatar user={participant} className="h-8 w-8" />
         <div>
           <p className="text-sm font-medium leading-none">{participant.name}</p>
           <p className="text-sm text-muted-foreground">{participant.email}</p>

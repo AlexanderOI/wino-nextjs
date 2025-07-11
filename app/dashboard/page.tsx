@@ -36,7 +36,7 @@ export default async function Dashboard() {
         getRecentActivities({ projectId: project._id }),
       ])
 
-      totalTasks += columns.length
+      totalTasks += columns.reduce((acc, column) => acc + column.tasksCount, 0)
 
       project.activities = resentActivitiesResponse
       project.columnsTasks = columns
@@ -48,16 +48,17 @@ export default async function Dashboard() {
     return <div>Error loading projects</div>
   }
 
-  let columnsTotal = projects.map((project) => project.columnsTasks).flat()
-  columnsTotal = columnsTotal.reduce((acc, column) => {
-    const existingColumn = acc.find((c) => c.name === column.name)
-    if (existingColumn) {
-      existingColumn.tasksCount += column.tasksCount
-    } else {
-      acc.push(column)
-    }
-    return acc
-  }, [] as ColumnTaskCount[])
+  const columnsTotalCount = projects
+    .map((project) => project.columnsTasks)
+    .flat()
+    .reduce((acc, column) => {
+      if (acc[column.name]) {
+        acc[column.name] += column.tasksCount
+      } else {
+        acc[column.name] = column.tasksCount
+      }
+      return acc
+    }, {} as { [name: string]: number })
 
   return (
     <div className="flex min-h-screen">
@@ -83,16 +84,16 @@ export default async function Dashboard() {
               </CardContent>
             </Card>
 
-            {columnsTotal.map((column, index) => (
-              <Card key={index} className="bg-[#1c1f2d] border-0">
+            {Object.entries(columnsTotalCount).map(([name, tasksCount], index) => (
+              <Card key={name} className="bg-[#1c1f2d] border-0">
                 <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                   <CardTitle className="text-sm font-medium text-gray-400">
-                    {column.name}
+                    {name}
                   </CardTitle>
                   <ClipboardList className="w-4 h-4 text-purple-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">{column.tasksCount}</div>
+                  <div className="text-2xl font-bold text-white">{tasksCount}</div>
                 </CardContent>
               </Card>
             ))}

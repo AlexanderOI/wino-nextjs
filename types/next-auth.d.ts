@@ -38,4 +38,5 @@ interface UserAuth {
   companyName: string
   permissions: string[]
   avatar: string
+  avatarColor: string
 }
