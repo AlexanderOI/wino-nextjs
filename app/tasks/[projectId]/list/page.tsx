@@ -6,11 +6,11 @@ import { Suspense } from "react"
 import { Users } from "lucide-react"
 
 import { TaskTable } from "@/features/tasks/components/list/task-table"
+import { TasksPageLoading } from "@/features/tasks/components/list/page-skeleton"
 
 import { getColumnTaskCount } from "@/features/tasks/actions/column.action"
 import { searchParamsCache } from "@/features/tasks/lib/validations"
 import { getProjectFormTask, getTaskData } from "@/features/tasks/actions/task.action"
-import TasksPageLoading from "./loading"
 
 interface Props {
   params: Promise<{ projectId: string }>
