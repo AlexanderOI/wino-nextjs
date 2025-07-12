@@ -1,6 +1,6 @@
-import { 
-  Sidebar, 
-  SidebarContent, 
+import {
+  Sidebar,
+  SidebarContent,
   SidebarHeader,
   SidebarGroup,
 } from "@/components/ui/sidebar"
@@ -95,7 +95,7 @@ const userItems: MenuItem[] = [
 
 export async function AppSidebar() {
   const session = await getSession()
-  
+
   if (!session) {
     return null
   }
@@ -110,13 +110,13 @@ export async function AppSidebar() {
         <SidebarGroup>
           <SidebarSimpleSection
             label={`Workspace: ${session.user.companyName}`}
-            items={workspaceItems} 
+            items={workspaceItems}
             userPermissions={session.user.permissions}
           />
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarProjectSection 
+          <SidebarProjectSection
             items={projectItems}
             userPermissions={session.user.permissions}
           />

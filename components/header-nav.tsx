@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select"
 import { SidebarTrigger } from "./ui/sidebar"
 import { useCompanyStore } from "@/features/company/stores/company.store"
-import { refreshToken } from "@/features/auth/actions/auth-actions"
+import { refreshToken } from "@/features/auth/actions/auth.action"
 import { Company } from "@/features/company/interfaces/company.interface"
 import { Session } from "next-auth"
 import { USERS_URL } from "@/constants/routes"

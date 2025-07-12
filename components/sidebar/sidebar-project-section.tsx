@@ -1,6 +1,8 @@
 "use client"
 
-import { 
+import { useEffect } from "react"
+import { useSession } from "next-auth/react"
+import {
   SidebarGroupLabel,
   SidebarGroupContent,
   SidebarGroupAction,
@@ -17,18 +19,26 @@ interface SidebarProjectSectionProps {
   userPermissions: string[]
 }
 
-export function SidebarProjectSection({ 
-  items, 
-  userPermissions 
+export function SidebarProjectSection({
+  items,
+  userPermissions,
 }: SidebarProjectSectionProps) {
   const project = useProjectStore((state) => state.project)
+  const setProject = useProjectStore((state) => state.setProject)
   const FolderRootIcon = iconMap.FolderRoot
-  
+  const { data: session } = useSession()
+
+  useEffect(() => {
+    if (project && session && project.companyId !== session.user.companyId) {
+      setProject(null)
+    }
+  }, [project, session, setProject])
+
   return (
     <>
       <SidebarGroupLabel>
         <span className="truncate w-10/12 block">
-          Project: {project?.name || 'Select project...'}
+          Project: {project?.name || "Select project..."}
         </span>
       </SidebarGroupLabel>
       <SidebarGroupAction title="Select Project">
@@ -50,4 +60,4 @@ export function SidebarProjectSection({
       </SidebarGroupContent>
     </>
   )
-} 
+}

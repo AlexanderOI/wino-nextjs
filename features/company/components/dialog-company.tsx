@@ -30,8 +30,9 @@ import {
 } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
 
-import { getCompanyById } from "@/features/company/actions/action"
+import { getCompanyById } from "@/features/company/actions/company.action"
 import { useCompanyStore } from "@/features/company/stores/company.store"
+import { AxiosError } from "axios"
 
 const companySchema = z.object({
   name: z.string().min(1),
@@ -85,11 +86,11 @@ export function DialogCompany({ id }: { id?: string }) {
       router.refresh()
       refClose.current?.click()
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Error saving company",
-        duration: 1000,
-      })
+      if (error instanceof AxiosError) {
+        form.setError("name", {
+          message: error.response?.data.message,
+        })
+      }
     }
   })
 

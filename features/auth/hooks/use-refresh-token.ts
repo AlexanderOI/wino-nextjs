@@ -6,7 +6,7 @@ import { apiClient } from "@/utils/api-client"
 import { Company } from "@/features/company/interfaces/company.interface"
 import { USERS_URL } from "@/constants/routes"
 
-import { refreshToken } from "@/features/auth/actions/auth-actions"
+import { refreshToken } from "@/features/auth/actions/auth.action"
 
 export const useRefreshToken = () => {
   const { data: session, update } = useSession()

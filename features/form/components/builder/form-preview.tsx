@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { EditableField } from "@/components/common/form/EditableField"
+import { EditableField } from "@/components/common/form/editable-field"
 
 import { DetailItemContainer } from "@/features/tasks/components/dialog/dialog-details"
 import { formTypes } from "@/features/form/constants/form-types"

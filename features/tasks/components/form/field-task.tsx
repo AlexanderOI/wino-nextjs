@@ -8,7 +8,7 @@ import { SelectItem } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 
 import { SelectSimple } from "@/components/common/form/select-simple"
-import { EditableField } from "@/components/common/form/EditableField"
+import { EditableField } from "@/components/common/form/editable-field"
 
 import { FormField } from "@/features/form/interfaces/form.interface"
 

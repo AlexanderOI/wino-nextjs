@@ -7,7 +7,7 @@ import { FileText, CircleDot } from "lucide-react"
 import { User } from "@/features/user/interfaces/user.interface"
 
 import { Editor, EditorViewer } from "@/components/editor/editor"
-import { EditableField } from "@/components/common/form/EditableField"
+import { EditableField } from "@/components/common/form/editable-field"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

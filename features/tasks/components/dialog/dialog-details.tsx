@@ -10,7 +10,7 @@ import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { SelectItem } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { SelectSimple } from "@/components/common/form/select-simple"
-import { EditableField } from "@/components/common/form/EditableField"
+import { EditableField } from "@/components/common/form/editable-field"
 import { toast } from "@/components/ui/use-toast"
 
 import { UserAvatar } from "@/features/user/components/user-avatar"

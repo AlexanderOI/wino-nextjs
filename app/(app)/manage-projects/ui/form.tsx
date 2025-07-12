@@ -32,6 +32,7 @@ import { toast } from "@/components/ui/use-toast"
 import { Project } from "@/features/project/interfaces/project.interface"
 import { User } from "@/features/user/interfaces/user.interface"
 import { UserAvatar } from "@/features/user/components/user-avatar"
+import { useProject } from "@/features/project/hooks/use-project"
 
 const statusOptions = ["Pending", "In Progress", "Completed"]
 
@@ -52,6 +53,7 @@ interface Props {
 }
 
 export default function FormProject({ users, project }: Props) {
+  const { projectsQuery } = useProject()
   const router = useRouter()
   const [selectedParticipants, setSelectedParticipants] = useState<User[]>(
     project?.members || []
@@ -102,6 +104,8 @@ export default function FormProject({ users, project }: Props) {
         description: "Project has been saved successfully",
         duration: 1000,
       })
+
+      projectsQuery.refetch()
 
       router.replace(`/manage-projects/edit/${id}`)
     } catch (error) {

@@ -1,4 +1,4 @@
-import { HeaderNav } from "@/components/HeaderNav"
+import { HeaderNav } from "@/components/header-nav"
 import { Company } from "@/features/company/interfaces/company.interface"
 import { apiClientServer } from "@/utils/api-client-server"
 import { getSession } from "@/utils/get-session"

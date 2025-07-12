@@ -1,6 +1,7 @@
 import { apiClientServer } from "@/utils/api-client-server"
 
 import { Project } from "@/features/project/interfaces/project.interface"
+import { apiClient } from "@/utils/api-client"
 
 interface GetProjectParams {
   withMembers?: boolean
@@ -20,4 +21,9 @@ export async function getProject(projectId: string, params?: GetProjectParams) {
     console.error(error)
     return null
   }
+}
+
+export async function getProjects() {
+  const response = await apiClient.get<Project[]>("/projects")
+  return response.data
 }
