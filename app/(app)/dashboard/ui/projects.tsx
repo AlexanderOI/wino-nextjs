@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { TypographyH2 } from "@/components/ui/typography"
 
 import { CardRecentActivity } from "@/features/project/components/page/card-recent-activity"
-import { ProjectWithTasks } from "@/app/dashboard/page"
+import { ProjectWithTasks } from "@/app/(app)/dashboard/page"
 import { CardProgress } from "@/features/project/components/page/card-progress"
 import { ColumnTaskCount } from "@/features/tasks/actions/column.action"
 

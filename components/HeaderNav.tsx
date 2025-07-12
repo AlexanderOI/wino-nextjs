@@ -46,6 +46,10 @@ export function HeaderNav({ companiesData, session }: Props) {
   const setCurrentCompany = useCompanyStore((state) => state.setCurrentCompany)
 
   useEffect(() => {
+    if (companiesData.length === 0) {
+      signOut()
+    }
+
     companiesData.forEach((company) => {
       setCompanies(company)
 

@@ -8,7 +8,7 @@ import { CardContent } from "@/components/ui/card"
 import { Card } from "@/components/ui/card"
 import { TypographyP, TypographyH1 } from "@/components/ui/typography"
 import { apiClientServer } from "@/utils/api-client-server"
-import ProjectsDashboard from "@/app/dashboard/ui/projects"
+import ProjectsDashboard from "@/app/(app)/dashboard/ui/projects"
 import { Project } from "@/features/project/interfaces/project.interface"
 import { Activity } from "@/features/tasks/interfaces/activity.interface"
 import {

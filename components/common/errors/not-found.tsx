@@ -15,7 +15,7 @@ const NotFound = ({
   linkHref = "/",
 }: Props) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="text-center">
         <h1 className="text-6xl font-bold text-purple-deep mb-4">{title}</h1>
         <p className="text-xl mb-8">{message}</p>

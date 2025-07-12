@@ -1,4 +1,20 @@
-export { default } from "next-auth/middleware"
+import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
+
+export default withAuth(
+  function middleware(req) {
+    const response = NextResponse.next()
+
+    response.headers.set("x-pathname", req.nextUrl.pathname)
+
+    return response
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+  }
+)
 
 export const config = {
   matcher: [
