@@ -1,11 +1,11 @@
-import { USERS_URL } from "@/constants/routes"
-import FormProject from "../../ui/form"
-import { Project } from "@/features/project/interfaces/project.interface"
-import { PROJECTS_URL } from "@/constants/routes"
-import { User } from "@/features/user/interfaces/user.interface"
-import { apiClientServer } from "@/utils/api-client-server"
 import { notFound } from "next/navigation"
+import { USERS_URL, PROJECTS_URL } from "@/constants/routes"
+import { apiClientServer } from "@/utils/api-client-server"
 import { TypographyH1 } from "@/components/ui/typography"
+
+import { User } from "@/features/user/interfaces/user.interface"
+import { Project } from "@/features/project/interfaces/project.interface"
+import { FormProject } from "@/features/manage-projects/components/form"
 
 interface Props {
   params: Promise<{ id: string }>

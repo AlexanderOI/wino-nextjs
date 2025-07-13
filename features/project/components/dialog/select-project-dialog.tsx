@@ -18,8 +18,8 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { Project } from "@/features/project/interfaces/project.interface"
-import { useProjectStore } from "@/features/project/store/project.store"
 import { useProject } from "@/features/project/hooks/use-project"
+import { useCurrentProject } from "@/features/project/hooks/use-current-project"
 
 interface Props {
   children?: React.ReactNode
@@ -29,12 +29,10 @@ export function SelectProjectDialog({ children }: Props) {
   const router = useRouter()
   const pathname = usePathname()
 
-  const { projectsQuery } = useProject()
-  const projectSelected = useProjectStore((state) => state.project)
-  const setProject = useProjectStore((state) => state.setProject)
+  const { projects } = useProject()
+  const { projectId: currentProjectId } = useCurrentProject()
 
   const handleSelectProject = (project: Project) => {
-    setProject(project)
     if (pathname.startsWith("/tasks")) {
       router.push(`/tasks/${project._id}`)
     } else {
@@ -46,20 +44,20 @@ export function SelectProjectDialog({ children }: Props) {
     <Dialog>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
 
-      {projectsQuery.data && (
+      {projects && (
         <DialogContent className="max-w-4xl" aria-describedby={undefined}>
           <DialogHeader className="flex justify-between items-center">
             <DialogTitle>Select Project</DialogTitle>
           </DialogHeader>
 
-          {projectsQuery.data.length > 0 ? (
+          {projects.length > 0 ? (
             <div className="grid grid-cols-4 gap-4">
-              {projectsQuery.data.map((project) => (
+              {projects.map((project) => (
                 <Card
                   key={project._id}
                   className={cn(
                     "cursor-pointer dark:bg-purple-deep hover:border-purple-400",
-                    project._id === projectSelected?._id && "border-purple-400"
+                    project._id === currentProjectId && "border-purple-400"
                   )}
                   onClick={() => handleSelectProject(project)}
                 >

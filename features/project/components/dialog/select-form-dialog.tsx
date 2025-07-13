@@ -18,8 +18,8 @@ import {
   getFormsTask,
   assignFormTaskToProject,
 } from "@/features/form/actions/form.action"
-import { useProjectStore } from "@/features/project/store/project.store"
 import { CardForm } from "@/features/project/components/card/card-form"
+import { useCurrentProject } from "@/features/project/hooks/use-current-project"
 
 export const SelectFormDialog = () => {
   const { data: forms, refetch } = useQuery({
@@ -27,8 +27,7 @@ export const SelectFormDialog = () => {
     queryFn: () => getFormsTask(),
   })
 
-  const project = useProjectStore((state) => state.project)
-  const setProject = useProjectStore((state) => state.setProject)
+  const { project } = useCurrentProject()
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -45,11 +44,6 @@ export const SelectFormDialog = () => {
       })
 
       if (!project) return
-
-      setProject({
-        ...project,
-        formTaskId: formTaskId,
-      })
 
       await refetch()
     } catch (error) {

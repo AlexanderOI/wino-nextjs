@@ -33,6 +33,7 @@ import { Project } from "@/features/project/interfaces/project.interface"
 import { User } from "@/features/user/interfaces/user.interface"
 import { UserAvatar } from "@/features/user/components/user-avatar"
 import { useProject } from "@/features/project/hooks/use-project"
+import { ColorPicker } from "@/components/ui/color-picker"
 
 const statusOptions = ["Pending", "In Progress", "Completed"]
 
@@ -45,6 +46,7 @@ const projectSchema = z.object({
   endDate: z.date(),
   leaderId: z.string().min(1, { message: "Leader is required" }),
   client: z.string().min(3, { message: "Client is required" }),
+  color: z.string().min(1, { message: "Color is required" }),
 })
 
 interface Props {
@@ -52,7 +54,7 @@ interface Props {
   project?: Project
 }
 
-export default function FormProject({ users, project }: Props) {
+export function FormProject({ users, project }: Props) {
   const { projectsQuery } = useProject()
   const router = useRouter()
   const [selectedParticipants, setSelectedParticipants] = useState<User[]>(
@@ -81,6 +83,7 @@ export default function FormProject({ users, project }: Props) {
       startDate: project?.startDate ? new Date(project?.startDate) : new Date(),
       endDate: project?.endDate ? new Date(project?.endDate) : new Date(),
       client: project?.client || "",
+      color: project?.color || "#33254a",
     },
   })
 
@@ -134,7 +137,7 @@ export default function FormProject({ users, project }: Props) {
               <h3 className="text-lg font-semibold">Basic Information</h3>
 
               <div className="grid gap-4">
-                <div className="grid sm:grid-cols-4 gap-4">
+                <div className="grid sm:grid-cols-5 gap-4">
                   <FormField
                     name="name"
                     control={form.control}
@@ -168,6 +171,24 @@ export default function FormProject({ users, project }: Props) {
                             onChange={(e) =>
                               field.onChange(e.target.value.toLocaleUpperCase())
                             }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    name="color"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Color</FormLabel>
+                        <FormControl>
+                          <ColorPicker
+                            value={field.value}
+                            onChange={field.onChange}
+                            className="w-full"
                           />
                         </FormControl>
                         <FormMessage />

@@ -6,6 +6,7 @@ export interface Project {
   name: string
   code: string
   description: string
+  color: string
   leaderId: string
   leader?: User
   membersId: string[]

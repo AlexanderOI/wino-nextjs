@@ -3,25 +3,41 @@ import Link from "next/link"
 import { formatDate } from "date-fns"
 import { Clock, Plus } from "lucide-react"
 
-import { apiClientServer } from "@/utils/api-client-server"
-import { Project } from "@/features/project/interfaces/project.interface"
-import { PROJECTS_URL } from "@/constants/routes"
-
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { TypographyH1 } from "@/components/ui/typography"
 import { Badge } from "@/components/ui/badge"
-import { DropdownAction } from "./ui/dropdown-action"
 
 import { PermissionServer } from "@/features/permission/permission-server"
 import { PERMISSIONS } from "@/features/permission/constants/permissions"
-import { getColumnTaskCount } from "@/features/tasks/actions/column.action"
 import { UserAvatar } from "@/features/user/components/user-avatar"
+import { Project } from "@/features/project/interfaces/project.interface"
+import { getColumnTaskCount } from "@/features/tasks/actions/column.action"
 
-export default async function ManageProjects() {
-  const response = await apiClientServer.get<Project[]>(PROJECTS_URL)
-  const projects = response.data
+import { DropdownAction } from "@/features/manage-projects/components/dropdown-action"
+import { SearchProjects } from "@/features/manage-projects/components/projects-search"
+import { ProjectPagination } from "@/features/manage-projects/components/projects-paginacion"
+import { getProjects } from "@/features/project/actions/project.action"
+import { searchParamsCache } from "@/features/manage-projects/lib/validations"
+
+interface Props {
+  searchParams: Promise<{
+    search?: string
+    limit?: string
+    page?: string
+  }>
+}
+
+export default async function ManageProjects({ searchParams }: Props) {
+  const searchParamsData = await searchParams
+  const filter = searchParamsCache.parse(searchParamsData)
+  console.log(filter)
+
+  const response = await getProjects(filter)
+  const projects = response.projects
+  const total = response.total
+  const totalPages = Math.ceil(total / filter.limit)
 
   return (
     <div className="p-6 space-y-6">
@@ -44,16 +60,22 @@ export default async function ManageProjects() {
         </PermissionServer>
       </div>
 
-      {/* <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-        <Input placeholder="Search projects..." className="pl-10 max-w-md" />
-      </div> */}
+      <SearchProjects initialSearch={filter.search} />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {projects.map((project) => (
           <ProjectCard key={project._id} project={project} />
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <ProjectPagination
+          total={total}
+          currentPage={filter.page}
+          totalPages={totalPages}
+          limit={filter.limit}
+        />
+      )}
     </div>
   )
 }
@@ -117,14 +139,14 @@ async function ProjectCard({ project }: { project: Project }) {
           <div className="mt-5 flex items-center justify-between text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="w-4 h-4" />
-              <span>
+              <span className="text-xs">
                 {formatDate(project.startDate, "MMM d, yyyy")} -{" "}
                 {formatDate(project.endDate, "MMM d, yyyy")}
               </span>
             </div>
 
             <div className="flex -space-x-2">
-              {project.members?.slice(0, 5).map((member) => (
+              {project.members?.slice(0, 3).map((member) => (
                 <Tooltip key={member._id} delayDuration={0}>
                   <TooltipTrigger>
                     <UserAvatar key={member._id} user={member} />
@@ -140,7 +162,7 @@ async function ProjectCard({ project }: { project: Project }) {
                   <Link href={`/manage-projects/edit/${project._id}`}>
                     <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 border-2 border-white dark:border-slate-800 flex items-center justify-center">
                       <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
-                        +{project.members?.length ? project.members.length - 4 : 0}
+                        +{project.members?.length ? project.members.length - 3 : 0}
                       </span>
                     </div>
                   </Link>

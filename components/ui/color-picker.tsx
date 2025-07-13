@@ -162,7 +162,7 @@ export function ColorPicker({
             />
           </div>
           <div className="space-y-2">
-            <Label>Saturación</Label>
+            <Label>Saturation</Label>
             <Slider
               min={0}
               max={100}
@@ -173,7 +173,7 @@ export function ColorPicker({
             />
           </div>
           <div className="space-y-2">
-            <Label>Luminosidad</Label>
+            <Label>Lightness</Label>
             <Slider
               min={0}
               max={100}
@@ -184,7 +184,7 @@ export function ColorPicker({
             />
           </div>
           <div className="space-y-2">
-            <Label>Valor Hexadecimal</Label>
+            <Label>Hexadecimal</Label>
             <Input
               value={hexColor}
               onChange={handleHexChange}

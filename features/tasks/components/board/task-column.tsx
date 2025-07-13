@@ -1,6 +1,8 @@
 "use client"
 
+import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
+
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useDroppable } from "@dnd-kit/core"
 import { ArrowRight, Plus } from "lucide-react"
@@ -15,14 +17,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { ColorPicker } from "@/components/ui/color-picker"
 
+import { useCurrentProject } from "@/features/project/hooks/use-current-project"
+import { Task } from "@/features/tasks/interfaces/task.interface"
 import { ColumnData } from "@/features/tasks/interfaces/column.interface"
 import { TaskItem } from "@/features/tasks/components/board/task-item"
-import { useProjectStore } from "@/features/project/store/project.store"
 import { useColumnStore } from "@/features/tasks/store/column.store"
-import { Task } from "../../interfaces/task.interface"
-import { TaskPreview } from "./task-preview"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { TaskPreview } from "@/features/tasks/components/board/task-preview"
 
 interface TaskColumnProps {
   column: ColumnData
@@ -41,7 +41,7 @@ export function TaskColumn({
   isBeingDraggedOver,
 }: TaskColumnProps) {
   const { updateColumn, addTask, updateTask, deleteTask } = useColumnStore()
-  const project = useProjectStore((state) => state.project)
+  const { project } = useCurrentProject()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editedColumn, setEditedColumn] = useState(column)

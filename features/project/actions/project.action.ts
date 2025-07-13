@@ -1,7 +1,6 @@
 import { apiClientServer } from "@/utils/api-client-server"
 
 import { Project } from "@/features/project/interfaces/project.interface"
-import { apiClient } from "@/utils/api-client"
 
 interface GetProjectParams {
   withMembers?: boolean
@@ -23,7 +22,28 @@ export async function getProject(projectId: string, params?: GetProjectParams) {
   }
 }
 
-export async function getProjects() {
-  const response = await apiClient.get<Project[]>("/projects")
-  return response.data
+interface GetProjectsParams {
+  search?: string
+  limit?: number
+  page?: number
+}
+
+interface GetProjectsResponse {
+  projects: Project[]
+  total: number
+}
+
+export async function getProjects(params?: GetProjectsParams) {
+  try {
+    const response = await apiClientServer.get<GetProjectsResponse>("/projects", {
+      params,
+    })
+    return response.data
+  } catch (error) {
+    console.error(error)
+    return {
+      projects: [],
+      total: 0,
+    }
+  }
 }

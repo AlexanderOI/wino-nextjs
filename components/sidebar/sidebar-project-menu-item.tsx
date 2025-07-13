@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { 
+import {
   SidebarMenuButton,
   SidebarMenuItem as SidebarMenuItemUI,
 } from "@/components/ui/sidebar"
@@ -14,15 +14,17 @@ interface SidebarProjectMenuItemProps {
   item: MenuItem
   userPermissions: string[]
   project: any
+  projectId: string | null
 }
 
-export function SidebarProjectMenuItem({ 
-  item, 
-  userPermissions, 
-  project 
+export function SidebarProjectMenuItem({
+  item,
+  userPermissions,
+  project,
+  projectId,
 }: SidebarProjectMenuItemProps) {
   const pathname = usePathname()
-  
+
   const hasPermission = (permissions?: string[]) => {
     if (!permissions?.length) return true
     return permissions.some((permission) => userPermissions.includes(permission))
@@ -33,23 +35,21 @@ export function SidebarProjectMenuItem({
   }
 
   const isActive = pathname === item.url || pathname.includes(item.url + "/")
-  const itemUrl = project?._id 
-    ? item.url.replace("[projectId]", project._id)
-    : item.url
-  
+  const itemUrl = projectId ? item.url.replace("[projectId]", projectId) : item.url
+
   const IconComponent = iconMap[item.icon]
 
   return (
     <SidebarMenuItemUI>
       <SidebarMenuButton
         className={cn(
-          !project ? "hover:bg-slate-600" : "",
+          !projectId ? "hover:bg-slate-600" : "",
           isActive ? "bg-purple-deep" : ""
         )}
-        disabled={!project?._id}
+        disabled={!projectId}
         asChild
       >
-        {project?._id ? (
+        {projectId ? (
           <Link href={itemUrl}>
             <IconComponent />
             <span>{item.title}</span>
@@ -63,4 +63,4 @@ export function SidebarProjectMenuItem({
       </SidebarMenuButton>
     </SidebarMenuItemUI>
   )
-} 
+}
