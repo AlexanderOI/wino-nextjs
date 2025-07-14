@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
   DialogClose,
@@ -22,6 +22,7 @@ import { CardForm } from "@/features/project/components/card/card-form"
 import { useCurrentProject } from "@/features/project/hooks/use-current-project"
 
 export const SelectFormDialog = () => {
+  const queryClient = useQueryClient()
   const { data: forms, refetch } = useQuery({
     queryKey: ["forms"],
     queryFn: () => getFormsTask(),
@@ -46,6 +47,7 @@ export const SelectFormDialog = () => {
       if (!project) return
 
       await refetch()
+      queryClient.invalidateQueries({ queryKey: ["formTask", project.formTaskId] })
     } catch (error) {
       toast({
         title: "Error",
