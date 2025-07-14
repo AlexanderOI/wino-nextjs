@@ -7,10 +7,12 @@ interface FormInputs {
   confirmPassword: string
 }
 
+const isDemo = process.env.NEXT_PUBLIC_ENV === "demo"
+
 export async function POST(request: NextRequest) {
   const data: FormInputs = await request.json()
 
-  if (data.password !== data.confirmPassword) {
+  if (data.password !== data.confirmPassword && !isDemo) {
     return NextResponse.json(
       { confirmPassword: ["Passwords do not match"] },
       { status: 400 }

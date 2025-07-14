@@ -20,7 +20,14 @@ import {
 } from "@/components/ui/form"
 import { BACKEND_URL } from "@/constants/routes"
 
-const formSchema = z
+const isDemo = process.env.NEXT_PUBLIC_ENV === "demo"
+
+const formSchemaDemo = z.object({
+  userName: z.string().min(1),
+  password: z.string().min(4),
+})
+
+const formSchemaProd = z
   .object({
     userName: z.string().min(1),
     email: z.string().email(),
@@ -31,6 +38,8 @@ const formSchema = z
     path: ["confirmPassword"],
     message: "Passwords do not match",
   })
+
+const formSchema = isDemo ? formSchemaDemo : formSchemaProd
 
 export default function Register() {
   const { data: session } = useSession()
@@ -97,24 +106,26 @@ export default function Register() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  name="email"
-                  type="email"
-                  onBlur={handleBlurCheckUserData}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!isDemo && (
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    name="email"
+                    type="email"
+                    onBlur={handleBlurCheckUserData}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
@@ -130,24 +141,26 @@ export default function Register() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="off"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!isDemo && (
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    name="confirmPassword"
+                    type="password"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button variant="purple" className="w-full" disabled={isLoading}>
           {isLoading && <Loader2 className="animate-spin text-purple-600 mr-2" />}
