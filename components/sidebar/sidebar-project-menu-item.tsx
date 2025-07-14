@@ -34,7 +34,7 @@ export function SidebarProjectMenuItem({
     return null
   }
 
-  const isActive = pathname === item.url || pathname.includes(item.url + "/")
+  const isActive = isRouteActive(pathname, item.url)
   const itemUrl = projectId ? item.url.replace("[projectId]", projectId) : item.url
 
   const IconComponent = iconMap[item.icon]
@@ -63,4 +63,32 @@ export function SidebarProjectMenuItem({
       </SidebarMenuButton>
     </SidebarMenuItemUI>
   )
+}
+
+const isRouteActive = (currentPath: string, routePattern: string) => {
+  if (!routePattern.includes("[projectId]")) {
+    return currentPath === routePattern || currentPath.startsWith(routePattern + "/")
+  }
+
+  const patternSegments = routePattern.split("/")
+  const pathSegments = currentPath.split("/")
+
+  if (patternSegments.length !== pathSegments.length) {
+    return false
+  }
+
+  for (let i = 0; i < patternSegments.length; i++) {
+    const patternSegment = patternSegments[i]
+    const pathSegment = pathSegments[i]
+
+    if (patternSegment === "[projectId]") {
+      continue
+    }
+
+    if (patternSegment !== pathSegment) {
+      return false
+    }
+  }
+
+  return true
 }
