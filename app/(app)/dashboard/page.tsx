@@ -16,6 +16,7 @@ import {
   getColumnTaskCount,
 } from "@/features/tasks/actions/column.action"
 import { getRecentActivities } from "@/features/tasks/actions/activity.action"
+import { getProjects } from "@/features/project/actions/project.action"
 
 export interface ProjectWithTasks extends Project {
   columnsTasks: ColumnTaskCount[]
@@ -26,9 +27,9 @@ export default async function Dashboard() {
   let projects: ProjectWithTasks[] = []
   let totalTasks = 0
   try {
-    const projectsResponse = await apiClientServer.get<ProjectWithTasks[]>("/projects")
+    const { projects: projectsResponse } = await getProjects({ limit: 100 })
 
-    projects = projectsResponse.data
+    projects = projectsResponse as ProjectWithTasks[]
 
     let taskPromise = projects.map(async (project) => {
       const [columns, resentActivitiesResponse] = await Promise.all([
