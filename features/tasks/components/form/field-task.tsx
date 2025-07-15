@@ -98,8 +98,9 @@ export const FieldTask = memo(
 
 const getDisplayValue = (field: FormField, value: string | number | Date) => {
   if (field.type.includes("date")) {
-    return isValid(value)
-      ? format(value, field.type === "date" ? "PPP" : "PPP HH:mm")
+    const date = value ? new Date(value) : new Date()
+    return isValid(date)
+      ? format(date, field.type === "date" ? "PPP" : "PPP HH:mm")
       : field.placeholder
   }
 
