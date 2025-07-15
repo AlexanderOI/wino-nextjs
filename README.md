@@ -1,9 +1,6 @@
 # Wino NextJS - Project And Task Management
 
-Multi-company web application for project and task management,
-developed with Next.js and NestJS. Implements JWT authentication, role
-and permission-based access control, task assignment, Kanban board,
-and project progress tracking with a modern and efficient interface.
+Multi-tenant web application for project and task management, developed with Next.js and NestJS. It implements JWT authentication, role- and permission-based access control, task assignment, a Kanban board, a task list with dynamic filters, custom task fields, real-time notifications, and project progress tracking with a modern and efficient interface.
 
 ## 🚀 Features
 
