@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { ColorPicker } from "@/components/ui/color-picker"
 
-import { useCurrentProject } from "@/features/project/hooks/use-current-project"
+import { Project } from "@/features/project/interfaces/project.interface"
 import { Task } from "@/features/tasks/interfaces/task.interface"
 import { ColumnData } from "@/features/tasks/interfaces/column.interface"
 import { TaskItem } from "@/features/tasks/components/board/task-item"
@@ -32,6 +32,7 @@ interface TaskColumnProps {
   }
   activeTask: Task | null
   isBeingDraggedOver: boolean
+  project: Project
 }
 
 export function TaskColumn({
@@ -39,9 +40,9 @@ export function TaskColumn({
   dragOverInfo,
   activeTask,
   isBeingDraggedOver,
+  project,
 }: TaskColumnProps) {
   const { updateColumn, addTask, updateTask, deleteTask } = useColumnStore()
-  const { project } = useCurrentProject()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editedColumn, setEditedColumn] = useState(column)
