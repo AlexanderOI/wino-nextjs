@@ -23,7 +23,8 @@ import { DialogTrigger } from "@/components/ui/dialog"
 import { useColumnStore } from "@/features/tasks/store/column.store"
 import { ColumnData } from "@/features/tasks/interfaces/column.interface"
 import { TaskColumn } from "@/features/tasks/components/board/task-column"
-import { Task } from "../../interfaces/task.interface"
+import { Task } from "@/features/tasks/interfaces/task.interface"
+import { Project } from "@/features/project/interfaces/project.interface"
 
 interface ColumnItemProps {
   column: ColumnData
@@ -33,6 +34,7 @@ interface ColumnItemProps {
     insertPosition: number
   }
   activeTask: Task | null
+  project: Project
 }
 
 export function ColumnItem({
@@ -40,6 +42,7 @@ export function ColumnItem({
   setActiveTask,
   dragOverInfo,
   activeTask,
+  project,
 }: ColumnItemProps) {
   const { deleteColumn } = useColumnStore()
 
@@ -95,6 +98,7 @@ export function ColumnItem({
         dragOverInfo={dragOverInfo}
         activeTask={activeTask}
         isBeingDraggedOver={isBeingDraggedOver}
+        project={project}
       />
 
       <PermissionClient permissions={[PERMISSIONS.EDIT_COLUMN]}>

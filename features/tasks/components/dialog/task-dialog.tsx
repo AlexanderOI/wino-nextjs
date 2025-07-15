@@ -24,13 +24,8 @@ export function TaskDialog({ id }: Props) {
   const [canEditTask, setCanEditTask] = useState(false)
 
   useEffect(() => {
-    console.log("init", new Date().toISOString())
     canPermission([PERMISSIONS.EDIT_TASK]).then(setCanEditTask)
   }, [])
-
-  if (!taskQuery.isLoading && !columnsQuery.isLoading && !formTaskQuery.isLoading) {
-    console.log("loaded", new Date().toISOString())
-  }
 
   return (
     <DialogContent

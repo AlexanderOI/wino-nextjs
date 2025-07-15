@@ -32,7 +32,6 @@ interface Props {
 export default async function ManageProjects({ searchParams }: Props) {
   const searchParamsData = await searchParams
   const filter = searchParamsCache.parse(searchParamsData)
-  console.log(filter)
 
   const response = await getProjects(filter)
   const projects = response.projects

@@ -26,15 +26,15 @@ class SocketService {
       })
 
       this.socket.on("connect", () => {
-        console.log("Socket conectado")
+        console.log("Socket connected")
       })
 
       this.socket.on("disconnect", () => {
-        console.log("Socket desconectado")
+        console.log("Socket disconnected")
       })
 
       this.socket.on("connect_error", (error) => {
-        console.error("Error de conexión:", error)
+        console.error("Connection error:", error)
       })
     }
 

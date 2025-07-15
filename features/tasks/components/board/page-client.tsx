@@ -260,6 +260,7 @@ export function TasksPageClient({ project, columnsTasks }: Props) {
                 setActiveTask={setActiveTask}
                 dragOverInfo={dragOverInfo}
                 activeTask={activeTask}
+                project={project}
               />
             ))}
           </SortableContext>
